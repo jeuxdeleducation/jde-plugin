@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Construire le ZIP de release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extraire la version du tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Vérifier la cohérence des versions
+        run: |
+          set -e
+          PLUGIN_VERSION=$(grep -oP "(?<=Version:\s{1,20})[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
+          CONST_VERSION=$(grep -oP "(?<=JDE_PLUGIN_VERSION', ')[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
+          TAG_VERSION="${{ steps.version.outputs.version }}"
+
+          echo "Tag        : $TAG_VERSION"
+          echo "En-tête    : $PLUGIN_VERSION"
+          echo "Constante  : $CONST_VERSION"
+
+          if [ "$PLUGIN_VERSION" != "$TAG_VERSION" ] || [ "$CONST_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::La version du tag ne correspond pas à celles de jde-plugin.php"
+            exit 1
+          fi
+
+      - name: Configurer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
+
+      - name: Configurer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Installer les dépendances Composer (production)
+        run: composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Installer les dépendances NPM
+        run: npm ci
+
+      - name: Construire les assets
+        run: |
+          if [ -d "assets/src" ] && [ -n "$(ls -A assets/src 2>/dev/null)" ]; then
+            npm run build
+          else
+            echo "Aucun asset source — étape de build ignorée."
+            mkdir -p assets/build
+          fi
+
+      - name: Construire le dossier de release
+        run: |
+          set -e
+          BUILD_DIR="build/jde-plugin"
+          rm -rf build
+          mkdir -p "$BUILD_DIR"
+
+          # Copier tout sauf les exclusions du .distignore
+          rsync -av --exclude-from=.distignore \
+            --exclude='build' \
+            --exclude='.git' \
+            ./ "$BUILD_DIR/"
+
+      - name: Créer le ZIP
+        run: |
+          cd build
+          zip -r "jde-plugin-${{ steps.version.outputs.version }}.zip" jde-plugin
+          ls -lh
+
+      - name: Publier la release GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Version ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: build/jde-plugin-${{ steps.version.outputs.version }}.zip

@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-php:
+    name: Lint PHP (PHPCS)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.json', 'composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Installer les dépendances
+        run: composer install --no-progress --prefer-dist
+
+      - name: Exécuter PHPCS
+        run: composer lint
+
+  test-php:
+    name: Tests PHP (PHPUnit)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.json', 'composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-${{ matrix.php }}-
+
+      - name: Installer les dépendances
+        run: composer install --no-progress --prefer-dist
+
+      - name: Exécuter PHPUnit
+        run: composer test
+
+  lint-js:
+    name: Lint JS/CSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Lint JS
+        run: |
+          if [ -d "assets/src" ] && [ -n "$(find assets/src -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' 2>/dev/null)" ]; then
+            npm run lint:js
+          else
+            echo "Aucun fichier JS source à linter — étape ignorée."
+          fi
+
+      - name: Lint CSS
+        run: |
+          if [ -d "assets/src" ] && [ -n "$(find assets/src -name '*.css' -o -name '*.scss' 2>/dev/null)" ]; then
+            npm run lint:css
+          else
+            echo "Aucun fichier CSS source à linter — étape ignorée."
+          fi
