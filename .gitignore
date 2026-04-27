@@ -30,6 +30,9 @@ Thumbs.db
 *.log
 debug.log
 
+# Outils Claude Code (configuration locale)
+/.claude/
+
 # Archives de release
 /release/
 *.zip
