@@ -1,0 +1,35 @@
+# Dépendances
+/vendor/
+/node_modules/
+
+# Compilations
+/assets/build/
+/build/
+
+# Outils & caches
+.phpunit.result.cache
+.phpcs-cache
+.phpunit.cache/
+
+# Environnements & secrets
+.env
+.env.local
+.env.*.local
+
+# Éditeurs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Système d'exploitation
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+debug.log
+
+# Archives de release
+/release/
+*.zip

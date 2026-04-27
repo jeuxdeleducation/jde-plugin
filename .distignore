@@ -1,0 +1,25 @@
+# Fichiers exclus du ZIP de release généré par .github/workflows/release.yml.
+# Tout chemin listé ici est supprimé du dossier de build avant compression.
+
+/.git
+/.github
+/.gitignore
+/.gitattributes
+/.distignore
+/.editorconfig
+/.vscode
+/.idea
+/node_modules
+/tests
+/assets/src
+/phpcs.xml.dist
+/phpunit.xml.dist
+/package.json
+/package-lock.json
+/composer.json
+/composer.lock
+/CLAUDE.md
+/.phpunit.result.cache
+/.phpcs-cache
+/.DS_Store
+*.map

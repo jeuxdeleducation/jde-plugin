@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="JDE Plugin">
+    <description>Normes de code pour le plugin JDE.</description>
+
+    <file>jde-plugin.php</file>
+    <file>uninstall.php</file>
+    <file>src/</file>
+    <file>tests/</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/assets/build/*</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <arg name="parallel" value="8"/>
+
+    <config name="minimum_supported_wp_version" value="6.4"/>
+    <config name="testVersion" value="8.1-"/>
+
+    <rule ref="WordPress-Extra">
+        <!-- On utilise PSR-4 + namespaces ; pas besoin du préfixe sur les noms de classe. -->
+        <exclude name="WordPress.Files.FileName"/>
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
+    </rule>
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="jde-plugin"/>
+            </property>
+        </properties>
+    </rule>
+
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- Tolérance sur les tests : les fonctions de test n'ont pas besoin d'être préfixées. -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+</ruleset>
