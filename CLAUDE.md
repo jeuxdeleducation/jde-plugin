@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 WordPress plugin for internal use by **Jeux de l'Éducation (JDE)**, a non-profit from Québec. The plugin slug is `jde-plugin` and the main file is `jde-plugin.php`.
 
+## Requirements
+
+- **PHP** 8.1+ (declared in `composer.json` and checked at runtime by `jde_plugin_check_requirements()`)
+- **WordPress** 6.4+
+- **Composer** for PHP dependencies (PSR-4 autoload under namespace `JDE\`)
+- **Node 20+** for the front-end build (`@wordpress/scripts`)
+
 ## Development Environment
 
 This plugin is developed against a local WordPress installation. The recommended local stack is [LocalWP](https://localwp.com/) or [wp-env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/).
@@ -49,38 +56,84 @@ npx wp-env run cli wp plugin deactivate jde-plugin
 
 ## Architecture
 
-WordPress plugins follow a hook-based architecture. All business logic is wired to WordPress actions and filters rather than called directly.
+The plugin uses a **modular architecture** built around three things: a singleton bootstrap, a service container, and a module registry. All business logic lives inside *modules* — independent units that register their own WordPress hooks.
 
 ```
-jde-plugin.php          # Plugin header + bootstrap (defines constants, loads autoloader)
-includes/
-  class-jde-plugin.php  # Core singleton — registers all hooks on init
-  admin/                # WP_List_Table subclasses, settings pages, AJAX handlers
-  frontend/             # Shortcodes, blocks, public-facing output
-  models/               # Custom post types, taxonomies, and DB table abstractions
-  api/                  # REST API endpoints (extend WP_REST_Controller)
+jde-plugin.php                  # Plugin header, constants, requirements check, bootstrap
+uninstall.php                   # Cleanup on plugin deletion (guarded by WP_UNINSTALL_PLUGIN)
+src/                            # PSR-4 autoloaded under namespace JDE\
+  Plugin.php                    # Singleton — orchestrates lifecycle, registers core services & modules
+  Container.php                 # Lightweight DI container (lazy factories + cached instances)
+  Modules/
+    ModuleInterface.php         # Contract: id() + register(Container)
+    AbstractModule.php          # Base class (stores container reference)
+    ModuleRegistry.php          # Adds modules, prevents duplicates, calls register() in batch
+  Support/
+    Logger.php                  # error_log wrapper, gated by WP_DEBUG_LOG
+    Assets.php                  # Enqueues @wordpress/scripts builds (reads .asset.php)
+    Template.php                # Locates templates (theme override → plugin default)
+  Updates/
+    GitHubUpdater.php           # Wraps plugin-update-checker for GitHub releases
 assets/
-  src/                  # Uncompiled JS (ESModules) and SCSS
-  build/                # Compiled output — never edit by hand
-languages/              # .pot / .po / .mo translation files (text-domain: jde-plugin)
+  src/                          # Source JS (ESModules) and SCSS — input to wp-scripts
+  build/                        # Compiled output — gitignored
+templates/                      # Frontend templates, surchargeable from the active theme
+languages/                      # .pot / .po / .mo (text-domain: jde-plugin)
 tests/
-  bootstrap.php         # PHPUnit bootstrap that loads WP test suite
-  unit/                 # Tests that do not need a DB (mock WP functions)
-  integration/          # Tests that run against a real WP test database
+  bootstrap.php                 # PHPUnit bootstrap (autoload + ABSPATH stub)
+  Unit/                         # Pure unit tests (no WP, Brain Monkey for hooks)
+  Integration/                  # Tests against the WP test suite (future)
+.github/workflows/
+  ci.yml                        # PHPCS + PHPUnit (matrix 8.1/8.2/8.3) + lint JS/CSS on PR
+  release.yml                   # On tag vX.Y.Z: build, ZIP, attach to GitHub release
 ```
+
+### Lifecycle
+
+1. `jde-plugin.php` runs on every request. It defines constants, checks PHP/WP versions, loads the Composer autoloader, registers activation/deactivation hooks, then calls `JDE\Plugin::instance()->boot()`.
+2. `Plugin::boot()` populates the container with shared services and hooks into `plugins_loaded`, `init`, `admin_init`, `rest_api_init`.
+3. On `plugins_loaded`: textdomain loads, then `ModuleRegistry::registerAll()` calls `register(Container)` on every module.
+4. Modules attach their own WordPress hooks inside `register()` and respond to `init`, `admin_init`, `rest_api_init`, etc.
+
+### Adding a new module
+
+1. Create a class under `src/Modules/<Feature>/<Feature>Module.php` extending `AbstractModule`.
+2. Implement `id()` (kebab-case identifier) and `register(Container $c)` (call `parent::register()` first).
+3. Inside `register()`, attach hooks: `add_action('init', [$this, 'onInit'])`, etc.
+4. Register the module in `JDE\Plugin::registerModules()` by adding `$this->modules->add(new \JDE\Modules\<Feature>\<Feature>Module());`.
+5. Pull shared services from `$this->container()` (e.g., `$this->container()->get(\JDE\Support\Logger::class)`).
 
 ### Key conventions
 
-- **PHP autoloading**: PSR-4 via Composer; class `JDE\Admin\Settings` lives in `includes/admin/class-settings.php`.
-- **Capability checks**: every admin action and REST endpoint must call `current_user_can()` before acting.
-- **Nonces**: all forms and AJAX calls must use `wp_nonce_field()` / `check_admin_referer()`.
-- **Database**: use `$wpdb` with prepared statements; never interpolate raw user input into queries.
-- **Translations**: wrap all user-facing strings in `__()` / `esc_html__()` with text-domain `jde-plugin`. French (fr_CA) is the primary locale.
-- **Asset versioning**: pass `filemtime()` of the built file as the version argument to `wp_enqueue_*` in development; use a plugin constant in production.
+- **PHP autoloading**: PSR-4 via Composer. `JDE\Modules\Adhesions\AdhesionsModule` → `src/Modules/Adhesions/AdhesionsModule.php`.
+- **File guard**: every PHP source file starts with `defined( 'ABSPATH' ) || exit;`.
+- **Strict types**: every PHP file declares `declare(strict_types=1);` directly under the file docblock.
+- **Capability checks**: every admin action and REST endpoint calls `current_user_can()` before acting.
+- **Nonces**: all forms and AJAX calls use `wp_nonce_field()` / `check_admin_referer()` / `wp_verify_nonce()`.
+- **Database**: `$wpdb->prepare()` for every query that touches user input; never interpolate.
+- **Translations**: wrap user-facing strings in `__()` / `esc_html__()` / `esc_attr__()` with text-domain `jde-plugin`. Locale: `fr_CA`.
+- **Assets**: enqueue via the `JDE\Support\Assets` service, which reads the `.asset.php` produced by `@wordpress/scripts`.
 
 ## Coding Standards
 
-PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress` ruleset. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
+PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress-Extra` ruleset (configured in `phpcs.xml.dist`) plus PHPCompatibilityWP for PHP 8.1+ compatibility. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
+
+## Release Process
+
+The plugin auto-updates on production sites via `plugin-update-checker` watching the GitHub repo's releases. Only **published GitHub releases** count as new versions — `main` is free to receive in-progress work without affecting production.
+
+When the user says **"this version is ready for production"**:
+
+1. Bump the version in **two places** (the release workflow validates they match the tag):
+   - `Version:` in the `jde-plugin.php` header
+   - `JDE_PLUGIN_VERSION` constant in `jde-plugin.php`
+2. Update `CHANGELOG.md` (move "Non publié" entries into a new dated section) and `readme.txt` (Stable tag + Changelog).
+3. Commit: `git commit -m "Préparer la version X.Y.Z"`
+4. Tag and push: `git tag vX.Y.Z && git push && git push --tags`
+5. The `.github/workflows/release.yml` workflow runs automatically: it validates version coherence, runs `composer install --no-dev`, runs `npm run build`, applies `.distignore`, builds a clean ZIP, and publishes a GitHub release with the ZIP attached.
+6. WordPress sites will detect the update within ~12h or instantly via *Vérifier les mises à jour*.
+
+For day-to-day development on `main` (between releases), no action is needed beyond regular commits and pushes.
 
 ## Language
 
