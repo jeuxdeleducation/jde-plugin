@@ -81,3 +81,22 @@ tests/
 ## Coding Standards
 
 PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress` ruleset. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
+
+## Language
+
+Conversations with Claude may happen in English, but **all produced content must be in French (fr_CA)**. This applies to:
+
+- All user-facing strings in PHP and JavaScript
+- Comments and docblocks in code
+- Documentation files (README, changelogs, inline docs)
+- Commit messages
+- Admin UI labels, error messages, and help text
+
+## Version Control
+
+Commit and push to `origin/main` regularly so work is never lost. Guidelines:
+
+- Commit after each logical unit of work (new feature, bug fix, config change) — do not batch unrelated changes into one commit.
+- Commit messages must be in French, in the imperative mood, and describe *why* when the reason is not obvious. Example: `Ajouter le type de contenu Équipe avec champs ACF`.
+- Always `git push` after committing — a local-only commit is not backed up.
+- Never commit build artifacts (`/build`, `/vendor`) unless they are explicitly required in the repo.
