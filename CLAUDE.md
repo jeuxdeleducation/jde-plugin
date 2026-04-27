@@ -108,6 +108,7 @@ tests/
 - **PHP autoloading**: PSR-4 via Composer. `JDE\Modules\Adhesions\AdhesionsModule` → `src/Modules/Adhesions/AdhesionsModule.php`.
 - **File guard**: every PHP source file starts with `defined( 'ABSPATH' ) || exit;`.
 - **Strict types**: every PHP file declares `declare(strict_types=1);` directly under the file docblock.
+- **Naming**: methods, properties and local variables use **camelCase** (modern PSR style). WordPress hooks and global helper functions remain `snake_case`. The relevant WPCS naming rules are deliberately disabled in `phpcs.xml.dist` — do not "fix" camelCase to snake_case.
 - **Capability checks**: every admin action and REST endpoint calls `current_user_can()` before acting.
 - **Nonces**: all forms and AJAX calls use `wp_nonce_field()` / `check_admin_referer()` / `wp_verify_nonce()`.
 - **Database**: `$wpdb->prepare()` for every query that touches user input; never interpolate.

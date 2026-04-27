@@ -20,9 +20,25 @@
     <config name="testVersion" value="8.1-"/>
 
     <rule ref="WordPress-Extra">
-        <!-- On utilise PSR-4 + namespaces ; pas besoin du préfixe sur les noms de classe. -->
+        <!--
+            Conventions de nommage : ce plugin utilise PSR-4 + namespaces et adopte
+            camelCase pour les méthodes, propriétés et variables locales (style PHP
+            moderne, cohérent avec l'écosystème Composer / PSR / DI). Les hooks
+            WordPress et les fonctions globales restent en snake_case.
+        -->
         <exclude name="WordPress.Files.FileName"/>
         <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
+
+        <!--
+            Les exceptions sont lancées côté serveur et ne sont jamais affichées
+            telles quelles à l'utilisateur final (WP les capture). Pas besoin
+            d'esc_html() sur leurs messages.
+        -->
+        <exclude name="WordPress.Security.EscapeOutput.ExceptionNotEscaped"/>
     </rule>
 
     <rule ref="WordPress.WP.I18n">
@@ -35,8 +51,11 @@
 
     <rule ref="PHPCompatibilityWP"/>
 
-    <!-- Tolérance sur les tests : les fonctions de test n'ont pas besoin d'être préfixées. -->
+    <!-- Tolérance sur les tests : pas de préfixe global, fwrite autorisé pour STDERR. -->
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.WP.AlternativeFunctions.file_system_operations_fwrite">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 </ruleset>
