@@ -103,6 +103,20 @@ tests/
 4. Register the module in `JDE\Plugin::registerModules()` by adding `$this->modules->add(new \JDE\Modules\<Feature>\<Feature>Module());`.
 5. Pull shared services from `$this->container()` (e.g., `$this->container()->get(\JDE\Support\Logger::class)`).
 
+### Modules with custom database tables
+
+The Kiosques module is the canonical reference for modules that need their own SQL tables. Pattern:
+
+1. **Schema** (`src/Modules/<Feature>/Database/Schema.php`) — one method per `CREATE TABLE` returning the SQL string for `dbDelta()`. dbDelta is picky: each column on its own line, two spaces between `PRIMARY KEY` and the parenthesis, indexes declared with `KEY` not `INDEX`.
+2. **Migrator** (`src/Modules/<Feature>/Database/Migrator.php`) — versioned via the option `jde_plugin_db_version`. `run()` is idempotent and gets called both at activation (via `ActivatableModule::onActivate()`) and on every `plugins_loaded` (as a safety net for code-only updates without re-activation).
+3. **ActivatableModule interface** — module's `onActivate()` method instantiates Schema + Migrator manually (the container isn't populated yet at activation time).
+4. **Repositories** (`src/Modules/<Feature>/Repositories/`) — non-final classes that wrap `wpdb`. All SELECTs use `$wpdb->prepare()` inlined into the call site (not stored in a variable; PHPCS can't follow flow). For multi-line prepared queries, wrap in `// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared` blocks.
+5. **Models** (`src/Modules/<Feature>/Models/`) — final readonly classes with `fromRow(array)` factory and `toArray()` serializer. PHP 8.1 named-argument constructors keep call sites readable.
+
+### Modules with activation hooks
+
+Implement `JDE\Modules\ActivatableModule` (interface in `src/Modules/ActivatableModule.php`) in addition to `ModuleInterface`. `Plugin::activate()` and `Plugin::deactivate()` iterate over registered modules and call `onActivate()` / `onDeactivate()` on those that implement it. Capability creation, table creation, etc. go in `onActivate()`.
+
 ### Key conventions
 
 - **PHP autoloading**: PSR-4 via Composer. `JDE\Modules\Adhesions\AdhesionsModule` → `src/Modules/Adhesions/AdhesionsModule.php`.
