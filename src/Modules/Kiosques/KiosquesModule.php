@@ -14,6 +14,7 @@ use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
+use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,6 +52,9 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			},
 			11
 		);
+
+		// Enregistrer le CPT et ses champs meta dès « init ».
+		$container->get( EvenementPostType::class )->register();
 	}
 
 	/**
@@ -93,6 +97,11 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			Migrator::class,
 			static fn ( Container $c ): Migrator => new Migrator( $c->get( Schema::class ) )
+		);
+
+		$container->set(
+			EvenementPostType::class,
+			static fn (): EvenementPostType => new EvenementPostType()
 		);
 	}
 }
