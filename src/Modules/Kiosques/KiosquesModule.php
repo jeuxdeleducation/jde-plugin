@@ -18,6 +18,8 @@ use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
+use JDE\Modules\Kiosques\Services\CodeGenerator;
+use JDE\Modules\Kiosques\Services\EvenementService;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -129,6 +131,18 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				global $wpdb;
 				return new AuditRepository( $wpdb );
 			}
+		);
+
+		$container->set(
+			CodeGenerator::class,
+			static fn ( Container $c ): CodeGenerator => new CodeGenerator(
+				$c->get( ExposantRepository::class )
+			)
+		);
+
+		$container->set(
+			EvenementService::class,
+			static fn (): EvenementService => new EvenementService()
 		);
 	}
 }

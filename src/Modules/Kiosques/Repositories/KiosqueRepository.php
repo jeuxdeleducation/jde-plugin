@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * appellent `prepare()` en interne pour échapper les valeurs. Les
  * SELECT utilisent explicitement `prepare()` avec placeholders.
  */
-final class KiosqueRepository {
+class KiosqueRepository {
 
 	private string $table;
 

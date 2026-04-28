@@ -23,3 +23,6 @@ if ( ! file_exists( $autoload ) ) {
 }
 
 require_once $autoload;
+
+// Charger les stubs WordPress utilisés par les tests unitaires.
+require_once __DIR__ . '/Stubs/WP_Query.php';

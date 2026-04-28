@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * En Phase C, les actions admin sur les réservations utiliseront `log()`
  * pour conserver une trace `qui / quand / quoi`.
  */
-final class AuditRepository {
+class AuditRepository {
 
 	private string $table;
 

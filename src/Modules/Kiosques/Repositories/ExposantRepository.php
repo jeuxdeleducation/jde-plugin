@@ -23,7 +23,7 @@ defined( 'ABSPATH' ) || exit;
  * garantir l'unicité globale (la table a une contrainte UNIQUE sur
  * `code_acces`, mais on évite les insert qui échouent en testant avant).
  */
-final class ExposantRepository {
+class ExposantRepository {
 
 	private string $table;
 
