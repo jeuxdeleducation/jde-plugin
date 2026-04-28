@@ -4,6 +4,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.2.3] — 2026-04-28
+
+### Investigation
+
+- Menu admin toujours invisible sur certaines installations malgré la 0.2.2. Cette version sert à diagnostiquer :
+  - Position du menu passée à `null` (fin de la sidebar) pour exclure tout conflit de position.
+  - Nouvelle classe `DiagnosticNotice` qui affiche un bandeau diagnostic complet sur toute page admin lorsque `?jde_debug=1` est ajouté à l'URL. Le bandeau montre l'utilisateur, ses rôles, ses capacités `jde_*`, la présence du menu dans `$menu`/`$submenu`, et l'état du CPT.
+
 ## [0.2.2] — 2026-04-28
 
 ### Corrigé

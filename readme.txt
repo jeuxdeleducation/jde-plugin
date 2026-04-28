@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.2.3 =
+* Investigation menu invisible : position du menu mise à NULL (fin de la sidebar) pour exclure les conflits de position. Ajout d'un diagnostic temporaire activable via ?jde_debug=1 sur n'importe quelle URL admin.
 
 = 0.2.2 =
 * Correctif : retour à un slug custom (jde-kiosques) avec callback de redirection pour le menu top-level. Le pattern « URL comme slug » testé en 0.2.1 cause l'invisibilité du menu sur certaines installations.

@@ -46,7 +46,7 @@ final class AdminMenu {
 			self::SLUG,
 			array( $this, 'displayMainPage' ),
 			'dashicons-grid-view',
-			26
+			null // Position par défaut (fin de la sidebar) pour éliminer tout risque de collision.
 		);
 
 		// Sous-menu « Tous les événements » (avec le même slug que le parent
