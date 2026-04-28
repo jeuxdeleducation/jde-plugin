@@ -52,12 +52,15 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 
 		$this->registerServices( $container );
 
-		// Filet de sécurité : à chaque chargement, vérifier que le schéma est à jour.
-		// Idempotent — coût négligeable si la version installée est déjà la plus récente.
+		// Filet de sécurité : à chaque chargement, vérifier que le schéma est à jour
+		// et que la capacité est attribuée au rôle administrateur. Idempotent — coût
+		// négligeable si déjà à jour. Couvre le cas où le hook d'activation n'a pas
+		// tourné correctement (plugin installé manuellement, problème de permissions, etc.).
 		add_action(
 			'plugins_loaded',
 			static function () use ( $container ): void {
 				$container->get( Migrator::class )->run();
+				Capabilities::addToAdministrator();
 			},
 			11
 		);

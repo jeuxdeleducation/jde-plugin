@@ -4,6 +4,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.2.1] — 2026-04-28
+
+### Corrigé
+
+- Menu admin « Kiosques » qui n'apparaissait pas dans certaines installations : la position 25 entrait en conflit avec « Commentaires ». Déplacé en position 26 et passage du slug à l'URL `edit.php?post_type=jde_evenement` pour simplifier le routage.
+- Mise à jour des filtres `parent_file` et nouveau filtre `submenu_file` pour conserver le surlignage du menu sur les écrans `post.php` et `post-new.php`.
+
+### Ajouté
+
+- Filet de sécurité : `Capabilities::addToAdministrator()` est désormais appelé à chaque hook `plugins_loaded` (idempotent — ne fait rien si la capacité est déjà attribuée). Couvre les cas où le hook d'activation n'a pas tourné correctement (installation manuelle, problème de permissions, etc.).
+
 ## [0.2.0] — 2026-04-28
 
 ### Ajouté — Module Kiosques (Phase A, partie 1)

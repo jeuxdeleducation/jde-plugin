@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.2.1 =
+* Correctif : menu admin « Kiosques » qui n'apparaissait pas dans certaines installations (conflit de position avec Commentaires + filet de sécurité pour la capacité jde_manage_kiosques au cas où le hook d'activation ne tournerait pas).
 
 = 0.2.0 =
 * Module Kiosques (Phase A, partie 1) : type de contenu Événements, capacité custom jde_manage_kiosques, gestion des plans, génération et copie de codes d'accès uniques pour les exposants. Le canvas de placement visuel des kiosques est reporté à 0.3.0.
