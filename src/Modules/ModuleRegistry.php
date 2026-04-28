@@ -90,6 +90,15 @@ final class ModuleRegistry {
 	}
 
 	/**
+	 * Tous les modules enregistrés, indexés par identifiant.
+	 *
+	 * @return array<string, ModuleInterface>
+	 */
+	public function all(): array {
+		return $this->modules;
+	}
+
+	/**
 	 * Indique si le registre a déjà branché ses modules.
 	 */
 	public function isRegistered(): bool {

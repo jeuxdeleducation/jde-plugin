@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace JDE;
 
+use JDE\Modules\ActivatableModule;
+use JDE\Modules\Kiosques\KiosquesModule;
 use JDE\Modules\ModuleRegistry;
 use JDE\Support\Assets;
 use JDE\Support\Logger;
@@ -123,17 +125,31 @@ final class Plugin {
 
 	/**
 	 * Action exécutée à l'activation du plugin.
+	 *
+	 * Délègue à chaque module qui implémente {@see ActivatableModule}.
 	 */
 	public static function activate(): void {
-		// Réservé : création de tables, options par défaut, capabilities, etc.
+		foreach ( self::instance()->modules->all() as $module ) {
+			if ( $module instanceof ActivatableModule ) {
+				$module->onActivate();
+			}
+		}
+
 		flush_rewrite_rules();
 	}
 
 	/**
 	 * Action exécutée à la désactivation du plugin.
+	 *
+	 * Délègue à chaque module qui implémente {@see ActivatableModule}.
 	 */
 	public static function deactivate(): void {
-		// Réservé : désinscription de tâches cron, nettoyage transitoire.
+		foreach ( self::instance()->modules->all() as $module ) {
+			if ( $module instanceof ActivatableModule ) {
+				$module->onDeactivate();
+			}
+		}
+
 		flush_rewrite_rules();
 	}
 
@@ -175,7 +191,7 @@ final class Plugin {
 	 *  3. Le module branchera ses propres hooks dans sa méthode register().
 	 */
 	private function registerModules(): void {
-		// Aucun module pour l'instant — les futurs modules s'enregistrent ici.
+		$this->modules->add( new KiosquesModule() );
 	}
 
 	// Empêcher la copie et la sérialisation du singleton.
