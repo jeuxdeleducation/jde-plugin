@@ -4,7 +4,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
-### Ajouté — Module Kiosques (Phase A)
+## [0.2.0] — 2026-04-28
+
+### Ajouté — Module Kiosques (Phase A, partie 1)
 
 - Schéma BD avec 4 tables (`jde_kiosques`, `jde_exposants`, `jde_reservations`, `jde_audit`) versionné via `Migrator` et l'option `jde_plugin_db_version`.
 - Contrainte UNIQUE sur `jde_reservations.kiosque_id` pour garantir atomiquement l'absence de double-réservation (Phase B).
@@ -21,6 +23,10 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 - Page d'admin hors-menu pour la gestion des exposants : formulaire d'ajout, tableau, bouton « Copier le code » (Clipboard API + fallback), suppression avec confirmation, notifications via transients.
 - Interface `ActivatableModule` pour brancher proprement les hooks `onActivate` / `onDeactivate` des modules.
 - 16 nouveaux tests unitaires (Migrator, modèles, CodeGenerator, EvenementService) — 32 tests verts au total.
+
+### Reporté
+
+- Canvas React/TypeScript pour le placement visuel des kiosques sur le plan : reporté à `0.3.0` (début de Phase B), où il sera mutualisé avec le canvas de la page publique de réservation.
 
 ## [0.1.0] — 2026-04-27
 
