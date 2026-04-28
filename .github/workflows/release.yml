@@ -23,8 +23,9 @@ jobs:
       - name: Vérifier la cohérence des versions
         run: |
           set -e
-          PLUGIN_VERSION=$(grep -oP "(?<=Version:\s{1,20})[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
-          CONST_VERSION=$(grep -oP "(?<=JDE_PLUGIN_VERSION', ')[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
+          # \K évite le lookbehind à longueur variable (non supporté par GNU grep).
+          PLUGIN_VERSION=$(grep -oP "Version:\s+\K[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
+          CONST_VERSION=$(grep -oP "JDE_PLUGIN_VERSION',\s*'\K[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
           TAG_VERSION="${{ steps.version.outputs.version }}"
 
           echo "Tag        : $TAG_VERSION"
