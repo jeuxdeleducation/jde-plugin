@@ -12,6 +12,8 @@ namespace JDE\Modules\Kiosques;
 use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
+use JDE\Modules\Kiosques\Admin\AdminMenu;
+use JDE\Modules\Kiosques\Admin\EvenementColumns;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
@@ -60,6 +62,12 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 
 		// Enregistrer le CPT et ses champs meta dès « init ».
 		$container->get( EvenementPostType::class )->register();
+
+		// Écrans d'administration.
+		if ( is_admin() ) {
+			$container->get( AdminMenu::class )->register();
+			$container->get( EvenementColumns::class )->register();
+		}
 	}
 
 	/**
@@ -143,6 +151,20 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			EvenementService::class,
 			static fn (): EvenementService => new EvenementService()
+		);
+
+		$container->set(
+			AdminMenu::class,
+			static fn (): AdminMenu => new AdminMenu()
+		);
+
+		$container->set(
+			EvenementColumns::class,
+			static fn ( Container $c ): EvenementColumns => new EvenementColumns(
+				$c->get( EvenementService::class ),
+				$c->get( KiosqueRepository::class ),
+				$c->get( ExposantRepository::class ),
+			)
 		);
 	}
 }
