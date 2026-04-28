@@ -15,6 +15,9 @@ use JDE\Modules\ActivatableModule;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Repositories\AuditRepository;
+use JDE\Modules\Kiosques\Repositories\ExposantRepository;
+use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -102,6 +105,30 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			EvenementPostType::class,
 			static fn (): EvenementPostType => new EvenementPostType()
+		);
+
+		$container->set(
+			KiosqueRepository::class,
+			static function (): KiosqueRepository {
+				global $wpdb;
+				return new KiosqueRepository( $wpdb );
+			}
+		);
+
+		$container->set(
+			ExposantRepository::class,
+			static function (): ExposantRepository {
+				global $wpdb;
+				return new ExposantRepository( $wpdb );
+			}
+		);
+
+		$container->set(
+			AuditRepository::class,
+			static function (): AuditRepository {
+				global $wpdb;
+				return new AuditRepository( $wpdb );
+			}
 		);
 	}
 }
