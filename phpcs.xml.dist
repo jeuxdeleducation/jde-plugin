@@ -29,9 +29,7 @@
         <exclude name="WordPress.Files.FileName"/>
         <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
         <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase"/>
-        <exclude name="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
 
         <!--
             Les exceptions sont lancées côté serveur et ne sont jamais affichées

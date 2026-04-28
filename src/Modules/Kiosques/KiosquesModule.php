@@ -14,6 +14,7 @@ use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
 use JDE\Modules\Kiosques\Admin\AdminMenu;
 use JDE\Modules\Kiosques\Admin\EvenementColumns;
+use JDE\Modules\Kiosques\Admin\EvenementEditScreen;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
@@ -67,6 +68,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		if ( is_admin() ) {
 			$container->get( AdminMenu::class )->register();
 			$container->get( EvenementColumns::class )->register();
+			$container->get( EvenementEditScreen::class )->register();
 		}
 	}
 
@@ -165,6 +167,11 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( KiosqueRepository::class ),
 				$c->get( ExposantRepository::class ),
 			)
+		);
+
+		$container->set(
+			EvenementEditScreen::class,
+			static fn (): EvenementEditScreen => new EvenementEditScreen()
 		);
 	}
 }
