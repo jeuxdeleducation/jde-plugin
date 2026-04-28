@@ -4,6 +4,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.2.2] — 2026-04-28
+
+### Corrigé
+
+- Menu admin « Kiosques » toujours invisible dans certaines installations malgré la 0.2.1 : la cause sous-jacente n'était pas la position 25 mais l'utilisation de l'URL `edit.php?post_type=jde_evenement` comme slug d'`add_menu_page`. Retour au pattern standard avec slug custom (`jde-kiosques`) et callback de redirection vers la liste des événements quand le top-level est cliqué.
+- Sous-menu auto-généré (qui aurait été un duplicata du parent) explicitement retiré via `remove_submenu_page()`.
+
 ## [0.2.1] — 2026-04-28
 
 ### Corrigé
