@@ -56,7 +56,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 	/**
 	 * {@inheritDoc}
 	 *
-	 * Crée les tables BD lors de la première activation du plugin.
+	 * À l'activation : crée les tables BD et ajoute la capacité custom à l'admin.
 	 */
 	public function onActivate(): void {
 		global $wpdb;
@@ -64,13 +64,15 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$schema   = new Schema( $wpdb );
 		$migrator = new Migrator( $schema );
 		$migrator->run();
+
+		Capabilities::addToAdministrator();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * Aucun nettoyage à la désactivation pour le moment ; la suppression
-	 * complète des données se fait via uninstall.php (à brancher plus tard).
+	 * Désactivation : on conserve la capacité (au cas où le plugin serait
+	 * réactivé). La suppression définitive est gérée par uninstall.php.
 	 */
 	public function onDeactivate(): void {
 		// Aucune action.

@@ -16,9 +16,11 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// Réservé : nettoyage à venir lorsque le plugin créera des données persistantes.
-//
-// Exemples :
-//   delete_option( 'jde_plugin_settings' );
-//   $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}jde_xxx" );
-//   delete_metadata( 'post', 0, '_jde_xxx', '', true );
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Module Kiosques : retirer la capacité custom de tous les rôles.
+\JDE\Modules\Kiosques\Capabilities::removeFromAllRoles();
+
+// Note : les tables BD du module ne sont volontairement pas supprimées ici
+// pour éviter une perte de données accidentelle. Pour un nettoyage complet,
+// utiliser un outil comme WP-CLI : `wp db query "DROP TABLE wp_jde_kiosques, ..."`.
