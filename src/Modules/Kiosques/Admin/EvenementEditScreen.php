@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace JDE\Modules\Kiosques\Admin;
 
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Admin\ExposantsPage;
 use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
@@ -67,6 +68,31 @@ final class EvenementEditScreen {
 			'side',
 			'default'
 		);
+
+		add_meta_box(
+			'jde-liens',
+			__( 'Liens rapides', 'jde-plugin' ),
+			array( $this, 'renderLiensMetaBox' ),
+			EvenementPostType::SLUG,
+			'side',
+			'default'
+		);
+	}
+
+	/**
+	 * Métabox latérale « Liens rapides » : raccourci vers la gestion des exposants.
+	 */
+	public function renderLiensMetaBox( WP_Post $post ): void {
+		?>
+		<p>
+			<a href="<?php echo esc_url( ExposantsPage::url( $post->ID ) ); ?>" class="button button-primary button-large" style="width:100%;text-align:center;box-sizing:border-box;">
+				<?php esc_html_e( 'Gérer les exposants →', 'jde-plugin' ); ?>
+			</a>
+		</p>
+		<p class="description">
+			<?php esc_html_e( 'Créer les exposants autorisés et copier leurs codes d\'accès.', 'jde-plugin' ); ?>
+		</p>
+		<?php
 	}
 
 	/**
