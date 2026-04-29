@@ -26,3 +26,4 @@ require_once $autoload;
 
 // Charger les stubs WordPress utilisés par les tests unitaires.
 require_once __DIR__ . '/Stubs/WP_Query.php';
+require_once __DIR__ . '/Stubs/wpdb.php';

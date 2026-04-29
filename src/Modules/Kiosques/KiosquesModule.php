@@ -23,6 +23,7 @@ use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
+use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\EvenementService;
@@ -157,6 +158,14 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			static function (): AuditRepository {
 				global $wpdb;
 				return new AuditRepository( $wpdb );
+			}
+		);
+
+		$container->set(
+			ReservationRepository::class,
+			static function (): ReservationRepository {
+				global $wpdb;
+				return new ReservationRepository( $wpdb );
 			}
 		);
 

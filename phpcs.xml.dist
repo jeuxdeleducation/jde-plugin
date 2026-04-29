@@ -10,6 +10,8 @@
     <exclude-pattern>*/vendor/*</exclude-pattern>
     <exclude-pattern>*/node_modules/*</exclude-pattern>
     <exclude-pattern>*/assets/build/*</exclude-pattern>
+    <!-- Les stubs doivent matcher l'API WP exacte (classe `wpdb` en minuscules, etc.). -->
+    <exclude-pattern>*/tests/Stubs/*</exclude-pattern>
 
     <arg name="extensions" value="php"/>
     <arg name="colors"/>
