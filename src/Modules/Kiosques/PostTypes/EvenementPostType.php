@@ -66,7 +66,12 @@ final class EvenementPostType {
 				'supports'          => array( 'title', 'editor', 'thumbnail', 'revisions' ),
 				'capability_type'   => array( 'jde_evenement', 'jde_evenements' ),
 				'map_meta_cap'      => true,
-				'capabilities'      => $this->capabilities(),
+				// Pas de surcharge `capabilities` : on laisse WP auto-générer les
+				// noms standards (edit_jde_evenements, etc.) et on les accorde au
+				// rôle administrateur via Capabilities::addToAdministrator(). Une
+				// surcharge custom où plusieurs clés pointent sur la même valeur
+				// brise current_user_can() pour cette valeur (WP la prend pour une
+				// meta cap à re-mapper sans contexte, retournant do_not_allow).
 				'delete_with_user'  => false,
 			)
 		);
@@ -165,32 +170,6 @@ final class EvenementPostType {
 			'item_published'         => __( 'Événement publié.', 'jde-plugin' ),
 			'item_updated'           => __( 'Événement mis à jour.', 'jde-plugin' ),
 			'item_reverted_to_draft' => __( 'Événement remis en brouillon.', 'jde-plugin' ),
-		);
-	}
-
-	/**
-	 * Mapper toutes les capacités du CPT sur la capacité custom du module.
-	 *
-	 * @return array<string, string>
-	 */
-	private function capabilities(): array {
-		$cap = Capabilities::MANAGE;
-
-		return array(
-			'edit_post'              => $cap,
-			'read_post'              => $cap,
-			'delete_post'            => $cap,
-			'edit_posts'             => $cap,
-			'edit_others_posts'      => $cap,
-			'publish_posts'          => $cap,
-			'read_private_posts'     => $cap,
-			'create_posts'           => $cap,
-			'delete_posts'           => $cap,
-			'delete_private_posts'   => $cap,
-			'delete_published_posts' => $cap,
-			'delete_others_posts'    => $cap,
-			'edit_private_posts'     => $cap,
-			'edit_published_posts'   => $cap,
 		);
 	}
 }

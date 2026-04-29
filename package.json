@@ -1,6 +1,6 @@
 {
     "name": "jde-plugin",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Plugin WordPress interne de Jeux de l'Éducation (JDE).",
     "private": true,
     "license": "GPL-2.0-or-later",

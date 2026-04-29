@@ -4,6 +4,18 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.2.4] — 2026-04-28
+
+### Corrigé
+
+- **Cause racine du menu admin invisible** : la surcharge custom des capacités du CPT (`'capabilities' => array('edit_post' => 'jde_manage_kiosques', ...)`) où toutes les valeurs étaient identiques empêchait WordPress de distinguer les meta caps des primitives. Lors de `current_user_can('jde_manage_kiosques')`, WP trouvait `jde_manage_kiosques` parmi les valeurs du tableau de capacités du CPT, le traitait comme une meta cap à re-mapper sans contexte, et retournait `do_not_allow` → false. Le menu était donc filtré silencieusement même quand l'utilisateur avait la capacité.
+- Solution : retrait de la surcharge `capabilities` sur le CPT. WordPress auto-génère désormais les noms standards (`edit_jde_evenements`, `publish_jde_evenements`, etc.) et `Capabilities::addToAdministrator()` les attribue toutes (10 capacités CPT + `jde_manage_kiosques`) au rôle administrateur.
+
+### Modifié
+
+- `Capabilities::allCaps()` : nouvelle méthode qui retourne la liste complète des capacités gérées par le module.
+- `Capabilities::removeFromAllRoles()` : retire désormais toutes les capacités JDE (CPT + custom) au lieu de seulement `jde_manage_kiosques`.
+
 ## [0.2.3] — 2026-04-28
 
 ### Investigation
