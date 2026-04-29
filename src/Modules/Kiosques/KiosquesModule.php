@@ -26,6 +26,7 @@ use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\EvenementService;
+use JDE\Support\Assets;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -187,7 +188,9 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 
 		$container->set(
 			EvenementEditScreen::class,
-			static fn (): EvenementEditScreen => new EvenementEditScreen()
+			static fn ( Container $c ): EvenementEditScreen => new EvenementEditScreen(
+				$c->get( Assets::class )
+			)
 		);
 
 		$container->set(

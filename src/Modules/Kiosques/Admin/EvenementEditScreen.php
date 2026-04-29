@@ -11,6 +11,7 @@ namespace JDE\Modules\Kiosques\Admin;
 
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Admin\ExposantsPage;
+use JDE\Support\Assets;
 use WP_Post;
 
 defined( 'ABSPATH' ) || exit;
@@ -27,6 +28,8 @@ final class EvenementEditScreen {
 
 	private const NONCE_NAME   = 'jde_evenement_nonce';
 	private const NONCE_ACTION = 'jde_save_evenement';
+
+	public function __construct( private readonly Assets $assets ) {}
 
 	public function register(): void {
 		add_action(
@@ -131,16 +134,7 @@ final class EvenementEditScreen {
 
 		<p><strong><?php esc_html_e( 'Éditeur de kiosques', 'jde-plugin' ); ?></strong></p>
 
-		<div
-			id="jde-kiosques-editor"
-			data-evenement-id="<?php echo (int) $post->ID; ?>"
-			data-plan-url="<?php echo esc_attr( (string) $fullUrl ); ?>"
-			data-rest-nonce="<?php echo esc_attr( wp_create_nonce( 'wp_rest' ) ); ?>"
-		>
-			<p class="description">
-				<?php esc_html_e( 'Le canvas interactif sera disponible dans une prochaine itération du module.', 'jde-plugin' ); ?>
-			</p>
-		</div>
+		<div id="jde-kiosques-editor"></div>
 		<?php
 	}
 
@@ -218,10 +212,51 @@ final class EvenementEditScreen {
 		wp_enqueue_media();
 
 		// Petit script inline pour le téléversement du plan via wp.media.
-		// Le canvas React TS est enqueued séparément quand il sera prêt.
 		wp_register_script( 'jde-plan-uploader', '', array( 'jquery' ), JDE_PLUGIN_VERSION, true );
 		wp_enqueue_script( 'jde-plan-uploader' );
 		wp_add_inline_script( 'jde-plan-uploader', $this->planUploaderJs() );
+
+		// Bundle React TS du canvas d'édition des kiosques (sur les écrans
+		// d'édition d'un événement existant uniquement — il faut un postId).
+		global $post;
+		if ( $post instanceof WP_Post && EvenementPostType::SLUG === $post->post_type && $post->ID > 0 ) {
+			$this->enqueueEditorBundle( $post );
+		}
+	}
+
+	/**
+	 * Enqueuer le bundle React et injecter la config runtime.
+	 */
+	private function enqueueEditorBundle( WP_Post $post ): void {
+		$this->assets->enqueueScript(
+			'jde-kiosques-editor',
+			'admin-kiosques-editor',
+			array( 'wp-element' )
+		);
+		$this->assets->enqueueStyle(
+			'jde-kiosques-editor',
+			'admin-kiosques-editor'
+		);
+
+		$attachmentId = (int) get_post_meta( $post->ID, EvenementPostType::META_PLAN_ATTACHMENT_ID, true );
+		$planUrl      = $attachmentId > 0 ? wp_get_attachment_image_url( $attachmentId, 'full' ) : null;
+		$verrouille   = (bool) get_post_meta( $post->ID, EvenementPostType::META_PLAN_VERROUILLE, true );
+
+		$config = array(
+			'restUrl'        => esc_url_raw( rest_url( 'jde/v1/' ) ),
+			'restNonce'      => wp_create_nonce( 'wp_rest' ),
+			'evenementId'    => $post->ID,
+			'planUrl'        => false === $planUrl || null === $planUrl ? null : $planUrl,
+			'planVerrouille' => $verrouille,
+			'containerId'    => 'jde-kiosques-editor',
+			'contactEmail'   => 'info@jeuxdeleducation.com',
+		);
+
+		wp_add_inline_script(
+			'jde-kiosques-editor',
+			'window.jdeKiosques = ' . wp_json_encode( $config ) . ';',
+			'before'
+		);
 	}
 
 	/**
