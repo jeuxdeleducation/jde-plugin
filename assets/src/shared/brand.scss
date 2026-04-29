@@ -1,0 +1,67 @@
+/**
+ * Identité visuelle JDE — points d'extension.
+ *
+ * Les valeurs ci-dessous sont des PLACEHOLDERS neutres. Quand la charte
+ * graphique de Jeux de l'Éducation sera disponible, remplacer chaque
+ * variable par la valeur officielle (couleurs hexadécimales, polices
+ * via @import google fonts ou hébergées localement).
+ *
+ * Ces variables sont lues par tous les bundles JDE (admin et public).
+ * Les composants ne devraient JAMAIS coder en dur des couleurs ou des
+ * polices : toujours référencer ces variables.
+ */
+
+:root {
+	// Palette
+	--jde-color-primary: #1d4ed8; // bleu (placeholder)
+	--jde-color-primary-hover: #1e40af;
+	--jde-color-secondary: #f59e0b; // orange (placeholder)
+	--jde-color-secondary-hover: #d97706;
+	--jde-color-success: #16a34a;
+	--jde-color-success-bg: #dcfce7;
+	--jde-color-danger: #dc2626;
+	--jde-color-danger-bg: #fee2e2;
+	--jde-color-warning: #f59e0b;
+	--jde-color-warning-bg: #fef3c7;
+	--jde-color-text: #111827;
+	--jde-color-text-muted: #6b7280;
+	--jde-color-bg: #ffffff;
+	--jde-color-bg-alt: #f9fafb;
+	--jde-color-border: #e5e7eb;
+
+	// États des kiosques (utilisés par PlanCanvas)
+	--jde-kiosque-available: #16a34a; // vert disponible
+	--jde-kiosque-available-hover: #15803d;
+	--jde-kiosque-selected: #2563eb; // bleu sélectionné par moi
+	--jde-kiosque-mine: #1e40af; // bleu foncé déjà réservé par moi
+	--jde-kiosque-taken: #6b7280; // gris pris par autrui
+	--jde-kiosque-unavailable: #dc2626; // rouge indisponible
+
+	// Typographie
+	--jde-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+	--jde-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+	--jde-font-size-base: 16px;
+	--jde-font-size-sm: 14px;
+	--jde-font-size-lg: 18px;
+	--jde-font-size-xl: 24px;
+
+	// Espacements
+	--jde-spacing-xs: 4px;
+	--jde-spacing-sm: 8px;
+	--jde-spacing-md: 16px;
+	--jde-spacing-lg: 24px;
+	--jde-spacing-xl: 32px;
+
+	// Rayons et ombres
+	--jde-radius-sm: 4px;
+	--jde-radius: 8px;
+	--jde-radius-lg: 12px;
+	--jde-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.05 );
+	--jde-shadow: 0 4px 6px rgba( 0, 0, 0, 0.1 );
+	--jde-shadow-lg: 0 10px 15px rgba( 0, 0, 0, 0.1 );
+
+	// Animations
+	--jde-transition: 150ms ease-in-out;
+}
