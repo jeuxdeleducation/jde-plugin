@@ -10,9 +10,16 @@
         "lint:js": "wp-scripts lint-js assets/src",
         "lint:css": "wp-scripts lint-style \"assets/src/**/*.{css,scss}\"",
         "format": "wp-scripts format assets/src",
+        "typecheck": "tsc --noEmit",
         "packages-update": "wp-scripts packages-update"
     },
+    "dependencies": {
+        "react-zoom-pan-pinch": "^3.4.4"
+    },
     "devDependencies": {
-        "@wordpress/scripts": "^27.0.0"
+        "@types/react": "^18.2.0",
+        "@types/react-dom": "^18.2.0",
+        "@wordpress/scripts": "^27.0.0",
+        "typescript": "^5.4.0"
     }
 }
