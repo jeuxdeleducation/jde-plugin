@@ -23,6 +23,7 @@ use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
+use JDE\Modules\Kiosques\REST\AdminKiosquesController;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\EvenementService;
 
@@ -68,6 +69,14 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 
 		// Enregistrer le CPT et ses champs meta dès « init ».
 		$container->get( EvenementPostType::class )->register();
+
+		// Enregistrer les routes REST au hook rest_api_init.
+		add_action(
+			'rest_api_init',
+			static function () use ( $container ): void {
+				$container->get( AdminKiosquesController::class )->registerRoutes();
+			}
+		);
 
 		// Écrans d'administration.
 		if ( is_admin() ) {
@@ -192,6 +201,13 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			DiagnosticNotice::class,
 			static fn (): DiagnosticNotice => new DiagnosticNotice()
+		);
+
+		$container->set(
+			AdminKiosquesController::class,
+			static fn ( Container $c ): AdminKiosquesController => new AdminKiosquesController(
+				$c->get( KiosqueRepository::class )
+			)
 		);
 	}
 }
