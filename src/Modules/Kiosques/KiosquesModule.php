@@ -25,8 +25,11 @@ use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
+use JDE\Modules\Kiosques\Services\AuthService;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
+use JDE\Modules\Kiosques\Services\CookieWriter;
 use JDE\Modules\Kiosques\Services\EvenementService;
+use JDE\Modules\Kiosques\Services\PhpCookieWriter;
 use JDE\Support\Assets;
 
 defined( 'ABSPATH' ) || exit;
@@ -179,6 +182,18 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			EvenementService::class,
 			static fn (): EvenementService => new EvenementService()
+		);
+
+		$container->set(
+			CookieWriter::class,
+			static fn (): CookieWriter => new PhpCookieWriter()
+		);
+
+		$container->set(
+			AuthService::class,
+			static fn ( Container $c ): AuthService => new AuthService(
+				$c->get( CookieWriter::class )
+			)
 		);
 
 		$container->set(
