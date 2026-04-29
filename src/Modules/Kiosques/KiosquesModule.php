@@ -30,6 +30,7 @@ use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\CookieWriter;
 use JDE\Modules\Kiosques\Services\EvenementService;
 use JDE\Modules\Kiosques\Services\PhpCookieWriter;
+use JDE\Modules\Kiosques\Services\RateLimiter;
 use JDE\Support\Assets;
 
 defined( 'ABSPATH' ) || exit;
@@ -194,6 +195,11 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			static fn ( Container $c ): AuthService => new AuthService(
 				$c->get( CookieWriter::class )
 			)
+		);
+
+		$container->set(
+			RateLimiter::class,
+			static fn (): RateLimiter => new RateLimiter()
 		);
 
 		$container->set(
