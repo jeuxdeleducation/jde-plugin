@@ -26,6 +26,7 @@ use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
 use JDE\Modules\Kiosques\REST\AuthController;
+use JDE\Modules\Kiosques\REST\ReservationController;
 use JDE\Modules\Kiosques\Services\AuthService;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\CookieWriter;
@@ -33,6 +34,7 @@ use JDE\Modules\Kiosques\Services\EvenementService;
 use JDE\Modules\Kiosques\Services\PhpCookieWriter;
 use JDE\Modules\Kiosques\Services\PublicStateBuilder;
 use JDE\Modules\Kiosques\Services\RateLimiter;
+use JDE\Modules\Kiosques\Services\ReservationService;
 use JDE\Support\Assets;
 
 defined( 'ABSPATH' ) || exit;
@@ -84,6 +86,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			static function () use ( $container ): void {
 				$container->get( AdminKiosquesController::class )->registerRoutes();
 				$container->get( AuthController::class )->registerRoutes();
+				$container->get( ReservationController::class )->registerRoutes();
 			}
 		);
 
@@ -221,6 +224,26 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( RateLimiter::class ),
 				$c->get( ExposantRepository::class ),
 				$c->get( EvenementService::class ),
+				$c->get( PublicStateBuilder::class ),
+			)
+		);
+
+		$container->set(
+			ReservationService::class,
+			static fn ( Container $c ): ReservationService => new ReservationService(
+				$c->get( ReservationRepository::class ),
+				$c->get( KiosqueRepository::class ),
+				$c->get( ExposantRepository::class ),
+				$c->get( EvenementService::class ),
+			)
+		);
+
+		$container->set(
+			ReservationController::class,
+			static fn ( Container $c ): ReservationController => new ReservationController(
+				$c->get( AuthService::class ),
+				$c->get( ReservationService::class ),
+				$c->get( ExposantRepository::class ),
 				$c->get( PublicStateBuilder::class ),
 			)
 		);
