@@ -25,11 +25,13 @@ use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
+use JDE\Modules\Kiosques\REST\AuthController;
 use JDE\Modules\Kiosques\Services\AuthService;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\CookieWriter;
 use JDE\Modules\Kiosques\Services\EvenementService;
 use JDE\Modules\Kiosques\Services\PhpCookieWriter;
+use JDE\Modules\Kiosques\Services\PublicStateBuilder;
 use JDE\Modules\Kiosques\Services\RateLimiter;
 use JDE\Support\Assets;
 
@@ -81,6 +83,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			'rest_api_init',
 			static function () use ( $container ): void {
 				$container->get( AdminKiosquesController::class )->registerRoutes();
+				$container->get( AuthController::class )->registerRoutes();
 			}
 		);
 
@@ -200,6 +203,26 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			RateLimiter::class,
 			static fn (): RateLimiter => new RateLimiter()
+		);
+
+		$container->set(
+			PublicStateBuilder::class,
+			static fn ( Container $c ): PublicStateBuilder => new PublicStateBuilder(
+				$c->get( KiosqueRepository::class ),
+				$c->get( ReservationRepository::class ),
+				$c->get( ExposantRepository::class ),
+			)
+		);
+
+		$container->set(
+			AuthController::class,
+			static fn ( Container $c ): AuthController => new AuthController(
+				$c->get( AuthService::class ),
+				$c->get( RateLimiter::class ),
+				$c->get( ExposantRepository::class ),
+				$c->get( EvenementService::class ),
+				$c->get( PublicStateBuilder::class ),
+			)
 		);
 
 		$container->set(
