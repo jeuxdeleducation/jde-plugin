@@ -1,0 +1,260 @@
+/**
+ * Styles de l'application publique de réservation.
+ */
+
+@import '../shared/brand';
+@import '../shared/PlanCanvas';
+
+.jde-reservation-app {
+	font-family: var( --jde-font-body );
+	color: var( --jde-color-text );
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: var( --jde-spacing-md );
+
+	&__brand {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var( --jde-spacing-md ) 0 var( --jde-spacing-lg );
+	}
+
+	&__logo {
+		max-height: 64px;
+		width: auto;
+	}
+
+	&__brand-text {
+		font-family: var( --jde-font-heading );
+		font-size: var( --jde-font-size-xl );
+		font-weight: 700;
+		color: var( --jde-color-primary );
+	}
+
+	&__noscript {
+		padding: var( --jde-spacing-lg );
+		background: var( --jde-color-warning-bg );
+		border-radius: var( --jde-radius );
+		text-align: center;
+	}
+}
+
+.jde-public {
+	&__loading,
+	&__empty {
+		padding: var( --jde-spacing-xl );
+		text-align: center;
+		color: var( --jde-color-text-muted );
+	}
+
+	&__card {
+		max-width: 480px;
+		margin: var( --jde-spacing-xl ) auto;
+		padding: var( --jde-spacing-xl );
+		background: var( --jde-color-bg );
+		border: 1px solid var( --jde-color-border );
+		border-radius: var( --jde-radius-lg );
+		box-shadow: var( --jde-shadow );
+
+		&--success {
+			border-color: var( --jde-color-success );
+			text-align: center;
+		}
+	}
+
+	&__heading {
+		margin: 0 0 var( --jde-spacing-sm );
+		font-family: var( --jde-font-heading );
+		font-size: var( --jde-font-size-xl );
+	}
+
+	&__subheading {
+		margin: 0 0 var( --jde-spacing-lg );
+		color: var( --jde-color-text-muted );
+	}
+
+	&__error {
+		margin: var( --jde-spacing-md ) 0;
+		padding: var( --jde-spacing-md );
+		background: var( --jde-color-danger-bg );
+		color: var( --jde-color-danger );
+		border-radius: var( --jde-radius-sm );
+		font-size: var( --jde-font-size-sm );
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var( --jde-spacing-md );
+		padding: var( --jde-spacing-md );
+		margin-bottom: var( --jde-spacing-md );
+		background: var( --jde-color-bg );
+		border: 1px solid var( --jde-color-border );
+		border-radius: var( --jde-radius );
+	}
+
+	&__company-name {
+		font-size: var( --jde-font-size-lg );
+		font-weight: 600;
+	}
+
+	&__quota {
+		color: var( --jde-color-text-muted );
+		font-size: var( --jde-font-size-sm );
+	}
+
+	&__selection-bar {
+		position: sticky;
+		bottom: var( --jde-spacing-md );
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var( --jde-spacing-md );
+		margin-top: var( --jde-spacing-md );
+		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
+		background: var( --jde-color-primary );
+		color: #fff;
+		border-radius: var( --jde-radius );
+		box-shadow: var( --jde-shadow-lg );
+		font-weight: 600;
+	}
+}
+
+// Boutons (utilisés partout dans l'app publique)
+.jde-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px; // cible tactile (mobile-first)
+	padding: 8px 18px;
+	font-family: inherit;
+	font-size: var( --jde-font-size-base );
+	font-weight: 600;
+	border: 2px solid transparent;
+	border-radius: var( --jde-radius );
+	cursor: pointer;
+	transition: background var( --jde-transition ), color var( --jde-transition );
+
+	&:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	&--full {
+		width: 100%;
+	}
+
+	&--primary {
+		background: var( --jde-color-primary );
+		color: #fff;
+
+		&:not(:disabled):hover {
+			background: var( --jde-color-primary-hover );
+		}
+	}
+
+	&--ghost {
+		background: transparent;
+		color: var( --jde-color-text );
+		border-color: var( --jde-color-border );
+
+		&:not(:disabled):hover {
+			background: var( --jde-color-bg-alt );
+		}
+	}
+}
+
+// Modale d'avertissement / conflit
+.jde-modal {
+	&--warning {
+		border-top: 4px solid var( --jde-color-warning );
+	}
+
+	&--danger {
+		border-top: 4px solid var( --jde-color-danger );
+	}
+
+	&__footer--end {
+		justify-content: flex-end;
+	}
+}
+
+// Bulle d'info au clic sur un kiosque (overlay simple)
+.jde-bubble-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba( 0, 0, 0, 0.4 );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 99000;
+	padding: var( --jde-spacing-md );
+}
+
+.jde-bubble {
+	position: relative;
+	background: var( --jde-color-bg );
+	border-radius: var( --jde-radius-lg );
+	box-shadow: var( --jde-shadow-lg );
+	padding: var( --jde-spacing-lg );
+	max-width: 360px;
+	width: 100%;
+	font-family: var( --jde-font-body );
+
+	&__close {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		background: none;
+		border: none;
+		font-size: 22px;
+		cursor: pointer;
+		color: var( --jde-color-text-muted );
+
+		&:hover {
+			color: var( --jde-color-text );
+		}
+	}
+
+	&__numero {
+		font-size: var( --jde-font-size-lg );
+		margin-bottom: var( --jde-spacing-sm );
+	}
+
+	&__dimensions {
+		color: var( --jde-color-text-muted );
+		font-size: var( --jde-font-size-sm );
+		margin-bottom: var( --jde-spacing-xs );
+	}
+
+	&__notes {
+		font-size: var( --jde-font-size-sm );
+		margin-bottom: var( --jde-spacing-md );
+		line-height: 1.4;
+	}
+
+	&__actions {
+		margin-top: var( --jde-spacing-md );
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	&__message {
+		margin-top: var( --jde-spacing-md );
+		padding: var( --jde-spacing-md );
+		background: var( --jde-color-bg-alt );
+		border-radius: var( --jde-radius-sm );
+
+		strong {
+			display: block;
+			margin-bottom: var( --jde-spacing-xs );
+		}
+
+		p {
+			margin: 0;
+			color: var( --jde-color-text-muted );
+			font-size: var( --jde-font-size-sm );
+		}
+	}
+}
