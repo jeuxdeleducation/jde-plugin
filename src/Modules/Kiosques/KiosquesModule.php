@@ -19,6 +19,7 @@ use JDE\Modules\Kiosques\Admin\EvenementEditScreen;
 use JDE\Modules\Kiosques\Admin\ExposantsPage;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
+use JDE\Modules\Kiosques\Frontend\ReservationShortcode;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
@@ -36,6 +37,7 @@ use JDE\Modules\Kiosques\Services\PublicStateBuilder;
 use JDE\Modules\Kiosques\Services\RateLimiter;
 use JDE\Modules\Kiosques\Services\ReservationService;
 use JDE\Support\Assets;
+use JDE\Support\Template;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -89,6 +91,9 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$container->get( ReservationController::class )->registerRoutes();
 			}
 		);
+
+		// Enregistrer le shortcode public.
+		$container->get( ReservationShortcode::class )->register();
 
 		// Écrans d'administration.
 		if ( is_admin() ) {
@@ -245,6 +250,14 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ReservationService::class ),
 				$c->get( ExposantRepository::class ),
 				$c->get( PublicStateBuilder::class ),
+			)
+		);
+
+		$container->set(
+			ReservationShortcode::class,
+			static fn ( Container $c ): ReservationShortcode => new ReservationShortcode(
+				$c->get( Assets::class ),
+				$c->get( Template::class ),
 			)
 		);
 
