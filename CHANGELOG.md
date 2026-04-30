@@ -4,6 +4,55 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.3.0] — 2026-04-30
+
+### Ajouté — Module Kiosques (Phase B)
+
+**Côté admin :**
+- Canvas React TypeScript dans la métabox d'édition d'événement (mode `edit`) :
+  ajouter/éditer/supprimer des kiosques, formulaire complet (numéro, position en %, taille en %, dimensions texte, notes, statut), sauvegarde groupée.
+- Bandeau d'avertissement « plan verrouillé » quand `_jde_plan_verrouille` est vrai.
+
+**Côté public :**
+- Shortcode `[jde_reservation_kiosques]` pour afficher l'app de réservation sur n'importe quelle page WordPress.
+- Application React TypeScript publique :
+  - Écran d'authentification par code (auto-format `XXXX-XXXX`, gestion erreurs 401/429).
+  - Header avec nom entreprise, kiosques restants, bouton Quitter.
+  - Canvas mode `select` avec pinch-zoom mobile-friendly (`react-zoom-pan-pinch`).
+  - Bulle d'info au clic sur un kiosque (numéro, dimensions, notes), avec actions selon l'état.
+  - Sélection multiple + barre flottante de confirmation.
+  - Modale d'avertissement « tu ne pourras plus modifier ».
+  - Modale rouge bloquante en cas de conflit (HTTP 409) avec rafraîchissement automatique du plan.
+  - Écran de succès après création réussie.
+
+**REST API (`namespace jde/v1`) :**
+- `POST /auth/code` — authentifier avec un code, poser cookie session, retourner état.
+- `DELETE /auth/session` — déconnexion.
+- `GET /me` — état courant pour la session active.
+- `POST /reservations` — créer une réservation atomiquement.
+- `GET /admin/evenements/{id}/kiosques` — liste des kiosques (admin).
+- `POST /admin/evenements/{id}/kiosques` — sauvegarde groupée (sémantique de remplacement, admin).
+
+**Sécurité :**
+- Sessions par cookie `HttpOnly + Secure (si HTTPS) + SameSite=Lax`, durée 7 jours, mappées vers `exposant_id` via transient.
+- Rate limit `5 tentatives par IP / 15 min` sur `/auth/code` (fixed window via transients).
+- Insertion atomique des réservations via contrainte UNIQUE en BD ; détection MySQL 1062 → HTTP 409 avec `fresh_state` du plan attaché au payload.
+- Verrouillage automatique du plan (`_jde_plan_verrouille = true`) à la 1ʳᵉ réservation d'un événement.
+
+**Identité visuelle :**
+- Variables CSS dans `assets/src/shared/brand.scss` (couleurs, polices, espacements) — placeholders neutres en attendant la charte officielle JDE.
+- Slot logo dans le template public (`templates/public/reservation-app.php`).
+- Toutes les chaînes UI centralisées dans `assets/src/shared/i18n.ts` pour faciliter la révision typographique.
+
+**Infrastructure :**
+- Configuration TypeScript stricte (`tsconfig.json`) avec `noEmit` (transpilation par Babel via `@wordpress/scripts`).
+- `webpack.config.js` avec multi-entrées pour les deux bundles.
+- Dépendance `react-zoom-pan-pinch` (10 kB, MIT) pour le canvas tactile.
+- `npm run typecheck` valide les types sans toucher aux bundles.
+
+**Tests :**
+- 16 nouveaux tests unitaires (ReservationRepository, AuthService, RateLimiter) — 48 tests verts au total.
+
 ## [0.2.4] — 2026-04-28
 
 ### Corrigé

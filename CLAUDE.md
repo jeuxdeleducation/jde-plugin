@@ -117,6 +117,25 @@ The Kiosques module is the canonical reference for modules that need their own S
 
 Implement `JDE\Modules\ActivatableModule` (interface in `src/Modules/ActivatableModule.php`) in addition to `ModuleInterface`. `Plugin::activate()` and `Plugin::deactivate()` iterate over registered modules and call `onActivate()` / `onDeactivate()` on those that implement it. Capability creation, table creation, etc. go in `onActivate()`.
 
+### Modules with TypeScript / React bundles
+
+The Kiosques module ships two React/TypeScript bundles (`admin-kiosques-editor`, `public-reservation`):
+
+1. **`tsconfig.json`** at root — strict mode, `jsx: react-jsx`, `noEmit: true` (Babel does the actual transpilation; `tsc` only type-checks via `npm run typecheck`).
+2. **`webpack.config.js`** at root — extends the default `@wordpress/scripts` config with multiple entry points pointing to `assets/src/<bundle>/index.tsx`.
+3. **Source layout**: `assets/src/shared/` for components/utilities reused by multiple bundles; `assets/src/<bundle>/` for bundle-specific code.
+4. **Runtime config**: PHP injects `window.jdeKiosques` via `wp_add_inline_script(..., $config, 'before')` containing `restUrl`, `restNonce`, `containerId`, `contactEmail`, plus context-specific fields (e.g. `evenementId`, `planUrl`).
+5. **Brand identity**: all colors/fonts go through CSS variables defined in `assets/src/shared/brand.scss`. Components reference `var(--jde-color-primary)` etc., never hardcoded values. Replacing the brand = updating that one file.
+
+### Modules with REST API endpoints
+
+Pattern: extend `JDE\Modules\Kiosques\REST\AbstractController`, register routes in `KiosquesModule` at the `rest_api_init` hook. All routes must:
+
+- Set `permission_callback` (use `[$this, 'adminPermissionCheck']` for admin routes that need `jde_manage_kiosques`, or `__return_true` for public routes that handle their own auth via cookie).
+- Provide an `args` JSON Schema for body validation (sanitization is done by WordPress before the callback runs).
+- Return `WP_REST_Response` on success, `WP_Error` on failure (use `errorResponse()` helper).
+- All public routes use the `X-WP-Nonce` header (the JS `api.ts` wrapper adds it automatically).
+
 ### Key conventions
 
 - **PHP autoloading**: PSR-4 via Composer. `JDE\Modules\Adhesions\AdhesionsModule` → `src/Modules/Adhesions/AdhesionsModule.php`.
