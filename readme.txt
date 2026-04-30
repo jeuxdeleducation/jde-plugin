@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.2.4
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.3.0 =
+* Phase B livrée : module Kiosques fonctionnel de bout en bout. Canvas React TS pour le placement des kiosques côté admin, application publique de réservation accessible via le shortcode [jde_reservation_kiosques], API REST jde/v1 (auth, état, réservations), sessions par cookie HttpOnly+Secure 7 jours, rate limit 5 tentatives/IP/15min, concurrence atomique avec UI dédiée pour les conflits, verrouillage automatique du plan à la 1ʳᵉ réservation. Identité visuelle prête à recevoir la charte JDE via variables CSS et slot logo.
 
 = 0.2.4 =
 * Correctif principal : retrait de la surcharge custom des capacités du CPT qui causait l'invisibilité du menu (current_user_can('jde_manage_kiosques') retournait toujours false). Les capacités primitives auto-générées du CPT (edit_jde_evenements, etc.) sont désormais correctement attribuées au rôle administrateur.
