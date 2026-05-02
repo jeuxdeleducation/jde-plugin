@@ -1,67 +1,105 @@
 /**
- * Identité visuelle JDE — points d'extension.
+ * Identité visuelle Jeux de l'Éducation.
  *
- * Les valeurs ci-dessous sont des PLACEHOLDERS neutres. Quand la charte
- * graphique de Jeux de l'Éducation sera disponible, remplacer chaque
- * variable par la valeur officielle (couleurs hexadécimales, polices
- * via @import google fonts ou hébergées localement).
+ * Couleurs, polices et tokens issus de la charte graphique officielle
+ * de JDE (skill `jeux-de-leducation-design`). Les fichiers de polices
+ * sont embarqués dans le plugin sous `assets/fonts/`.
  *
- * Ces variables sont lues par tous les bundles JDE (admin et public).
- * Les composants ne devraient JAMAIS coder en dur des couleurs ou des
- * polices : toujours référencer ces variables.
+ * Pour ajuster une couleur ou une police, modifier les variables CSS
+ * ci-dessous : tous les composants (admin et public) les référencent
+ * via `var(--jde-...)`.
  */
 
+@font-face {
+	font-family: 'Space Grotesk';
+	src: url('../../fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype-variations'),
+		url('../../fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+	font-weight: 300 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Inter';
+	src: url('../../fonts/Inter-VariableFont_opsz_wght.ttf') format('truetype-variations'),
+		url('../../fonts/Inter-VariableFont_opsz_wght.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Inter';
+	src: url('../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf') format('truetype-variations'),
+		url('../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: italic;
+	font-display: swap;
+}
+
 :root {
-	// Palette
-	--jde-color-primary: #1d4ed8; // bleu (placeholder)
-	--jde-color-primary-hover: #1e40af;
-	--jde-color-secondary: #f59e0b; // orange (placeholder)
-	--jde-color-secondary-hover: #d97706;
-	--jde-color-success: #16a34a;
-	--jde-color-success-bg: #dcfce7;
-	--jde-color-danger: #dc2626;
-	--jde-color-danger-bg: #fee2e2;
-	--jde-color-warning: #f59e0b;
-	--jde-color-warning-bg: #fef3c7;
-	--jde-color-text: #111827;
-	--jde-color-text-muted: #6b7280;
+	// ===== Couleurs de marque =====
+	--jde-color-primary: #00b0a8; // sarcelle
+	--jde-color-primary-hover: #008285; // sarcelle profonde (tertiaire)
+	--jde-color-secondary: #cfdd27; // lime — accent
+	--jde-color-secondary-hover: #b8c423;
+	--jde-color-yellow: #ffe300; // accent de fête
+	--jde-color-bg-dark: #015355; // fond sombre
+	--jde-color-success: #008285;
+	--jde-color-success-bg: #f5faee;
+	--jde-color-danger: #d64545;
+	--jde-color-danger-bg: #fdecec;
+	--jde-color-warning: #ffe300;
+	--jde-color-warning-bg: #fffbe5;
+
+	// ===== Surfaces =====
+	--jde-color-text: #1c1c1c;
+	--jde-color-text-muted: #5a5a5a;
+	--jde-color-text-subtle: #8a8a8a;
 	--jde-color-bg: #ffffff;
-	--jde-color-bg-alt: #f9fafb;
-	--jde-color-border: #e5e7eb;
+	--jde-color-bg-alt: #f5faee; // fond crème vert préféré
+	--jde-color-bg-grey: #f4f4f4;
+	--jde-color-border: #e1e1e1;
 
-	// États des kiosques (utilisés par PlanCanvas)
-	--jde-kiosque-available: #16a34a; // vert disponible
-	--jde-kiosque-available-hover: #15803d;
-	--jde-kiosque-selected: #2563eb; // bleu sélectionné par moi
-	--jde-kiosque-mine: #1e40af; // bleu foncé déjà réservé par moi
-	--jde-kiosque-taken: #6b7280; // gris pris par autrui
-	--jde-kiosque-unavailable: #dc2626; // rouge indisponible
+	// ===== États des kiosques =====
+	--jde-kiosque-available: #00b0a8; // primaire (disponible)
+	--jde-kiosque-available-hover: #008285;
+	--jde-kiosque-selected: #ffe300; // jaune (sélectionné par moi)
+	--jde-kiosque-mine: #008285; // tertiaire (déjà réservé par moi)
+	--jde-kiosque-taken: #8a8a8a; // gris (pris par autrui)
+	--jde-kiosque-unavailable: #d64545; // rouge (indisponible)
 
-	// Typographie
-	--jde-font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		'Helvetica Neue', Arial, sans-serif;
-	--jde-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		'Helvetica Neue', Arial, sans-serif;
+	// ===== Typographie =====
+	--jde-font-heading: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system,
+		'Segoe UI', sans-serif;
+	--jde-font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+		sans-serif;
 	--jde-font-size-base: 16px;
 	--jde-font-size-sm: 14px;
 	--jde-font-size-lg: 18px;
 	--jde-font-size-xl: 24px;
+	--jde-font-size-display: 40px;
 
-	// Espacements
+	// ===== Espacements (échelle 8pt) =====
 	--jde-spacing-xs: 4px;
 	--jde-spacing-sm: 8px;
 	--jde-spacing-md: 16px;
 	--jde-spacing-lg: 24px;
 	--jde-spacing-xl: 32px;
+	--jde-spacing-2xl: 48px;
 
-	// Rayons et ombres
+	// ===== Rayons et ombres =====
 	--jde-radius-sm: 4px;
 	--jde-radius: 8px;
-	--jde-radius-lg: 12px;
-	--jde-shadow-sm: 0 1px 2px rgba( 0, 0, 0, 0.05 );
-	--jde-shadow: 0 4px 6px rgba( 0, 0, 0, 0.1 );
-	--jde-shadow-lg: 0 10px 15px rgba( 0, 0, 0, 0.1 );
+	--jde-radius-lg: 16px;
+	--jde-radius-pill: 999px;
+	--jde-shadow-sm: 0 1px 2px rgba( 28, 28, 28, 0.04 ),
+		0 1px 3px rgba( 28, 28, 28, 0.06 );
+	--jde-shadow: 0 4px 12px rgba( 28, 28, 28, 0.06 ),
+		0 2px 4px rgba( 28, 28, 28, 0.04 );
+	--jde-shadow-lg: 0 16px 32px rgba( 28, 28, 28, 0.10 ),
+		0 4px 8px rgba( 28, 28, 28, 0.06 );
 
-	// Animations
-	--jde-transition: 150ms ease-in-out;
+	// ===== Animations =====
+	--jde-transition: 200ms cubic-bezier( 0.2, 0.8, 0.2, 1 );
 }

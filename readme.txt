@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,11 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.3.1 =
+* Correctif critique : le ZIP de release v0.3.0 ne contenait pas le dossier assets/build (les bundles React étaient absents → éditeur de kiosques invisible). Le release.yml a été corrigé pour exclure uniquement le dossier de staging build/ à la racine, pas assets/build/.
+* Charte graphique JDE intégrée : couleurs officielles (sarcelle #00b0a8, lime #cfdd27, etc.), polices Space Grotesk + Inter embarquées localement, logo affiché sur la page publique de réservation.
+* Message d'aide amélioré dans l'éditeur quand aucun plan n'est encore enregistré : indique de cliquer sur « Mettre à jour » après le téléversement.
 
 = 0.3.0 =
 * Phase B livrée : module Kiosques fonctionnel de bout en bout. Canvas React TS pour le placement des kiosques côté admin, application publique de réservation accessible via le shortcode [jde_reservation_kiosques], API REST jde/v1 (auth, état, réservations), sessions par cookie HttpOnly+Secure 7 jours, rate limit 5 tentatives/IP/15min, concurrence atomique avec UI dédiée pour les conflits, verrouillage automatique du plan à la 1ʳᵉ réservation. Identité visuelle prête à recevoir la charte JDE via variables CSS et slot logo.

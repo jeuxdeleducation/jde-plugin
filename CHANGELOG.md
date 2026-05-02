@@ -4,6 +4,24 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.3.1] — 2026-05-02
+
+### Corrigé (critique)
+
+- **Bundles React absents du ZIP de release v0.3.0** : `release.yml` utilisait `--exclude='build'` pour exclure le dossier de staging, mais ce pattern relatif excluait aussi `assets/build/` qui contient les bundles compilés. L'éditeur de kiosques apparaissait donc vide après installation. Correctif : ancrer l'exclusion à la racine avec `--exclude='/build'`.
+
+### Ajouté
+
+- **Charte graphique Jeux de l'Éducation intégrée** :
+  - Palette officielle (sarcelle `#00b0a8`, sarcelle profonde `#008285`, lime `#cfdd27`, jaune `#ffe300`, fond crème vert `#f5faee`, etc.) appliquée via les variables CSS de `assets/src/shared/brand.scss`.
+  - Polices Space Grotesk (titres) et Inter (corps) embarquées localement dans `assets/fonts/`.
+  - Logo officiel ajouté dans `assets/images/` et affiché en en-tête de la page publique de réservation.
+  - États visuels des kiosques mis à jour avec les couleurs JDE (disponible = sarcelle, sélectionné = jaune, etc.).
+
+### Modifié
+
+- Message d'aide quand aucun plan n'est associé à un événement : indique explicitement de cliquer sur « Mettre à jour » après le téléversement (avant, l'utilisateur pouvait croire que l'éditeur ne fonctionnait pas).
+
 ## [0.3.0] — 2026-04-30
 
 ### Ajouté — Module Kiosques (Phase B)

@@ -60,7 +60,7 @@ final class ReservationShortcode {
 			'restNonce'    => wp_create_nonce( 'wp_rest' ),
 			'containerId'  => 'jde-reservation-app-root',
 			'contactEmail' => 'info@jeuxdeleducation.com',
-			'logoUrl'      => '', // à remplir avec la charte JDE
+			'logoUrl'      => JDE_PLUGIN_URL . 'assets/images/logo-full-black.png',
 		);
 
 		wp_add_inline_script(

@@ -28,7 +28,7 @@ export const T = {
 		toolbarHelp:
 			'Cliquer-glisser sur une zone vide pour créer un kiosque. Cliquer un kiosque pour le modifier.',
 		emptyState:
-			'Téléverse un plan pour pouvoir y placer des kiosques.',
+			'Téléverse un plan ci-dessus, puis clique sur « Mettre à jour » en haut à droite pour activer l\'éditeur.',
 		lockedBanner:
 			'Plan verrouillé : des réservations existent déjà. Pour modifier les positions, supprime d\'abord les réservations.',
 		modal: {

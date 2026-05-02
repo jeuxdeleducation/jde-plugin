@@ -72,10 +72,13 @@ jobs:
           rm -rf build
           mkdir -p "$BUILD_DIR"
 
-          # Copier tout sauf les exclusions du .distignore
+          # Copier tout sauf les exclusions du .distignore.
+          # Note : `--exclude=/build` (avec slash initial) ancre l'exclusion
+          # à la racine pour ne PAS attraper aussi `assets/build/` qui doit
+          # être inclus (bundles compilés par @wordpress/scripts).
           rsync -av --exclude-from=.distignore \
-            --exclude='build' \
-            --exclude='.git' \
+            --exclude='/build' \
+            --exclude='/.git' \
             ./ "$BUILD_DIR/"
 
       - name: Créer le ZIP
