@@ -26,6 +26,7 @@ use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\REST\AdminKiosquesController;
+use JDE\Modules\Kiosques\REST\AdminReservationsController;
 use JDE\Modules\Kiosques\REST\AuthController;
 use JDE\Modules\Kiosques\REST\ReservationController;
 use JDE\Modules\Kiosques\Services\AuthService;
@@ -89,6 +90,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$container->get( AdminKiosquesController::class )->registerRoutes();
 				$container->get( AuthController::class )->registerRoutes();
 				$container->get( ReservationController::class )->registerRoutes();
+				$container->get( AdminReservationsController::class )->registerRoutes();
 			}
 		);
 
@@ -251,6 +253,14 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ReservationService::class ),
 				$c->get( ExposantRepository::class ),
 				$c->get( PublicStateBuilder::class ),
+			)
+		);
+
+		$container->set(
+			AdminReservationsController::class,
+			static fn ( Container $c ): AdminReservationsController => new AdminReservationsController(
+				$c->get( ReservationService::class ),
+				$c->get( ReservationRepository::class ),
 			)
 		);
 
