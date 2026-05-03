@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use JDE\Modules\Kiosques\Exceptions\KiosqueAlreadyReservedException;
 use JDE\Modules\Kiosques\Models\Reservation;
+use JDE\Modules\Kiosques\Models\ReservationDetail;
 use wpdb;
 
 defined( 'ABSPATH' ) || exit;
@@ -196,5 +197,90 @@ class ReservationRepository {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $this->wpdb->delete( $this->table, array( 'id' => $id ), array( '%d' ) );
 		return false !== $result && $result > 0;
+	}
+
+	/**
+	 * Récupérer une réservation par son identifiant.
+	 */
+	public function findById( int $id ): ?Reservation {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$row = $this->wpdb->get_row(
+			$this->wpdb->prepare(
+				"SELECT * FROM {$this->table} WHERE id = %d LIMIT 1",
+				$id
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		return is_array( $row ) ? Reservation::fromRow( $row ) : null;
+	}
+
+	/**
+	 * Mettre à jour les champs admin d'une réservation existante (notes uniquement).
+	 *
+	 * Pour déplacer une réservation vers un autre kiosque, le service
+	 * effectue un delete + create afin de respecter la contrainte UNIQUE
+	 * sur kiosque_id de manière atomique.
+	 */
+	public function updateNotes( int $id, ?string $notesAdmin ): bool {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$result = $this->wpdb->update(
+			$this->table,
+			array( 'notes_admin' => $notesAdmin ),
+			array( 'id' => $id ),
+			array( '%s' ),
+			array( '%d' )
+		);
+		return false !== $result;
+	}
+
+	/**
+	 * Lister les réservations d'un événement avec les jointures nécessaires
+	 * aux écrans admin (numéro de kiosque, nom d'entreprise, login admin).
+	 *
+	 * Ordre : du plus récent au plus ancien.
+	 *
+	 * @return ReservationDetail[]
+	 */
+	public function findDetailedByEvenement( int $evenementId ): array {
+		$kiosques  = $this->wpdb->prefix . 'jde_kiosques';
+		$exposants = $this->wpdb->prefix . 'jde_exposants';
+		$users     = $this->wpdb->users;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT
+					r.id,
+					r.kiosque_id,
+					r.exposant_id,
+					r.date_reservation,
+					r.cree_par,
+					r.notes_admin,
+					k.numero AS kiosque_numero,
+					e.nom_entreprise,
+					e.code_acces,
+					u.user_login AS cree_par_login
+				FROM {$this->table} r
+				INNER JOIN {$kiosques} k ON k.id = r.kiosque_id
+				INNER JOIN {$exposants} e ON e.id = r.exposant_id
+				LEFT JOIN {$users} u ON u.ID = r.cree_par
+				WHERE k.evenement_id = %d
+				ORDER BY r.date_reservation DESC",
+				$evenementId
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		return array_map(
+			static fn ( array $row ): ReservationDetail => ReservationDetail::fromRow( $row ),
+			$rows
+		);
 	}
 }
