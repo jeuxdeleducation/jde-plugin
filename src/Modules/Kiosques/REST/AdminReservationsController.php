@@ -14,8 +14,10 @@ use JDE\Modules\Kiosques\Exceptions\KiosqueAlreadyReservedException;
 use JDE\Modules\Kiosques\Exceptions\KiosqueIndisponibleException;
 use JDE\Modules\Kiosques\Exceptions\KiosqueIntrouvableException;
 use JDE\Modules\Kiosques\Exceptions\QuotaExceededException;
+use JDE\Modules\Kiosques\Models\Exposant;
 use JDE\Modules\Kiosques\Models\ReservationDetail;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\Services\CsvExporter;
 use JDE\Modules\Kiosques\Services\ReservationService;
@@ -41,6 +43,7 @@ final class AdminReservationsController extends AbstractController {
 		private readonly ReservationService $service,
 		private readonly ReservationRepository $repo,
 		private readonly CsvExporter $csvExporter,
+		private readonly ExposantRepository $exposantRepo,
 	) {}
 
 	public function registerRoutes(): void {
@@ -50,6 +53,25 @@ final class AdminReservationsController extends AbstractController {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'list' ),
+				'permission_callback' => array( $this, 'adminPermissionCheck' ),
+				'args'                => array(
+					'id' => array(
+						'type'     => 'integer',
+						'required' => true,
+					),
+				),
+			)
+		);
+
+		// Endpoint utilitaire pour le sélecteur d'exposants des modales
+		// CRUD réservation. Mutualisé ici (plutôt qu'un contrôleur dédié)
+		// car uniquement consommé par la page Réservations admin.
+		register_rest_route(
+			self::NAMESPACE,
+			'/admin/evenements/(?P<id>\d+)/exposants',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'listExposants' ),
 				'permission_callback' => array( $this, 'adminPermissionCheck' ),
 				'args'                => array(
 					'id' => array(
@@ -325,6 +347,33 @@ final class AdminReservationsController extends AbstractController {
 		}
 
 		return new WP_REST_Response( null, 204 );
+	}
+
+	/**
+	 * GET — lister les exposants d'un événement (pour les sélecteurs de modale).
+	 */
+	public function listExposants( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$evenementId = (int) $request['id'];
+
+		$post = get_post( $evenementId );
+		if ( ! $post || EvenementPostType::SLUG !== $post->post_type ) {
+			return $this->errorResponse(
+				'evenement_introuvable',
+				__( 'Événement introuvable.', 'jde-plugin' ),
+				404
+			);
+		}
+
+		$exposants = $this->exposantRepo->findByEvenement( $evenementId );
+
+		return new WP_REST_Response(
+			array(
+				'exposants' => array_map(
+					static fn ( Exposant $e ): array => $e->toArray(),
+					$exposants
+				),
+			)
+		);
 	}
 
 	/**

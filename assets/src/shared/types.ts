@@ -75,11 +75,31 @@ export interface JdeRuntimeConfig {
 	restUrl: string; // ex. "https://site.com/wp-json/jde/v1/"
 	restNonce: string; // X-WP-Nonce
 	evenementId?: number;
+	evenementTitre?: string;
 	planUrl?: string;
 	planVerrouille?: boolean;
 	containerId: string; // id du <div> dans lequel monter l'app
 	contactEmail: string; // info@jeuxdeleducation.com
 	logoUrl?: string;
+	csvUrl?: string; // URL d'export CSV des réservations
+	backUrl?: string; // URL de retour (édition de l'événement)
+}
+
+/**
+ * Vue enrichie d'une réservation pour les écrans admin
+ * (correspond à PHP ReservationDetail::toArray()).
+ */
+export interface ReservationDetail {
+	id: number;
+	kiosque_id: number;
+	kiosque_numero: string;
+	exposant_id: number;
+	nom_entreprise: string;
+	code_acces: string;
+	date_reservation: string;
+	source: 'admin' | 'exposant';
+	cree_par_login: string | null;
+	notes_admin: string | null;
 }
 
 declare global {

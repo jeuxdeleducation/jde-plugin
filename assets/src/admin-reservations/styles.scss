@@ -1,0 +1,88 @@
+/**
+ * Styles de la page Réservations admin.
+ */
+
+@import '../shared/brand';
+@import '../shared/PlanCanvas';
+
+.jde-resa {
+	font-family: var( --jde-font-body );
+	color: var( --jde-color-text );
+
+	&__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: var( --jde-spacing-md );
+		flex-wrap: wrap;
+		padding-bottom: var( --jde-spacing-md );
+		border-bottom: 1px solid var( --jde-color-border );
+		margin-bottom: var( --jde-spacing-lg );
+	}
+
+	&__title {
+		margin: 0 0 4px;
+		font-family: var( --jde-font-heading );
+		font-size: var( --jde-font-size-xl );
+	}
+
+	&__stats {
+		margin: 0;
+		font-size: var( --jde-font-size-sm );
+		color: var( --jde-color-text-muted );
+	}
+
+	&__refresh {
+		font-style: italic;
+	}
+
+	&__header-actions {
+		display: flex;
+		gap: var( --jde-spacing-sm );
+		flex-wrap: wrap;
+	}
+
+	&__layout {
+		display: grid;
+		grid-template-columns: minmax( 0, 3fr ) minmax( 320px, 2fr );
+		gap: var( --jde-spacing-lg );
+
+		@media ( max-width: 960px ) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	&__col-table {
+		min-width: 0;
+	}
+
+	&__col-plan {
+		min-width: 0;
+		position: sticky;
+		top: 60px;
+		max-height: calc( 100vh - 100px );
+		overflow: auto;
+	}
+
+	&__empty {
+		padding: var( --jde-spacing-xl );
+		text-align: center;
+		color: var( --jde-color-text-muted );
+		background: var( --jde-color-bg-alt );
+		border: 1px dashed var( --jde-color-border );
+		border-radius: var( --jde-radius );
+	}
+
+	&__plan-empty {
+		padding: var( --jde-spacing-md );
+		background: var( --jde-color-bg-alt );
+		border: 1px dashed var( --jde-color-border );
+		border-radius: var( --jde-radius );
+		text-align: center;
+		color: var( --jde-color-text-muted );
+	}
+
+	&__table {
+		font-size: var( --jde-font-size-sm );
+	}
+}

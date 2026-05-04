@@ -11,6 +11,7 @@ namespace JDE\Modules\Kiosques\Admin;
 
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Admin\ExposantsPage;
+use JDE\Modules\Kiosques\Admin\ReservationsPage;
 use JDE\Support\Assets;
 use WP_Post;
 
@@ -94,6 +95,15 @@ final class EvenementEditScreen {
 		</p>
 		<p class="description">
 			<?php esc_html_e( 'Créer les exposants autorisés et copier leurs codes d\'accès.', 'jde-plugin' ); ?>
+		</p>
+
+		<p style="margin-top:16px;">
+			<a href="<?php echo esc_url( ReservationsPage::url( $post->ID ) ); ?>" class="button button-large" style="width:100%;text-align:center;box-sizing:border-box;">
+				<?php esc_html_e( 'Gérer les réservations →', 'jde-plugin' ); ?>
+			</a>
+		</p>
+		<p class="description">
+			<?php esc_html_e( 'Suivre les réservations en temps réel, en créer/modifier/supprimer manuellement, exporter en CSV.', 'jde-plugin' ); ?>
 		</p>
 		<?php
 	}

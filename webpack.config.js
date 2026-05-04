@@ -20,6 +20,10 @@ module.exports = {
 			__dirname,
 			'assets/src/admin-kiosques-editor/index.tsx'
 		),
+		'admin-reservations': path.resolve(
+			__dirname,
+			'assets/src/admin-reservations/index.tsx'
+		),
 		'public-reservation': path.resolve(
 			__dirname,
 			'assets/src/public-reservation/index.tsx'

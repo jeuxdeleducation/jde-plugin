@@ -17,6 +17,56 @@ export const T = {
 	loading: 'Chargement…',
 	error: 'Erreur',
 
+	// Admin — réservations
+	reservations: {
+		title: 'Réservations',
+		titleFor: ( evenement: string ): string => `Réservations — ${ evenement }`,
+		back: '← Retour à l\'événement',
+		exportCsv: 'Exporter en CSV',
+		add: 'Ajouter manuellement',
+		refresh: 'Rafraîchir',
+		updatedSecondsAgo: ( s: number ): string =>
+			s < 60 ? `Mis à jour il y a ${ s } s` : `Mis à jour il y a ${ Math.floor( s / 60 ) } min`,
+		stats: ( count: number, total: number ): string =>
+			`${ count } réservation(s) sur ${ total } kiosque(s)`,
+		empty: 'Aucune réservation pour le moment.',
+		columns: {
+			entreprise: 'Entreprise',
+			kiosque: 'Kiosque',
+			date: 'Date',
+			source: 'Source',
+			notes: 'Notes',
+			actions: 'Actions',
+		},
+		sourceAdmin: ( login: string | null ): string =>
+			null !== login ? `Admin (${ login })` : 'Admin',
+		sourceExposant: 'Exposant (auto)',
+		actionEdit: 'Modifier',
+		actionDelete: 'Supprimer',
+		form: {
+			titleAdd: 'Ajouter une réservation',
+			titleEdit: 'Modifier la réservation',
+			fieldKiosque: 'Kiosque',
+			fieldExposant: 'Exposant',
+			fieldNotes: 'Notes admin (optionnelles)',
+			fieldBypassQuota: 'Forcer même si le quota de l\'exposant est dépassé',
+			selectKiosquePlaceholder: '— choisir un kiosque libre —',
+			selectExposantPlaceholder: '— choisir un exposant —',
+			noFreeKiosques: 'Aucun kiosque disponible. Tous sont déjà réservés ou indisponibles.',
+			submitting: 'Enregistrement…',
+			submitAdd: 'Créer la réservation',
+			submitEdit: 'Enregistrer',
+		},
+		deleteDialog: {
+			title: 'Supprimer la réservation',
+			body: ( entreprise: string, kiosque: string ): string =>
+				`Confirmer la suppression de la réservation de « ${ entreprise } » sur le kiosque ${ kiosque } ?`,
+			fieldReason: 'Motif (obligatoire, sera consigné dans l\'historique)',
+			submitting: 'Suppression…',
+			submit: 'Supprimer définitivement',
+		},
+	},
+
 	// Admin — éditeur de kiosques
 	admin: {
 		toolbarSave: 'Enregistrer le plan',

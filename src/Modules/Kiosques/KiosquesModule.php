@@ -18,6 +18,7 @@ use JDE\Modules\Kiosques\Admin\DiagnosticNotice;
 use JDE\Modules\Kiosques\Admin\EvenementColumns;
 use JDE\Modules\Kiosques\Admin\EvenementEditScreen;
 use JDE\Modules\Kiosques\Admin\ExposantsPage;
+use JDE\Modules\Kiosques\Admin\ReservationsPage;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
 use JDE\Modules\Kiosques\Frontend\ReservationShortcode;
@@ -105,6 +106,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			$container->get( EvenementColumns::class )->register();
 			$container->get( EvenementEditScreen::class )->register();
 			$container->get( ExposantsPage::class )->register();
+			$container->get( ReservationsPage::class )->register();
 			$container->get( AuditPage::class )->register();
 			$container->get( DiagnosticNotice::class )->register();
 		}
@@ -272,6 +274,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ReservationService::class ),
 				$c->get( ReservationRepository::class ),
 				$c->get( CsvExporter::class ),
+				$c->get( ExposantRepository::class ),
 			)
 		);
 
@@ -319,6 +322,13 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			AuditPage::class,
 			static fn ( Container $c ): AuditPage => new AuditPage(
 				$c->get( AuditRepository::class )
+			)
+		);
+
+		$container->set(
+			ReservationsPage::class,
+			static fn ( Container $c ): ReservationsPage => new ReservationsPage(
+				$c->get( Assets::class )
 			)
 		);
 
