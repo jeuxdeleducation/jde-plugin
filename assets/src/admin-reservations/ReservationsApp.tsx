@@ -75,8 +75,15 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 				`admin/evenements/${ evenementId }/kiosques`
 			);
 			setKiosques( response.kiosques );
-		} catch {
-			// Ignorer — la liste des kiosques sert juste aux modales.
+		} catch ( e ) {
+			// Ne PAS avaler : la liste alimente le plan ET les sélecteurs
+			// des modales. Sans elle, ni l'aperçu ni les modifications ne
+			// fonctionnent.
+			setError(
+				e instanceof ApiClientError
+					? `Plan : ${ e.message }`
+					: T.public.errors.generic
+			);
 		}
 	}, [ evenementId ] );
 
@@ -86,8 +93,12 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 				`admin/evenements/${ evenementId }/exposants`
 			);
 			setExposants( response.exposants );
-		} catch {
-			// Endpoint exposants non disponible (Phase A) — sélecteur degradera.
+		} catch ( e ) {
+			setError(
+				e instanceof ApiClientError
+					? `Exposants : ${ e.message }`
+					: T.public.errors.generic
+			);
 		}
 	}, [ evenementId ] );
 

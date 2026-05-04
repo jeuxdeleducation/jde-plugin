@@ -48,7 +48,7 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 	// En création : kiosques libres uniquement (statut disponible et non réservés).
 	// En édition : on permet aussi le kiosque actuellement assigné.
 	const availableKiosques = useMemo< Kiosque[] >( () => {
-		return kiosques.filter( ( k ) => {
+		const filtered = kiosques.filter( ( k ) => {
 			if ( k.statut !== 'disponible' ) {
 				return false;
 			}
@@ -60,7 +60,32 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 			}
 			return ! reservedKiosqueIds.has( k.id );
 		} );
-	}, [ kiosques, reservedKiosqueIds, reservation ] );
+
+		// En édition, si la liste des kiosques n'a pas pu être chargée
+		// (réseau, 403, etc.), on injecte un fallback minimal pour le
+		// kiosque actuel : ça évite de bloquer la modification des notes
+		// quand la liste est vide pour une raison non liée à l'édition.
+		if (
+			isEdit &&
+			reservation &&
+			! filtered.some( ( k ) => k.id === reservation.kiosque_id )
+		) {
+			filtered.push( {
+				id: reservation.kiosque_id,
+				evenement_id: 0,
+				numero: reservation.kiosque_numero,
+				pos_x: 0,
+				pos_y: 0,
+				largeur: 0,
+				hauteur: 0,
+				dimensions_texte: null,
+				notes: null,
+				statut: 'disponible',
+			} );
+		}
+
+		return filtered;
+	}, [ kiosques, reservedKiosqueIds, reservation, isEdit ] );
 
 	const handleSubmit = async ( event: FormEvent ): Promise< void > => {
 		event.preventDefault();

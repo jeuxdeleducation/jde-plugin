@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.4.1
+Stable tag: 0.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.4.2 =
+* Correctif : la page de suivi des réservations n'affichait aucun kiosque sur le plan et empêchait la modification/suppression d'une réservation. Les requêtes admin/kiosques et admin/exposants avalaient silencieusement leurs erreurs ; elles sont maintenant remontées dans le bandeau d'avertissement. Le modal d'édition fonctionne aussi quand la liste des kiosques n'a pas pu être chargée (fallback sur le kiosque actuel pour permettre l'édition des notes). Affichage explicite quand le plan existe mais qu'aucun kiosque n'a été placé dessus.
 
 = 0.4.1 =
 * Correctif : la confirmation de réservation côté public ne fonctionnait pas (modale invisible/cliquable car styles CSS manquants) — la vraie modale centrée est maintenant en place. Correctif : l'export CSV des réservations renvoyait 403 (le lien direct n'envoyait pas le nonce REST) — le nonce est désormais embarqué en query string. Ajouts publics : titre + description de l'événement visibles, écran final « tous tes kiosques sont réservés » avec invitation à contacter l'équipe, couleurs sémantiques des statuts de kiosques (vert/orange/bleu/gris/rouge), suppression du logo JDE du shortcode (laissé au thème), affichage des erreurs de réservation dans la modale au lieu de la console. Ajouts admin : drag & drop des kiosques sur le plan, édition du nom et du quota d'un exposant avec garde-fou sur les noms en double, colonne « Réservés / alloués » dans la liste des exposants, layout 1 colonne (plan en haut) pour la page de suivi, journal d'audit borné à 100 entrées (purge automatique), retrait du champ « image de couverture » du CPT Événement.

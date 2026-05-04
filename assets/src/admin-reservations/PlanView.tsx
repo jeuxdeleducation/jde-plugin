@@ -1,9 +1,9 @@
 /**
  * Vue du plan annoté des réservations.
  *
- * Réutilise PlanCanvas en mode 'view'. Les kiosques réservés sont
- * surchargés en couleur "mine" (sarcelle profonde) pour les distinguer
- * visuellement des kiosques libres.
+ * Réutilise PlanCanvas en mode 'select'. Les kiosques réservés sont
+ * surchargés en couleur "mine" (bleu poudre dans la palette sémantique)
+ * pour les distinguer visuellement des kiosques libres.
  */
 
 import { useMemo } from 'react';
@@ -19,15 +19,31 @@ interface PlanViewProps {
 export function PlanView( props: PlanViewProps ): JSX.Element {
 	const { planUrl, kiosques, reservedKiosqueIds } = props;
 
-	// On ré-exploite le mode 'select' avec myReservationIds = tous les
-	// kiosques réservés, ce qui les colore en bleu foncé. Les autres
-	// apparaissent en vert (disponibles) ou hachuré rouge (indisponibles).
 	const memoSet = useMemo( () => reservedKiosqueIds, [ reservedKiosqueIds ] );
 
 	if ( ! planUrl ) {
 		return (
 			<div className="jde-resa__plan-empty">
 				Aucun plan associé à cet événement.
+			</div>
+		);
+	}
+
+	if ( kiosques.length === 0 ) {
+		// Le plan existe mais aucun kiosque n'a encore été placé dessus
+		// (ou le chargement de la liste a échoué — l'erreur est alors
+		// affichée par ReservationsApp dans le bandeau au-dessus).
+		return (
+			<div className="jde-resa__plan-wrapper">
+				<img
+					src={ planUrl }
+					alt="Plan de l'événement"
+					className="jde-resa__plan-fallback"
+				/>
+				<p className="jde-resa__plan-empty">
+					Aucun kiosque sur ce plan. Ouvre l'éditeur de l'événement
+					pour en ajouter.
+				</p>
 			</div>
 		);
 	}

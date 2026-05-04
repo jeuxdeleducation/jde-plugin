@@ -81,6 +81,22 @@
 		color: var( --jde-color-text-muted );
 	}
 
+	&__plan-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: var( --jde-spacing-md );
+	}
+
+	&__plan-fallback {
+		display: block;
+		width: 100%;
+		max-height: 60vh;
+		object-fit: contain;
+		background: var( --jde-color-bg-alt );
+		border: 1px solid var( --jde-color-border );
+		border-radius: var( --jde-radius );
+	}
+
 	&__table {
 		font-size: var( --jde-font-size-sm );
 	}

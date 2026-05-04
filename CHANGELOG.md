@@ -4,6 +4,14 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.4.2] — 2026-05-04
+
+### Corrigé
+
+- **Page « Suivi des réservations » sans kiosques visibles** : `fetchKiosques` et `fetchExposants` avalaient leurs erreurs avec un `catch {}` silencieux. Conséquence : si l'une des deux requêtes échouait, le plan apparaissait sans aucun kiosque superposé et le sélecteur du modal de modification était vide (donc impossible de modifier ou changer un kiosque). Les deux fetches surfacent maintenant leurs erreurs dans le bandeau d'avertissement de la page (préfixées « Plan : » ou « Exposants : »).
+- **Modification de réservation impossible quand la liste des kiosques est vide** : le sélecteur de kiosque dans le modal d'édition filtrait la liste reçue ; si elle était vide, le kiosque actuel ne pouvait pas être pré-sélectionné. Le modal injecte maintenant un fallback minimal (numéro + id) basé sur la réservation en cours pour qu'on puisse au moins éditer les notes.
+- **Plan sans kiosques placés** : nouvel affichage explicite dans `PlanView` (image du plan + message « Aucun kiosque sur ce plan ») au lieu d'un canvas vide silencieux.
+
 ## [0.4.1] — 2026-05-04
 
 ### Corrigé
