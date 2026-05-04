@@ -17,6 +17,7 @@ use JDE\Modules\Kiosques\Exceptions\QuotaExceededException;
 use JDE\Modules\Kiosques\Models\ReservationDetail;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
+use JDE\Modules\Kiosques\Services\CsvExporter;
 use JDE\Modules\Kiosques\Services\ReservationService;
 use Throwable;
 use WP_Error;
@@ -39,6 +40,7 @@ final class AdminReservationsController extends AbstractController {
 	public function __construct(
 		private readonly ReservationService $service,
 		private readonly ReservationRepository $repo,
+		private readonly CsvExporter $csvExporter,
 	) {}
 
 	public function registerRoutes(): void {
@@ -48,6 +50,22 @@ final class AdminReservationsController extends AbstractController {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'list' ),
+				'permission_callback' => array( $this, 'adminPermissionCheck' ),
+				'args'                => array(
+					'id' => array(
+						'type'     => 'integer',
+						'required' => true,
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/admin/evenements/(?P<id>\d+)/reservations.csv',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'exportCsv' ),
 				'permission_callback' => array( $this, 'adminPermissionCheck' ),
 				'args'                => array(
 					'id' => array(
@@ -307,5 +325,29 @@ final class AdminReservationsController extends AbstractController {
 		}
 
 		return new WP_REST_Response( null, 204 );
+	}
+
+	/**
+	 * GET — exporter les réservations d'un événement en CSV.
+	 *
+	 * Court-circuit la pipeline REST normale pour streamer le CSV
+	 * directement avec les bons headers HTTP. La méthode termine par
+	 * `exit` pour empêcher WP_REST_Server d'ajouter du contenu.
+	 *
+	 * @return never
+	 */
+	public function exportCsv( WP_REST_Request $request ): never {
+		$evenementId = (int) $request['id'];
+
+		$post = get_post( $evenementId );
+		if ( ! $post || EvenementPostType::SLUG !== $post->post_type ) {
+			status_header( 404 );
+			header( 'Content-Type: text/plain; charset=utf-8' );
+			echo esc_html__( 'Événement introuvable.', 'jde-plugin' );
+			exit;
+		}
+
+		$this->csvExporter->streamReservations( $evenementId, $post->post_title );
+		exit;
 	}
 }

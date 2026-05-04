@@ -32,6 +32,7 @@ use JDE\Modules\Kiosques\REST\ReservationController;
 use JDE\Modules\Kiosques\Services\AuthService;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\CookieWriter;
+use JDE\Modules\Kiosques\Services\CsvExporter;
 use JDE\Modules\Kiosques\Services\EvenementService;
 use JDE\Modules\Kiosques\Services\PhpCookieWriter;
 use JDE\Modules\Kiosques\Services\PublicStateBuilder;
@@ -257,10 +258,18 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		);
 
 		$container->set(
+			CsvExporter::class,
+			static fn ( Container $c ): CsvExporter => new CsvExporter(
+				$c->get( ReservationRepository::class )
+			)
+		);
+
+		$container->set(
 			AdminReservationsController::class,
 			static fn ( Container $c ): AdminReservationsController => new AdminReservationsController(
 				$c->get( ReservationService::class ),
 				$c->get( ReservationRepository::class ),
+				$c->get( CsvExporter::class ),
 			)
 		);
 
