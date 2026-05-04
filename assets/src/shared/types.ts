@@ -33,6 +33,7 @@ export interface Exposant {
 export interface Evenement {
 	id: number;
 	titre: string;
+	description_html: string;
 	plan_url: string | null;
 	plan_verrouille: boolean;
 	afficher_noms_entreprises: boolean;

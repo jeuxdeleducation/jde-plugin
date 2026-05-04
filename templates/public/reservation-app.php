@@ -2,9 +2,8 @@
 /**
  * Wrapper HTML du shortcode `[jde_reservation_kiosques]`.
  *
- * Variables exposées par le shortcode :
- *
- * @var string|null $logoUrl URL du logo JDE (à remplir par la charte).
+ * Le branding (logo, titre du site) est laissé au thème de la page
+ * qui héberge le shortcode — on garde ici un wrapper minimal.
  *
  * Surchargeable depuis le thème actif via :
  *   `<theme>/jde-plugin/public/reservation-app.php`.
@@ -16,20 +15,6 @@ defined( 'ABSPATH' ) || exit;
 ?>
 
 <div class="jde-reservation-app">
-	<header class="jde-reservation-app__brand">
-		<?php if ( ! empty( $logoUrl ) ) : ?>
-			<img
-				src="<?php echo esc_url( $logoUrl ); ?>"
-				alt="<?php esc_attr_e( 'Jeux de l\'Éducation', 'jde-plugin' ); ?>"
-				class="jde-reservation-app__logo"
-			/>
-		<?php else : ?>
-			<span class="jde-reservation-app__brand-text">
-				<?php esc_html_e( 'Jeux de l\'Éducation', 'jde-plugin' ); ?>
-			</span>
-		<?php endif; ?>
-	</header>
-
 	<div id="jde-reservation-app-root"></div>
 
 	<noscript>

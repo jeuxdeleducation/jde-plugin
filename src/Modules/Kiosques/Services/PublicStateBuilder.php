@@ -99,6 +99,12 @@ class PublicStateBuilder {
 			'evenement'         => array(
 				'id'                        => $exposant->evenementId,
 				'titre'                     => $eventPost->post_title,
+				// `the_content` applique les filtres standards (paragraphes,
+				// shortcodes, embeds…) — ce qui est OK puisque seul un admin
+				// du site peut écrire la description de l'événement.
+				'description_html'          => '' !== $eventPost->post_content
+					? (string) apply_filters( 'the_content', $eventPost->post_content )
+					: '',
 				'plan_url'                  => $planUrl,
 				'plan_verrouille'           => $planVerrouille,
 				'afficher_noms_entreprises' => $afficherNoms,

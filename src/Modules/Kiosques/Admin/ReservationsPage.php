@@ -104,6 +104,16 @@ final class ReservationsPage {
 		);
 		$this->assets->enqueueStyle( 'jde-admin-reservations', 'admin-reservations' );
 
+		// L'export CSV est ouvert via un lien <a target="_blank">. Les liens
+		// HTML normaux n'envoient pas le header X-WP-Nonce, ce qui ferait
+		// tomber rest_cookie_check_errors() sur l'utilisateur anonyme et
+		// renverrait 403. On embarque donc le nonce REST en query string.
+		$csvUrl = add_query_arg(
+			'_wpnonce',
+			wp_create_nonce( 'wp_rest' ),
+			rest_url( 'jde/v1/admin/evenements/' . $post->ID . '/reservations.csv' )
+		);
+
 		$config = array(
 			'restUrl'        => esc_url_raw( rest_url( 'jde/v1/' ) ),
 			'restNonce'      => wp_create_nonce( 'wp_rest' ),
@@ -112,7 +122,7 @@ final class ReservationsPage {
 			'planUrl'        => $planUrl,
 			'containerId'    => 'jde-reservations-app',
 			'contactEmail'   => 'info@jeuxdeleducation.com',
-			'csvUrl'         => esc_url_raw( rest_url( 'jde/v1/admin/evenements/' . $post->ID . '/reservations.csv' ) ),
+			'csvUrl'         => esc_url_raw( $csvUrl ),
 			'backUrl'        => is_string( get_edit_post_link( $post->ID, 'raw' ) )
 				? (string) get_edit_post_link( $post->ID, 'raw' )
 				: '',

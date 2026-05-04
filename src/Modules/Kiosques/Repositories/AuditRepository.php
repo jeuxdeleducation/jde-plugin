@@ -25,6 +25,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class AuditRepository {
 
+	/**
+	 * Nombre maximum d'entrées conservées dans le journal.
+	 * Au-delà, les plus anciennes sont supprimées à chaque écriture.
+	 */
+	public const MAX_ENTRIES = 100;
+
 	private string $table;
 
 	public function __construct( private readonly wpdb $wpdb ) {
@@ -56,6 +62,40 @@ class AuditRepository {
 			),
 			array( '%d', '%s', '%s', '%d', '%s', '%s' )
 		);
+
+		$this->pruneOldEntries( self::MAX_ENTRIES );
+	}
+
+	/**
+	 * Conserver uniquement les `$keep` entrées les plus récentes.
+	 *
+	 * Stratégie : récupérer l'id du `$keep`-ième plus récent enregistrement,
+	 * puis supprimer toutes les lignes plus anciennes (id strictement
+	 * inférieur). Bornes : si la table contient moins de `$keep` lignes,
+	 * la requête `OFFSET` retourne null et on n'efface rien.
+	 */
+	private function pruneOldEntries( int $keep ): void {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$cutoff = $this->wpdb->get_var(
+			$this->wpdb->prepare(
+				"SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1 OFFSET %d",
+				$keep - 1
+			)
+		);
+		// phpcs:enable
+
+		if ( null === $cutoff ) {
+			return;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$this->wpdb->query(
+			$this->wpdb->prepare(
+				"DELETE FROM {$this->table} WHERE id < %d",
+				(int) $cutoff
+			)
+		);
+		// phpcs:enable
 	}
 
 	/**

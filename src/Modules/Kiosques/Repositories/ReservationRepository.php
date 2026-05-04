@@ -174,6 +174,45 @@ class ReservationRepository {
 	}
 
 	/**
+	 * Compter les réservations groupées par exposant pour un événement.
+	 *
+	 * Retourne un tableau associatif `exposant_id => count`. Les exposants
+	 * sans réservation ne figurent pas dans le résultat (le caller doit
+	 * traiter les clés manquantes comme 0). Une seule requête pour éviter
+	 * le N+1 dans la liste des exposants admin.
+	 *
+	 * @return array<int, int>
+	 */
+	public function countByExposantsForEvenement( int $evenementId ): array {
+		$kiosquesTable = $this->wpdb->prefix . 'jde_kiosques';
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT r.exposant_id, COUNT(*) AS nb
+				FROM {$this->table} r
+				INNER JOIN {$kiosquesTable} k ON k.id = r.kiosque_id
+				WHERE k.evenement_id = %d
+				GROUP BY r.exposant_id",
+				$evenementId
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		$counts = array();
+		foreach ( $rows as $row ) {
+			$counts[ (int) $row['exposant_id'] ] = (int) $row['nb'];
+		}
+
+		return $counts;
+	}
+
+	/**
 	 * Compter les réservations d'un événement (utile pour le verrouillage du plan).
 	 */
 	public function countByEvenement( int $evenementId ): int {

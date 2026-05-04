@@ -16,6 +16,7 @@ use JDE\Modules\Kiosques\Models\Exposant;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
 use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
+use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use Throwable;
 
@@ -25,17 +26,19 @@ defined( 'ABSPATH' ) || exit;
  * Page d'admin (hors menu) accessible via `?page=jde-exposants&evenement_id=X`.
  *
  * Affiche un formulaire d'ajout en haut, puis un tableau des exposants
- * existants avec leur code (copiable d'un clic) et un bouton Supprimer.
+ * existants avec leur code (copiable d'un clic), un bouton Modifier (qui
+ * ouvre une ligne d'édition inline) et un bouton Supprimer.
  *
- * Les actions (créer, supprimer) passent par admin-post.php avec nonce
- * et redirection. Les notifications de succès/erreur sont stockées dans
- * un transient lié à l'utilisateur (pattern « flash messages »).
+ * Les actions (créer, modifier, supprimer) passent par admin-post.php
+ * avec nonce et redirection. Les notifications de succès/erreur sont
+ * stockées dans un transient lié à l'utilisateur (pattern « flash messages »).
  */
 final class ExposantsPage {
 
 	public const PAGE_SLUG = 'jde-exposants';
 
 	private const ACTION_CREATE = 'jde_create_exposant';
+	private const ACTION_UPDATE = 'jde_update_exposant';
 	private const ACTION_DELETE = 'jde_delete_exposant';
 	private const NONCE_NAME    = 'jde_exposants_nonce';
 
@@ -43,11 +46,13 @@ final class ExposantsPage {
 		private readonly ExposantRepository $exposants,
 		private readonly CodeGenerator $codeGenerator,
 		private readonly AuditRepository $audit,
+		private readonly ReservationRepository $reservations,
 	) {}
 
 	public function register(): void {
 		add_action( 'admin_menu', array( $this, 'registerPage' ) );
 		add_action( 'admin_post_' . self::ACTION_CREATE, array( $this, 'handleCreate' ) );
+		add_action( 'admin_post_' . self::ACTION_UPDATE, array( $this, 'handleUpdate' ) );
 		add_action( 'admin_post_' . self::ACTION_DELETE, array( $this, 'handleDelete' ) );
 	}
 
@@ -68,11 +73,14 @@ final class ExposantsPage {
 	/**
 	 * URL d'admin pour cette page (utile pour le bouton de l'écran d'édition).
 	 */
-	public static function url( int $evenementId ): string {
+	public static function url( int $evenementId, array $extra = array() ): string {
 		return add_query_arg(
-			array(
-				'page'         => self::PAGE_SLUG,
-				'evenement_id' => $evenementId,
+			array_merge(
+				array(
+					'page'         => self::PAGE_SLUG,
+					'evenement_id' => $evenementId,
+				),
+				$extra
 			),
 			admin_url( 'admin.php' )
 		);
@@ -86,9 +94,11 @@ final class ExposantsPage {
 			wp_die( esc_html__( 'Permission refusée.', 'jde-plugin' ), 403 );
 		}
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- lecture seule de l'identifiant pour afficher la page
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- lecture seule des paramètres GET pour l'affichage
 		$evenementId = isset( $_GET['evenement_id'] ) ? (int) $_GET['evenement_id'] : 0;
-		$evenement   = $evenementId > 0 ? get_post( $evenementId ) : null;
+		$editId      = isset( $_GET['edit'] ) ? (int) $_GET['edit'] : 0;
+		// phpcs:enable
+		$evenement = $evenementId > 0 ? get_post( $evenementId ) : null;
 
 		if ( ! $evenement || EvenementPostType::SLUG !== $evenement->post_type ) {
 			echo '<div class="wrap"><h1>' . esc_html__( 'Exposants', 'jde-plugin' ) . '</h1>';
@@ -98,8 +108,9 @@ final class ExposantsPage {
 			return;
 		}
 
-		$flash     = $this->popFlash();
-		$exposants = $this->exposants->findByEvenement( $evenementId );
+		$flash       = $this->popFlash();
+		$exposants   = $this->exposants->findByEvenement( $evenementId );
+		$reservedMap = $this->reservations->countByExposantsForEvenement( $evenementId );
 		?>
 		<div class="wrap">
 			<h1>
@@ -157,14 +168,24 @@ final class ExposantsPage {
 						<tr>
 							<th><?php esc_html_e( 'Entreprise', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Code d\'accès', 'jde-plugin' ); ?></th>
-							<th><?php esc_html_e( 'Kiosques alloués', 'jde-plugin' ); ?></th>
+							<th><?php esc_html_e( 'Réservés / alloués', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Date de création', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'jde-plugin' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ( $exposants as $exp ) : ?>
-							<?php $this->renderRow( $exp ); ?>
+							<?php
+							$reserved = isset( $reservedMap[ (int) $exp->id ] )
+								? (int) $reservedMap[ (int) $exp->id ]
+								: 0;
+
+							if ( $editId > 0 && $editId === $exp->id ) {
+								$this->renderEditRow( $exp, $reserved, $evenementId );
+							} else {
+								$this->renderRow( $exp, $reserved, $evenementId );
+							}
+							?>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
@@ -175,7 +196,7 @@ final class ExposantsPage {
 		<?php
 	}
 
-	private function renderRow( Exposant $exp ): void {
+	private function renderRow( Exposant $exp, int $reserved, int $evenementId ): void {
 		$deleteUrl = wp_nonce_url(
 			add_query_arg(
 				array(
@@ -187,6 +208,9 @@ final class ExposantsPage {
 			self::ACTION_DELETE . '_' . (int) $exp->id,
 			self::NONCE_NAME
 		);
+		$editUrl   = self::url( $evenementId, array( 'edit' => (int) $exp->id ) );
+
+		$overQuota = $reserved > $exp->nbKiosquesMax;
 		?>
 		<tr>
 			<td><strong><?php echo esc_html( $exp->nomEntreprise ); ?></strong></td>
@@ -200,14 +224,81 @@ final class ExposantsPage {
 					<?php esc_html_e( 'Copier', 'jde-plugin' ); ?>
 				</button>
 			</td>
-			<td><?php echo (int) $exp->nbKiosquesMax; ?></td>
+			<td<?php echo $overQuota ? ' style="color:#b32d2e;font-weight:600;"' : ''; ?>>
+				<?php
+				echo esc_html(
+					sprintf(
+						'%d / %d',
+						$reserved,
+						(int) $exp->nbKiosquesMax
+					)
+				);
+				if ( $overQuota ) {
+					echo ' ⚠';
+				}
+				?>
+			</td>
 			<td><?php echo esc_html( $this->formatDate( $exp->dateCreation ) ); ?></td>
 			<td>
+				<a href="<?php echo esc_url( $editUrl ); ?>#jde-exposant-edit-<?php echo (int) $exp->id; ?>" class="button button-small">
+					<?php esc_html_e( 'Modifier', 'jde-plugin' ); ?>
+				</a>
 				<a href="<?php echo esc_url( $deleteUrl ); ?>"
 					onclick="return confirm('<?php echo esc_js( __( 'Supprimer cet exposant ? Action irréversible.', 'jde-plugin' ) ); ?>');"
-					class="button button-link-delete">
+					class="button button-small button-link-delete">
 					<?php esc_html_e( 'Supprimer', 'jde-plugin' ); ?>
 				</a>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Ligne d'édition inline (s'affiche quand `?edit=<id>` est dans l'URL).
+	 */
+	private function renderEditRow( Exposant $exp, int $reserved, int $evenementId ): void {
+		$cancelUrl = self::url( $evenementId );
+		?>
+		<tr id="jde-exposant-edit-<?php echo (int) $exp->id; ?>" style="background:#fff8e5;">
+			<td colspan="5">
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+					<?php wp_nonce_field( self::ACTION_UPDATE . '_' . (int) $exp->id, self::NONCE_NAME ); ?>
+					<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION_UPDATE ); ?>">
+					<input type="hidden" name="exposant_id" value="<?php echo (int) $exp->id; ?>">
+					<input type="hidden" name="evenement_id" value="<?php echo (int) $evenementId; ?>">
+
+					<label style="flex:1 1 240px;">
+						<span style="display:block;font-size:11px;color:#666;"><?php esc_html_e( 'Nom de l\'entreprise', 'jde-plugin' ); ?></span>
+						<input type="text" name="nom_entreprise" value="<?php echo esc_attr( $exp->nomEntreprise ); ?>" class="regular-text" required style="width:100%;">
+					</label>
+
+					<label>
+						<span style="display:block;font-size:11px;color:#666;"><?php esc_html_e( 'Kiosques alloués', 'jde-plugin' ); ?></span>
+						<input type="number" name="nb_kiosques_max" value="<?php echo (int) $exp->nbKiosquesMax; ?>" min="1" max="50" class="small-text" required>
+					</label>
+
+					<div style="font-size:12px;color:#555;align-self:center;padding-top:18px;">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %d: nombre de réservations existantes */
+								__( 'Déjà réservés : %d', 'jde-plugin' ),
+								$reserved
+							)
+						);
+						?>
+					</div>
+
+					<div style="padding-top:14px;">
+						<button type="submit" class="button button-primary"><?php esc_html_e( 'Enregistrer', 'jde-plugin' ); ?></button>
+						<a href="<?php echo esc_url( $cancelUrl ); ?>" class="button"><?php esc_html_e( 'Annuler', 'jde-plugin' ); ?></a>
+					</div>
+				</form>
+				<?php if ( $reserved > 0 ) : ?>
+					<p class="description" style="margin-top:8px;">
+						<?php esc_html_e( 'Note : si tu baisses le nombre alloué sous le nombre de kiosques déjà réservés, les réservations existantes ne sont pas touchées. L\'exposant ne pourra simplement plus en ajouter tant que le compte ne redescend pas sous la limite.', 'jde-plugin' ); ?>
+					</p>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<?php
@@ -264,12 +355,24 @@ final class ExposantsPage {
 
 		$evenementId   = isset( $_POST['evenement_id'] ) ? (int) $_POST['evenement_id'] : 0;
 		$nomEntreprise = isset( $_POST['nom_entreprise'] )
-			? sanitize_text_field( wp_unslash( (string) $_POST['nom_entreprise'] ) )
+			? trim( sanitize_text_field( wp_unslash( (string) $_POST['nom_entreprise'] ) ) )
 			: '';
 		$nbMax         = isset( $_POST['nb_kiosques_max'] ) ? (int) $_POST['nb_kiosques_max'] : 0;
 
 		if ( $evenementId <= 0 || '' === $nomEntreprise || $nbMax < 1 ) {
 			$this->setFlash( 'error', __( 'Données invalides.', 'jde-plugin' ) );
+			$this->redirectBack( $evenementId );
+		}
+
+		if ( $this->exposants->nameExistsForEvenement( $evenementId, $nomEntreprise ) ) {
+			$this->setFlash(
+				'error',
+				sprintf(
+					/* translators: %s: nom de l'entreprise déjà utilisé */
+					__( 'Un exposant nommé « %s » existe déjà pour cet événement.', 'jde-plugin' ),
+					$nomEntreprise
+				)
+			);
 			$this->redirectBack( $evenementId );
 		}
 
@@ -310,6 +413,105 @@ final class ExposantsPage {
 			);
 		} catch ( Throwable $e ) {
 			$this->setFlash( 'error', __( 'Erreur lors de la création de l\'exposant.', 'jde-plugin' ) );
+		}
+
+		$this->redirectBack( $evenementId );
+	}
+
+	/**
+	 * Handler de modification d'un exposant existant.
+	 *
+	 * Champs modifiables : nom_entreprise, nb_kiosques_max.
+	 * Le code d'accès reste immuable (cf. Exposant::save).
+	 *
+	 * Aucune vérification de cohérence avec les réservations existantes :
+	 * baisser le quota sous le nombre actuel de réservations ne casse rien
+	 * (le PublicStateBuilder utilise déjà max(0, …) pour kiosques_restants).
+	 */
+	public function handleUpdate(): void {
+		if ( ! current_user_can( Capabilities::MANAGE ) ) {
+			wp_die( esc_html__( 'Permission refusée.', 'jde-plugin' ), 403 );
+		}
+
+		$exposantId = isset( $_POST['exposant_id'] ) ? (int) $_POST['exposant_id'] : 0;
+
+		$nonce = isset( $_POST[ self::NONCE_NAME ] )
+			? sanitize_text_field( wp_unslash( (string) $_POST[ self::NONCE_NAME ] ) )
+			: '';
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_UPDATE . '_' . $exposantId ) ) {
+			wp_die( esc_html__( 'Jeton de sécurité invalide.', 'jde-plugin' ), 403 );
+		}
+
+		$evenementId   = isset( $_POST['evenement_id'] ) ? (int) $_POST['evenement_id'] : 0;
+		$nomEntreprise = isset( $_POST['nom_entreprise'] )
+			? trim( sanitize_text_field( wp_unslash( (string) $_POST['nom_entreprise'] ) ) )
+			: '';
+		$nbMax         = isset( $_POST['nb_kiosques_max'] ) ? (int) $_POST['nb_kiosques_max'] : 0;
+
+		$existing = $this->exposants->findById( $exposantId );
+
+		if ( null === $existing || $existing->evenementId !== $evenementId ) {
+			$this->setFlash( 'error', __( 'Exposant introuvable.', 'jde-plugin' ) );
+			$this->redirectBack( $evenementId );
+		}
+
+		if ( '' === $nomEntreprise || $nbMax < 1 ) {
+			$this->setFlash( 'error', __( 'Données invalides.', 'jde-plugin' ) );
+			$this->redirectBack( $evenementId );
+		}
+
+		if ( $this->exposants->nameExistsForEvenement( $evenementId, $nomEntreprise, $exposantId ) ) {
+			$this->setFlash(
+				'error',
+				sprintf(
+					/* translators: %s: nom de l'entreprise déjà utilisé */
+					__( 'Un autre exposant nommé « %s » existe déjà pour cet événement.', 'jde-plugin' ),
+					$nomEntreprise
+				)
+			);
+			$this->redirectBack( $evenementId );
+		}
+
+		$updated = new Exposant(
+			id: $existing->id,
+			evenementId: $existing->evenementId,
+			nomEntreprise: $nomEntreprise,
+			nbKiosquesMax: min( $nbMax, 50 ),
+			codeAcces: $existing->codeAcces,
+			dateCreation: $existing->dateCreation,
+			creePar: $existing->creePar,
+		);
+
+		try {
+			$this->exposants->save( $updated );
+
+			$this->audit->log(
+				get_current_user_id(),
+				'exposant.update',
+				'exposant',
+				$exposantId,
+				array(
+					'before' => array(
+						'nom_entreprise'  => $existing->nomEntreprise,
+						'nb_kiosques_max' => $existing->nbKiosquesMax,
+					),
+					'after'  => array(
+						'nom_entreprise'  => $updated->nomEntreprise,
+						'nb_kiosques_max' => $updated->nbKiosquesMax,
+					),
+				)
+			);
+
+			$this->setFlash(
+				'success',
+				sprintf(
+					/* translators: %s: nom de l'entreprise */
+					__( 'Exposant « %s » mis à jour.', 'jde-plugin' ),
+					$updated->nomEntreprise
+				)
+			);
+		} catch ( Throwable $e ) {
+			$this->setFlash( 'error', __( 'Erreur lors de la modification.', 'jde-plugin' ) );
 		}
 
 		$this->redirectBack( $evenementId );

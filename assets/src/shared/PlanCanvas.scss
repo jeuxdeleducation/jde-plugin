@@ -67,6 +67,18 @@
 		cursor: default;
 	}
 
+	// Mode édition : indique visuellement qu'un kiosque peut être déplacé.
+	.jde-canvas--edit & {
+		cursor: grab;
+	}
+
+	&--dragging {
+		cursor: grabbing !important;
+		transition: none;
+		box-shadow: var( --jde-shadow-lg );
+		opacity: 0.92;
+	}
+
 	&__label {
 		padding: 2px 6px;
 		text-shadow: 0 1px 2px rgba( 0, 0, 0, 0.4 );
@@ -99,10 +111,10 @@
 			45deg,
 			var( --jde-kiosque-unavailable ),
 			var( --jde-kiosque-unavailable ) 6px,
-			rgba( 220, 38, 38, 0.6 ) 6px,
-			rgba( 220, 38, 38, 0.6 ) 12px
+			rgba( 200, 98, 91, 0.55 ) 6px,
+			rgba( 200, 98, 91, 0.55 ) 12px
 		);
-		opacity: 0.85;
+		opacity: 0.9;
 	}
 
 	&--default {

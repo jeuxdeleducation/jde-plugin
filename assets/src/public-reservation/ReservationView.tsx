@@ -106,10 +106,21 @@ export function ReservationView( props: ReservationViewProps ): JSX.Element {
 	return (
 		<>
 			<Header
+				evenementTitre={ state.evenement.titre }
 				nomEntreprise={ state.exposant.nom_entreprise }
 				kiosquesRestants={ state.kiosques_restants - selectedIds.size }
 				onLogout={ onLogout }
 			/>
+
+			{ state.evenement.description_html && (
+				<div
+					className="jde-public__event-description"
+					/* eslint-disable-next-line react/no-danger -- contenu rédigé par un admin du site */
+					dangerouslySetInnerHTML={ {
+						__html: state.evenement.description_html,
+					} }
+				/>
+			) }
 
 			{ ! state.evenement.plan_url ? (
 				<div className="jde-public__empty">

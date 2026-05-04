@@ -10,12 +10,13 @@ import { T } from '../shared/i18n';
 interface ConfirmDialogProps {
 	count: number;
 	submitting: boolean;
+	errorMessage?: string | null;
 	onCancel: () => void;
 	onConfirm: () => void;
 }
 
 export function ConfirmDialog( props: ConfirmDialogProps ): JSX.Element {
-	const { count, submitting, onCancel, onConfirm } = props;
+	const { count, submitting, errorMessage, onCancel, onConfirm } = props;
 
 	return (
 		<div className="jde-modal-overlay" onClick={ submitting ? undefined : onCancel } role="presentation">
@@ -34,6 +35,11 @@ export function ConfirmDialog( props: ConfirmDialogProps ): JSX.Element {
 					<p className="jde-public__quota">
 						{ T.public.selectionBar.label( count ) }
 					</p>
+					{ errorMessage && (
+						<div className="jde-public__error" role="alert">
+							{ errorMessage }
+						</div>
+					) }
 				</div>
 				<footer className="jde-modal__footer jde-modal__footer--end">
 					<button

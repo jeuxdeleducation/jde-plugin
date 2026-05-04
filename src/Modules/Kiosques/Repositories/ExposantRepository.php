@@ -86,6 +86,48 @@ class ExposantRepository {
 	}
 
 	/**
+	 * Vérifier si un nom d'entreprise est déjà pris pour un événement donné.
+	 *
+	 * Les exposants sont scopés par événement, donc le même nom peut très
+	 * bien réapparaître sur un autre événement — on n'interdit que les
+	 * doublons à l'intérieur d'un même `evenement_id`. La comparaison est
+	 * insensible à la casse et aux espaces de bordure.
+	 *
+	 * @param int      $evenementId Événement dans lequel chercher.
+	 * @param string   $nom         Nom à tester.
+	 * @param int|null $excludeId   ID d'exposant à exclure (lors d'une édition).
+	 */
+	public function nameExistsForEvenement( int $evenementId, string $nom, ?int $excludeId = null ): bool {
+		$nom = trim( $nom );
+		if ( '' === $nom ) {
+			return false;
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		if ( null === $excludeId ) {
+			$found = $this->wpdb->get_var(
+				$this->wpdb->prepare(
+					"SELECT 1 FROM {$this->table} WHERE evenement_id = %d AND LOWER(nom_entreprise) = LOWER(%s) LIMIT 1",
+					$evenementId,
+					$nom
+				)
+			);
+		} else {
+			$found = $this->wpdb->get_var(
+				$this->wpdb->prepare(
+					"SELECT 1 FROM {$this->table} WHERE evenement_id = %d AND LOWER(nom_entreprise) = LOWER(%s) AND id <> %d LIMIT 1",
+					$evenementId,
+					$nom,
+					$excludeId
+				)
+			);
+		}
+		// phpcs:enable
+
+		return null !== $found;
+	}
+
+	/**
 	 * Vérifier si un code d'accès est déjà utilisé.
 	 */
 	public function codeExists( string $code ): bool {

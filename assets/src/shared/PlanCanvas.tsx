@@ -3,18 +3,19 @@
  * les kiosques en pourcentage.
  *
  * Modes supportés :
- *   - `view`   : lecture seule, aucune interaction (utilisé pour Phase A
- *                tant que l'éditeur admin n'est pas branché).
- *   - `edit`   : sélection d'un kiosque pour édition (drag/resize/modal
- *                seront ajoutés en Phase B.4).
+ *   - `view`   : lecture seule, aucune interaction.
+ *   - `edit`   : sélection d'un kiosque pour édition + drag à la souris
+ *                pour déplacer un kiosque sur le plan.
  *   - `select` : sélection multiple par un exposant côté public (mêmes
  *                interactions de clic, mais avec règles de couleurs
  *                différentes selon l'état).
  *
  * Pinch-zoom et pan tactiles via `react-zoom-pan-pinch` (mobile-first).
+ * En mode `edit`, le pan global est désactivé pendant qu'on drag un
+ * kiosque pour éviter que la carte se déplace en même temps.
  */
 
-import { type ReactNode, useMemo } from 'react';
+import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import {
 	TransformComponent,
 	TransformWrapper,
@@ -42,6 +43,13 @@ interface PlanCanvasProps {
 	/** Callback de clic sur un kiosque (utilisé en `edit` et `select`). */
 	onKiosqueClick?: ( kiosque: Kiosque ) => void;
 
+	/**
+	 * Mode `edit` uniquement : appelé pendant le drag (pour aperçu
+	 * temps réel) et à sa fin (pour persister la nouvelle position).
+	 */
+	onKiosqueDrag?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
+	onKiosqueDragEnd?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
+
 	/** Surcouches additionnelles (ex. : rectangles fantômes pendant un dessin). */
 	overlay?: ReactNode;
 }
@@ -56,13 +64,36 @@ export function PlanCanvas( props: PlanCanvasProps ): JSX.Element {
 		takenIds,
 		editingId,
 		onKiosqueClick,
+		onKiosqueDrag,
+		onKiosqueDragEnd,
 		overlay,
 	} = props;
+
+	const stageRef = useRef< HTMLDivElement | null >( null );
+	const [ panDisabled, setPanDisabled ] = useState< boolean >( false );
 
 	const computeVariant = useMemo(
 		() => buildVariantResolver( mode, { selectedIds, myReservationIds, takenIds, editingId } ),
 		[ mode, selectedIds, myReservationIds, takenIds, editingId ]
 	);
+
+	const getStageBounds = useCallback( (): DOMRect | null => {
+		return stageRef.current ? stageRef.current.getBoundingClientRect() : null;
+	}, [] );
+
+	const handleDragStart = useCallback( (): void => {
+		setPanDisabled( true );
+	}, [] );
+
+	const handleDragEnd = useCallback(
+		( kiosque: Kiosque, x: number, y: number ): void => {
+			setPanDisabled( false );
+			onKiosqueDragEnd?.( kiosque, x, y );
+		},
+		[ onKiosqueDragEnd ]
+	);
+
+	const draggable = mode === 'edit' && undefined !== onKiosqueDragEnd;
 
 	return (
 		<div className={ `jde-canvas jde-canvas--${ mode }` }>
@@ -72,12 +103,13 @@ export function PlanCanvas( props: PlanCanvasProps ): JSX.Element {
 				maxScale={ 4 }
 				doubleClick={ { disabled: true } }
 				wheel={ { step: 0.1 } }
+				panning={ { disabled: panDisabled } }
 			>
 				<TransformComponent
 					wrapperClass="jde-canvas__viewport"
 					contentClass="jde-canvas__content"
 				>
-					<div className="jde-canvas__stage">
+					<div className="jde-canvas__stage" ref={ stageRef }>
 						<img
 							src={ planUrl }
 							alt=""
@@ -91,6 +123,11 @@ export function PlanCanvas( props: PlanCanvasProps ): JSX.Element {
 								kiosque={ kiosque }
 								variant={ computeVariant( kiosque ) }
 								onClick={ onKiosqueClick }
+								draggable={ draggable }
+								getBounds={ draggable ? getStageBounds : undefined }
+								onDragStart={ draggable ? handleDragStart : undefined }
+								onDrag={ draggable ? onKiosqueDrag : undefined }
+								onDragEnd={ draggable ? handleDragEnd : undefined }
 							/>
 						) ) }
 

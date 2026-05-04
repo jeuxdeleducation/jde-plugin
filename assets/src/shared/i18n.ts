@@ -76,7 +76,7 @@ export const T = {
 		toolbarZoomOut: 'Dézoomer',
 		toolbarFit: 'Adapter',
 		toolbarHelp:
-			'Cliquer-glisser sur une zone vide pour créer un kiosque. Cliquer un kiosque pour le modifier.',
+			'Cliquer un kiosque pour le modifier. Glisser-déposer un kiosque sur le plan pour le repositionner.',
 		emptyState:
 			'Téléverse un plan ci-dessus, puis clique sur « Mettre à jour » en haut à droite pour activer l\'éditeur.',
 		lockedBanner:
@@ -155,6 +155,19 @@ export const T = {
 			title: 'Réservation enregistrée',
 			body: 'Merci ! Tes kiosques sont maintenant officiellement réservés.',
 		},
+		quotaReached: {
+			title: 'Tous tes kiosques sont réservés',
+			intro: ( n: number ): string =>
+				n === 1
+					? 'Ton kiosque est officiellement réservé.'
+					: `Tes ${ n } kiosques sont officiellement réservés.`,
+			yourBooths: 'Tes kiosques :',
+			contactBefore: 'Pour modifier ta réservation, contacte-nous à ',
+			contactAfter: '.',
+			logout: 'Quitter',
+		},
+		submitError:
+			'Impossible d\'enregistrer la réservation. Réessaie ou contacte-nous.',
 		errors: {
 			noActiveEvent:
 				'Aucun événement n\'est actuellement en cours. Reviens plus tard.',

@@ -315,6 +315,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ExposantRepository::class ),
 				$c->get( CodeGenerator::class ),
 				$c->get( AuditRepository::class ),
+				$c->get( ReservationRepository::class ),
 			)
 		);
 

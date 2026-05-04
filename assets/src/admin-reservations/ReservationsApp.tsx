@@ -179,18 +179,18 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 			) }
 
 			<div className="jde-resa__layout">
-				<div className="jde-resa__col-table">
-					<ReservationsTable
-						reservations={ reservations }
-						onEdit={ ( r ) => setEditing( r ) }
-						onDelete={ ( r ) => setDeleting( r ) }
-					/>
-				</div>
 				<div className="jde-resa__col-plan">
 					<PlanView
 						planUrl={ planUrl }
 						kiosques={ kiosques }
 						reservedKiosqueIds={ reservedKiosqueIds }
+					/>
+				</div>
+				<div className="jde-resa__col-table">
+					<ReservationsTable
+						reservations={ reservations }
+						onEdit={ ( r ) => setEditing( r ) }
+						onDelete={ ( r ) => setDeleting( r ) }
 					/>
 				</div>
 			</div>

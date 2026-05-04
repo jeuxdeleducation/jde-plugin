@@ -90,11 +90,45 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 	}, [ evenementId ] );
 
 	const handleClick = useCallback( ( kiosque: Kiosque ): void => {
-		const local = kiosques.find( ( k ) => k.id === kiosque.id );
+		const local = kiosques.find(
+			( k ) => k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
+		);
 		if ( local ) {
 			setEditingKey( local.clientKey );
 		}
 	}, [ kiosques ] );
+
+	/**
+	 * Aperçu temps réel pendant le drag : on met à jour pos_x/pos_y du
+	 * kiosque concerné. La sauvegarde côté serveur attend un clic sur
+	 * « Enregistrer le plan » (`dirty`).
+	 */
+	const handleKiosqueDrag = useCallback(
+		( kiosque: Kiosque, posX: number, posY: number ): void => {
+			setKiosques( ( current ) =>
+				current.map( ( k ) =>
+					k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
+						? { ...k, pos_x: posX, pos_y: posY }
+						: k
+				)
+			);
+		},
+		[]
+	);
+
+	const handleKiosqueDragEnd = useCallback(
+		( kiosque: Kiosque, posX: number, posY: number ): void => {
+			setKiosques( ( current ) =>
+				current.map( ( k ) =>
+					k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
+						? { ...k, pos_x: posX, pos_y: posY }
+						: k
+				)
+			);
+			setDirty( true );
+		},
+		[]
+	);
 
 	const handleSaveDraft = useCallback( ( updated: KiosqueDraft ): void => {
 		setKiosques( ( current ) =>
@@ -207,6 +241,8 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 					editingDraft && editingDraft.id !== null ? editingDraft.id : null
 				}
 				onKiosqueClick={ handleClick }
+				onKiosqueDrag={ planVerrouille ? undefined : handleKiosqueDrag }
+				onKiosqueDragEnd={ planVerrouille ? undefined : handleKiosqueDragEnd }
 			/>
 
 			{ editingDraft && (

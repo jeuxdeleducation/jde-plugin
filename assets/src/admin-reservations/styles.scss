@@ -43,25 +43,24 @@
 	}
 
 	&__layout {
-		display: grid;
-		grid-template-columns: minmax( 0, 3fr ) minmax( 320px, 2fr );
+		display: flex;
+		flex-direction: column;
 		gap: var( --jde-spacing-lg );
+	}
 
-		@media ( max-width: 960px ) {
-			grid-template-columns: 1fr;
+	&__col-plan {
+		min-width: 0;
+		max-width: 100%;
+
+		// Garde une hauteur raisonnable pour le plan, sans accaparer
+		// tout l'écran : la table doit rester visible juste en dessous.
+		.jde-canvas {
+			max-height: 60vh;
 		}
 	}
 
 	&__col-table {
 		min-width: 0;
-	}
-
-	&__col-plan {
-		min-width: 0;
-		position: sticky;
-		top: 60px;
-		max-height: calc( 100vh - 100px );
-		overflow: auto;
 	}
 
 	&__empty {

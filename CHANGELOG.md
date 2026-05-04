@@ -4,6 +4,38 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.4.1] — 2026-05-04
+
+### Corrigé
+
+- **Confirmation de réservation côté public sans effet** : la modale `.jde-modal` n'avait aucune règle CSS de positionnement dans le bundle public (overlay, footer, body). Le « pop-up » s'affichait inline sous la barre de sélection, le bouton « Confirmer définitivement » était caché derrière la barre sticky et le clic n'aboutissait pas. Les vraies règles `.jde-modal-overlay` (fixed, z-index 100000), `.jde-modal__body` et `.jde-modal__footer` (gap entre Annuler/Confirmer) sont maintenant déclarées. Au passage : la bordure jaune qui « collait » à la section a été retirée.
+- **Export CSV des réservations en 403** : le lien `<a target="_blank">` n'envoie pas le header `X-WP-Nonce`, ce qui faisait basculer `rest_cookie_check_errors()` sur l'utilisateur anonyme et bloquait `current_user_can( 'jde_manage_kiosques' )`. Le nonce REST est maintenant ajouté en query string (`?_wpnonce=…`) à `csvUrl`.
+
+### Ajouté — Côté public
+
+- **Titre et description de l'événement visibles** : le titre apparaît au-dessus du nom de l'exposant dans le header, la description (Markdown/HTML rédigée dans l'éditeur WP) s'affiche dans un encart au-dessus du plan. Sert à donner des consignes aux exposants.
+- **Écran « Tous tes kiosques sont réservés »** : quand l'exposant atteint son quota, l'app bascule sur un écran final qui liste ses kiosques + invite à contacter l'équipe pour toute modification. Plus de barre de sélection ni de boutons trompeurs.
+- **Erreurs de réservation visibles** : les erreurs non-409 (réseau, quota dépassé, etc.) s'affichent désormais dans la modale de confirmation au lieu d'être avalées dans la console.
+
+### Modifié — Côté public
+
+- **Logo retiré du shortcode** : le wrapper du shortcode n'affiche plus le logo JDE — laissé au thème de la page hôte qui le gère déjà.
+- **Espace entre le champ « Code d'accès » et le bouton « Continuer »** : le formulaire utilise maintenant un `gap` vertical pour aérer la mise en page.
+- **Couleurs sémantiques pour les statuts de kiosques** : palette indépendante de la charte JDE (vert sage / orange terracotta / bleu poudre / gris / rouge brique) pour distinguer disponible / sélectionné / le mien / pris / indisponible d'un coup d'œil.
+
+### Ajouté — Côté admin
+
+- **Drag & drop dans l'éditeur de kiosques** : un kiosque peut maintenant être déplacé sur le plan à la souris (ou au doigt sur tablette), en plus de la saisie des coordonnées en %. Le pan global de la carte est désactivé pendant un drag pour éviter les conflits. Désactivé quand le plan est verrouillé.
+- **Édition d'un exposant** : nouvelle ligne d'édition inline dans la page « Gérer les exposants » pour modifier le nom et le nombre de kiosques alloués. Le code d'accès reste immuable.
+- **Unicité du nom d'entreprise par événement** : la création et la modification rejettent un nom déjà utilisé pour le même événement (comparaison insensible à la casse).
+- **Colonne « Réservés / alloués »** dans la liste des exposants (ex. `2 / 5`) avec mise en évidence si le compte des réservations dépasse le quota — utile après une baisse du quota.
+- **Page « Suivi des réservations » sur une seule colonne** : le plan en temps réel est désormais en haut, le tableau des réservations occupe toute la largeur en dessous pour faciliter la lecture.
+
+### Modifié — Côté admin
+
+- **Journal d'audit borné à 100 entrées** : à chaque écriture, `AuditRepository::pruneOldEntries()` supprime les plus anciennes pour éviter la croissance illimitée de la table `wp_jde_audit`.
+- **Champ « image de couverture » retiré du CPT Événement** : il ne servait à rien côté public. Suppression de `'thumbnail'` dans le `supports` du CPT.
+
 ## [0.4.0] — 2026-05-04
 
 ### Ajouté — Module Kiosques (Phase C)

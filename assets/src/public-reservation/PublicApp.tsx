@@ -1,8 +1,8 @@
 /**
  * Application React publique de réservation des kiosques.
  *
- * Orchestre les écrans (CodeEntryForm vs ReservationView), la
- * confirmation, la création de réservation et la gestion du conflit 409.
+ * Orchestre les écrans (CodeEntryForm vs ReservationView vs QuotaReached),
+ * la confirmation, la création de réservation et la gestion du conflit 409.
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -23,6 +23,7 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 	const [ loading, setLoading ] = useState< boolean >( true );
 	const [ pendingIds, setPendingIds ] = useState< number[] | null >( null );
 	const [ submitting, setSubmitting ] = useState< boolean >( false );
+	const [ submitError, setSubmitError ] = useState< string | null >( null );
 	const [ success, setSuccess ] = useState< boolean >( false );
 	const [ conflictNumero, setConflictNumero ] = useState< string | null >( null );
 
@@ -52,9 +53,11 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 		setState( null );
 		setPendingIds( null );
 		setSuccess( false );
+		setSubmitError( null );
 	}, [] );
 
 	const handleStartConfirm = useCallback( ( ids: number[] ): void => {
+		setSubmitError( null );
 		setPendingIds( ids );
 	}, [] );
 
@@ -67,6 +70,7 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 			return;
 		}
 		setSubmitting( true );
+		setSubmitError( null );
 
 		let latestState: PublicState = state;
 
@@ -98,8 +102,13 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 			setPendingIds( null );
 			setSuccess( true );
 		} catch ( e ) {
-			// Erreur autre : affiche message générique et ferme le dialog.
-			setPendingIds( null );
+			// Toute autre erreur (réseau, 422 quota, 500, etc.) — on l'affiche
+			// dans la modale au lieu de l'avaler silencieusement.
+			const message =
+				e instanceof ApiClientError && e.message
+					? e.message
+					: T.public.submitError;
+			setSubmitError( message );
 			// eslint-disable-next-line no-console
 			console.error( 'JDE — erreur de réservation :', e );
 		} finally {
@@ -115,6 +124,24 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 		return (
 			<div className="jde-public">
 				<CodeEntryForm onAuthenticated={ handleAuthenticated } />
+			</div>
+		);
+	}
+
+	const quotaReached =
+		state.mes_reservations.length >= state.exposant.nb_kiosques_max
+		&& state.exposant.nb_kiosques_max > 0;
+
+	if ( success && quotaReached ) {
+		// Une fois la dernière réservation confirmée, on bascule directement
+		// sur l'écran « quota atteint » pour éviter qu'on revienne au plan.
+		return (
+			<div className="jde-public">
+				<QuotaReachedView
+					state={ state }
+					contactEmail={ contactEmail }
+					onLogout={ () => void handleLogout() }
+				/>
 			</div>
 		);
 	}
@@ -139,6 +166,18 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 		);
 	}
 
+	if ( quotaReached ) {
+		return (
+			<div className="jde-public">
+				<QuotaReachedView
+					state={ state }
+					contactEmail={ contactEmail }
+					onLogout={ () => void handleLogout() }
+				/>
+			</div>
+		);
+	}
+
 	return (
 		<div className="jde-public">
 			<ReservationView
@@ -152,6 +191,7 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 				<ConfirmDialog
 					count={ pendingIds.length }
 					submitting={ submitting }
+					errorMessage={ submitError }
 					onCancel={ handleCancelConfirm }
 					onConfirm={ () => void handleFinalConfirm() }
 				/>
@@ -163,6 +203,60 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 					onClose={ () => setConflictNumero( null ) }
 				/>
 			) }
+		</div>
+	);
+}
+
+interface QuotaReachedViewProps {
+	state: PublicState;
+	contactEmail: string;
+	onLogout: () => void;
+}
+
+function QuotaReachedView( props: QuotaReachedViewProps ): JSX.Element {
+	const { state, contactEmail, onLogout } = props;
+
+	const myNumeros = state.mes_reservations
+		.map( ( r ) => state.kiosques.find( ( k ) => k.id === r.kiosque_id )?.numero ?? null )
+		.filter( ( n ): n is string => null !== n );
+
+	return (
+		<div className="jde-public__quota-reached">
+			<h2 className="jde-public__quota-reached-title">
+				{ T.public.quotaReached.title }
+			</h2>
+			<p>
+				{ T.public.quotaReached.intro( state.mes_reservations.length ) }
+			</p>
+
+			{ myNumeros.length > 0 && (
+				<>
+					<p>
+						<strong>{ T.public.quotaReached.yourBooths }</strong>
+					</p>
+					<ul className="jde-public__quota-reached-list">
+						{ myNumeros.map( ( n ) => (
+							<li key={ n }>{ n }</li>
+						) ) }
+					</ul>
+				</>
+			) }
+
+			<p>
+				{ T.public.quotaReached.contactBefore }
+				<a href={ `mailto:${ contactEmail }` }>{ contactEmail }</a>
+				{ T.public.quotaReached.contactAfter }
+			</p>
+
+			<div className="jde-public__quota-reached-actions">
+				<button
+					type="button"
+					className="jde-button jde-button--ghost"
+					onClick={ onLogout }
+				>
+					{ T.public.quotaReached.logout }
+				</button>
+			</div>
 		</div>
 	);
 }
