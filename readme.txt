@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.3.1
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.4.0 =
+* Phase C livrée : module Kiosques complet pour le jour J. Page Réservations React TS avec polling 30s (suivi temps réel), CRUD manuel admin (créer/modifier/supprimer une réservation), export CSV (UTF-8 + BOM), journal d'audit complet de toutes les actions admin (page Historique avec filtres + pagination), déverrouillage automatique du plan quand la dernière réservation est supprimée. La colonne « Réservations » de la liste des événements affiche maintenant le vrai compteur.
 
 = 0.3.1 =
 * Correctif critique : le ZIP de release v0.3.0 ne contenait pas le dossier assets/build (les bundles React étaient absents → éditeur de kiosques invisible). Le release.yml a été corrigé pour exclure uniquement le dossier de staging build/ à la racine, pas assets/build/.
