@@ -4,6 +4,48 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.4.0] — 2026-05-04
+
+### Ajouté — Module Kiosques (Phase C)
+
+**Page « Réservations » (admin) :**
+- Nouvelle page React TS accessible depuis le bouton « Gérer les réservations → » de l'écran d'édition d'événement.
+- Layout deux colonnes : tableau des réservations (entreprise, kiosque, date, source, notes, actions) à gauche, plan annoté à droite.
+- Polling REST 30 s avec indicateur visuel « Mis à jour il y a Xs ».
+- Création manuelle (modale avec sélecteurs Kiosque + Exposant + Notes + case « bypass quota »).
+- Modification : permet de déplacer une réservation vers un autre kiosque (delete + create atomique côté serveur).
+- Suppression avec motif obligatoire (consigné dans le journal d'audit).
+- Bouton « Exporter en CSV » qui télécharge `reservations-<slug>-<date>.csv` (UTF-8 + BOM pour Excel).
+
+**REST API étendue (`namespace jde/v1`) :**
+- `GET    /admin/evenements/{id}/reservations` — liste enrichie (jointures entreprise + kiosque + admin login).
+- `GET    /admin/evenements/{id}/reservations.csv` — export CSV.
+- `GET    /admin/evenements/{id}/exposants` — pour les sélecteurs de modale.
+- `POST   /admin/reservations` — création manuelle avec `bypass_quota` optionnel.
+- `PUT    /admin/reservations/{id}` — modification (kiosque ou notes).
+- `DELETE /admin/reservations/{id}` — suppression avec `reason` requis.
+
+**Journal d'audit complet :**
+- Toutes les actions admin sont désormais loggées dans `wp_jde_audit` :
+  - `reservation.create` / `reservation.update` / `reservation.transfer` / `reservation.delete`
+  - `exposant.create` / `exposant.delete`
+  - `evenement.activate` / `evenement.deactivate`
+  - `kiosque.save_batch` (avec compteur d'inserts/updates/deletes)
+- Nouvelle page « Historique » (admin → Kiosques → Historique) avec filtres (type d'entité, ID entité, préfixe d'action, ID utilisateur) et pagination 50/page. Payload JSON brut consultable via `<details>` repliable.
+
+**Verrouillage automatique du plan :**
+- Le plan se déverrouille automatiquement (`_jde_plan_verrouille = false`) quand la dernière réservation d'un événement est supprimée. Symétrique avec le verrouillage à la 1ʳᵉ réservation.
+
+**Améliorations :**
+- La colonne « Réservations » de la liste des événements affiche désormais le vrai compteur (au lieu de `0` fixe).
+
+**Infrastructure :**
+- Nouveau modèle `ReservationDetail` (jointures pour les vues admin).
+- Nouveau modèle `AuditEntry` (entrées de journal avec user_login joint).
+- Nouveau service `CsvExporter` qui stream sur `php://output`.
+- Extension de `ReservationService` avec `update()` et `delete()`.
+- 3ᵉ bundle TS : `admin-reservations` (42 KB minifié).
+
 ## [0.3.1] — 2026-05-02
 
 ### Corrigé (critique)

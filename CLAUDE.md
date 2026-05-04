@@ -136,6 +136,18 @@ Pattern: extend `JDE\Modules\Kiosques\REST\AbstractController`, register routes 
 - Return `WP_REST_Response` on success, `WP_Error` on failure (use `errorResponse()` helper).
 - All public routes use the `X-WP-Nonce` header (the JS `api.ts` wrapper adds it automatically).
 
+For non-JSON responses (CSV, file streams, etc.), the callback method can return `never`: do `nocache_headers()`, set custom headers, write to `php://output`, then `exit;` — this short-circuits the WordPress REST pipeline cleanly. Reference implementation: `AdminReservationsController::exportCsv` + `Services/CsvExporter`.
+
+### Audit logging
+
+All admin write operations are logged through `AuditRepository::log($userId, $action, $entityType, $entityId, $payload)`. Action names follow `<entity>.<verb>` convention (e.g., `reservation.create`, `evenement.activate`, `kiosque.save_batch`). The `wp_jde_audit` table is queryable through `AuditRepository::query($filters, $limit, $offset)` with filters by user, entity type, entity ID, or action prefix. The `AuditPage` (admin → Kiosques → Historique) renders a paginated, filterable view of the journal.
+
+Self-serve (anonymous) operations log with `user_id = 0` to distinguish them from admin actions.
+
+### Long-running admin pages with polling
+
+Pattern used by the Réservations page (`assets/src/admin-reservations/`): mount React, fetch initial state, then `setInterval(pollFn, 30_000)` in a `useEffect` that returns a cleanup. State is replaced wholesale on each poll, no diffing needed. The `lastRefreshAt` timestamp + a per-second `setInterval` displays a "Mis à jour il y a Xs" indicator without re-rendering the data.
+
 ### Key conventions
 
 - **PHP autoloading**: PSR-4 via Composer. `JDE\Modules\Adhesions\AdhesionsModule` → `src/Modules/Adhesions/AdhesionsModule.php`.
