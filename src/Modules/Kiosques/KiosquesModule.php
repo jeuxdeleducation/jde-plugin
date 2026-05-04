@@ -292,6 +292,8 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( EvenementService::class ),
 				$c->get( KiosqueRepository::class ),
 				$c->get( ExposantRepository::class ),
+				$c->get( ReservationRepository::class ),
+				$c->get( AuditRepository::class ),
 			)
 		);
 
@@ -307,6 +309,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			static fn ( Container $c ): ExposantsPage => new ExposantsPage(
 				$c->get( ExposantRepository::class ),
 				$c->get( CodeGenerator::class ),
+				$c->get( AuditRepository::class ),
 			)
 		);
 
@@ -318,7 +321,8 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		$container->set(
 			AdminKiosquesController::class,
 			static fn ( Container $c ): AdminKiosquesController => new AdminKiosquesController(
-				$c->get( KiosqueRepository::class )
+				$c->get( KiosqueRepository::class ),
+				$c->get( AuditRepository::class ),
 			)
 		);
 	}

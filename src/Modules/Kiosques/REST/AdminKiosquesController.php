@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use DateTimeZone;
 use JDE\Modules\Kiosques\Models\Kiosque;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use WP_Error;
 use WP_REST_Request;
@@ -31,7 +32,10 @@ defined( 'ABSPATH' ) || exit;
  */
 final class AdminKiosquesController extends AbstractController {
 
-	public function __construct( private readonly KiosqueRepository $repo ) {}
+	public function __construct(
+		private readonly KiosqueRepository $repo,
+		private readonly AuditRepository $audit,
+	) {}
 
 	public function registerRoutes(): void {
 		register_rest_route(
@@ -161,13 +165,27 @@ final class AdminKiosquesController extends AbstractController {
 		}
 
 		// Supprimer les kiosques retirés par le client.
+		$deleted = 0;
 		foreach ( array_keys( $existingIds ) as $existingId ) {
 			if ( ! isset( $preservedIds[ $existingId ] ) ) {
 				$this->repo->delete( $existingId );
+				++$deleted;
 			}
 		}
 
 		$final = $this->repo->findByEvenement( $evenementId );
+
+		$this->audit->log(
+			get_current_user_id(),
+			'kiosque.save_batch',
+			'evenement',
+			$evenementId,
+			array(
+				'preserved' => count( $preservedIds ),
+				'deleted'   => $deleted,
+				'total'     => count( $final ),
+			)
+		);
 
 		return new WP_REST_Response(
 			array(

@@ -11,8 +11,10 @@ namespace JDE\Modules\Kiosques\Admin;
 
 use JDE\Modules\Kiosques\Capabilities;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
+use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\Services\EvenementService;
 
 defined( 'ABSPATH' ) || exit;
@@ -39,6 +41,8 @@ final class EvenementColumns {
 		private readonly EvenementService $evenementService,
 		private readonly KiosqueRepository $kiosqueRepo,
 		private readonly ExposantRepository $exposantRepo,
+		private readonly ReservationRepository $reservationRepo,
+		private readonly AuditRepository $audit,
 	) {}
 
 	public function register(): void {
@@ -93,8 +97,7 @@ final class EvenementColumns {
 				echo (int) $this->exposantRepo->countByEvenement( $postId );
 				break;
 			case 'jde_reservations':
-				// À implémenter en Phase B. Pour l'instant, toujours 0.
-				echo '0';
+				echo (int) $this->reservationRepo->countByEvenement( $postId );
 				break;
 		}
 	}
@@ -189,8 +192,22 @@ final class EvenementColumns {
 
 		if ( 1 === $state ) {
 			$this->evenementService->activate( $postId );
+			$this->audit->log(
+				get_current_user_id(),
+				'evenement.activate',
+				'evenement',
+				$postId,
+				array( 'titre' => $post->post_title )
+			);
 		} else {
 			$this->evenementService->deactivate( $postId );
+			$this->audit->log(
+				get_current_user_id(),
+				'evenement.deactivate',
+				'evenement',
+				$postId,
+				array( 'titre' => $post->post_title )
+			);
 		}
 
 		$redirect = wp_get_referer();

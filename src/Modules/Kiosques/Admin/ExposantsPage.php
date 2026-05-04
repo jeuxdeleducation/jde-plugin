@@ -14,6 +14,7 @@ use DateTimeZone;
 use JDE\Modules\Kiosques\Capabilities;
 use JDE\Modules\Kiosques\Models\Exposant;
 use JDE\Modules\Kiosques\PostTypes\EvenementPostType;
+use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use Throwable;
@@ -41,6 +42,7 @@ final class ExposantsPage {
 	public function __construct(
 		private readonly ExposantRepository $exposants,
 		private readonly CodeGenerator $codeGenerator,
+		private readonly AuditRepository $audit,
 	) {}
 
 	public function register(): void {
@@ -284,7 +286,19 @@ final class ExposantsPage {
 				creePar: get_current_user_id(),
 			);
 
-			$this->exposants->save( $exposant );
+			$saved = $this->exposants->save( $exposant );
+
+			$this->audit->log(
+				get_current_user_id(),
+				'exposant.create',
+				'exposant',
+				null === $saved->id ? 0 : $saved->id,
+				array(
+					'evenement_id'    => $evenementId,
+					'nom_entreprise'  => $nomEntreprise,
+					'nb_kiosques_max' => min( $nbMax, 50 ),
+				)
+			);
 
 			$this->setFlash(
 				'success',
@@ -326,6 +340,18 @@ final class ExposantsPage {
 		}
 
 		$this->exposants->delete( $exposantId );
+
+		$this->audit->log(
+			get_current_user_id(),
+			'exposant.delete',
+			'exposant',
+			$exposantId,
+			array(
+				'evenement_id'   => $exposant->evenementId,
+				'nom_entreprise' => $exposant->nomEntreprise,
+			)
+		);
+
 		$this->setFlash(
 			'success',
 			sprintf(
