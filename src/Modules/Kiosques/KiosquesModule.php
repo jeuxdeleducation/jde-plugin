@@ -13,6 +13,7 @@ use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
 use JDE\Modules\Kiosques\Admin\AdminMenu;
+use JDE\Modules\Kiosques\Admin\AuditPage;
 use JDE\Modules\Kiosques\Admin\DiagnosticNotice;
 use JDE\Modules\Kiosques\Admin\EvenementColumns;
 use JDE\Modules\Kiosques\Admin\EvenementEditScreen;
@@ -104,6 +105,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			$container->get( EvenementColumns::class )->register();
 			$container->get( EvenementEditScreen::class )->register();
 			$container->get( ExposantsPage::class )->register();
+			$container->get( AuditPage::class )->register();
 			$container->get( DiagnosticNotice::class )->register();
 		}
 	}
@@ -310,6 +312,13 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ExposantRepository::class ),
 				$c->get( CodeGenerator::class ),
 				$c->get( AuditRepository::class ),
+			)
+		);
+
+		$container->set(
+			AuditPage::class,
+			static fn ( Container $c ): AuditPage => new AuditPage(
+				$c->get( AuditRepository::class )
 			)
 		);
 
