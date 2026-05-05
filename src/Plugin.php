@@ -177,7 +177,8 @@ final class Plugin {
 			static fn (): GitHubUpdater => new GitHubUpdater(
 				JDE_PLUGIN_FILE,
 				'https://github.com/jeuxdeleducation/jde-plugin/',
-				'main'
+				'main',
+				defined( 'JDE_BETA_CHANNEL' ) && (bool) JDE_BETA_CHANNEL
 			)
 		);
 	}

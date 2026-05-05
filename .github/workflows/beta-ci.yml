@@ -1,0 +1,102 @@
+name: CI Bêta
+
+on:
+  push:
+    branches:
+      - beta
+
+permissions:
+  contents: write
+
+jobs:
+  test-and-release:
+    name: Tests + Release bêta
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer:v2
+
+      - name: Configurer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Installer les dépendances Composer
+        run: composer install --no-progress --prefer-dist
+
+      - name: Lint PHP
+        run: composer lint
+
+      - name: Tests PHP
+        run: composer test
+
+      - name: Installer les dépendances NPM
+        run: npm ci
+
+      - name: Lint JS/CSS
+        run: npm run lint:js && npm run lint:css
+
+      - name: Construire les assets
+        run: npm run build
+
+      - name: Extraire la version de base et calculer la version bêta
+        id: version
+        run: |
+          BASE=$(grep -oP "Version:\s+\K[0-9]+\.[0-9]+\.[0-9]+" jde-plugin.php | head -n1)
+          BETA="${BASE}-beta.${{ github.run_number }}"
+          echo "base=${BASE}"  >> "$GITHUB_OUTPUT"
+          echo "beta=${BETA}"  >> "$GITHUB_OUTPUT"
+
+      - name: Patcher la version dans les fichiers (sans commit git)
+        run: |
+          sed -i "s/ \* Version:.*/ * Version:           ${{ steps.version.outputs.beta }}/" jde-plugin.php
+          sed -i "s/define( 'JDE_PLUGIN_VERSION',.*)/define( 'JDE_PLUGIN_VERSION', '${{ steps.version.outputs.beta }}' );/" jde-plugin.php
+
+      - name: Construire le dossier de release bêta
+        run: |
+          set -e
+          composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
+          BUILD_DIR="build/jde-plugin"
+          rm -rf build && mkdir -p "$BUILD_DIR"
+          rsync -av --exclude-from=.distignore \
+            --exclude='/build' \
+            --exclude='/.git' \
+            ./ "$BUILD_DIR/"
+          cd build
+          zip -r "jde-plugin-beta.zip" jde-plugin
+
+      - name: Supprimer l'ancienne pre-release bêta (si elle existe)
+        run: gh release delete beta-latest --yes --cleanup-tag 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publier la pre-release bêta
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.beta }}
+          name: "Bêta ${{ steps.version.outputs.beta }}"
+          prerelease: true
+          target_commitish: beta
+          files: build/jde-plugin-beta.zip
+          body: |
+            **Bêta automatique** construite depuis la branche `beta`.
+
+            | | |
+            |---|---|
+            | Version | `${{ steps.version.outputs.beta }}` |
+            | Commit  | `${{ github.sha }}` |
+            | Run     | `#${{ github.run_number }}` |
+
+            > ⚠️ Cette version est destinée exclusivement au site `beta.jeuxdeleducation.com`.
+            > Pour la mettre à jour, ajouter `define( 'JDE_BETA_CHANNEL', true );` dans `wp-config.php`.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

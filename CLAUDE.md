@@ -164,22 +164,56 @@ Pattern used by the Réservations page (`assets/src/admin-reservations/`): mount
 
 PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress-Extra` ruleset (configured in `phpcs.xml.dist`) plus PHPCompatibilityWP for PHP 8.1+ compatibility. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
 
+## Branches et canaux de mise à jour
+
+### Branche `beta` — développement par défaut
+
+**Tout le développement se fait sur la branche `beta` sauf accord explicite du user pour merger sur `main`.** Ne jamais commit directement sur `main` sans cette autorisation.
+
+- `beta` : branche de développement active. Chaque push déclenche `.github/workflows/beta-ci.yml` qui : lint, tests, build, puis publie une **pre-release GitHub** (`v{X.Y.Z}-beta.{run_number}`) avec un ZIP prêt à installer.
+- `main` : branche de production. Ne reçoit des commits que lors d'une release officielle approuvée par le user.
+
+### Site bêta — mise à jour automatique depuis `beta`
+
+Le site `beta.jeuxdeleducation.com` est configuré dans son `wp-config.php` avec :
+
+```php
+define( 'JDE_BETA_CHANNEL', true );
+```
+
+Quand cette constante est définie, `GitHubUpdater` intercepte la requête de plugin-update-checker et la redirige vers l'endpoint `/releases` (toutes les releases, y compris les pre-releases), au lieu de `/releases/latest` (releases officielles seulement). Le site bêta voit ainsi la pre-release `beta-latest` et se met à jour automatiquement à chaque build CI.
+
+### Site production — mise à jour depuis `main` seulement
+
+Sans `JDE_BETA_CHANNEL`, plugin-update-checker utilise `/releases/latest` qui n'inclut jamais les pre-releases. Le site de production est donc immunisé contre les builds bêta.
+
+### Convention de numérotation
+
+- **Sur `beta`** : la version dans `jde-plugin.php` est toujours la prochaine version à livrer (ex. `0.6.0` si `0.5.0` vient d'être releasé). Le CI patche temporairement la version en `0.6.0-beta.{N}` dans le ZIP distribué, sans modifier le fichier commité.
+- **Sur `main`** : version de la dernière release officielle.
+
+**Immédiatement après chaque release officielle**, bumper la version sur `beta` vers le prochain palier (`0.5.0` → `0.5.1` ou `0.6.0` selon la nature du prochain cycle).
+
 ## Release Process
 
-The plugin auto-updates on production sites via `plugin-update-checker` watching the GitHub repo's releases. Only **published GitHub releases** count as new versions — `main` is free to receive in-progress work without affecting production.
+### Release bêta (automatique)
 
-When the user says **"this version is ready for production"**:
+Chaque push sur `beta` crée automatiquement une pre-release GitHub. Le site bêta se met à jour de lui-même via WordPress. Aucune action manuelle requise.
 
-1. Bump the version in **two places** (the release workflow validates they match the tag):
-   - `Version:` in the `jde-plugin.php` header
-   - `JDE_PLUGIN_VERSION` constant in `jde-plugin.php`
-2. Update `CHANGELOG.md` (move "Non publié" entries into a new dated section) and `readme.txt` (Stable tag + Changelog).
-3. Commit: `git commit -m "Préparer la version X.Y.Z"`
-4. Tag and push: `git tag vX.Y.Z && git push && git push --tags`
-5. The `.github/workflows/release.yml` workflow runs automatically: it validates version coherence, runs `composer install --no-dev`, runs `npm run build`, applies `.distignore`, builds a clean ZIP, and publishes a GitHub release with the ZIP attached.
-6. WordPress sites will detect the update within ~12h or instantly via *Vérifier les mises à jour*.
+### Release officielle (accord du user requis)
 
-For day-to-day development on `main` (between releases), no action is needed beyond regular commits and pushes.
+Quand le user dit **« cette version est prête pour la production »** :
+
+1. Merger `beta` dans `main` (fast-forward si possible).
+2. Bumper la version en **deux endroits** dans `jde-plugin.php` (le workflow `release.yml` valide la cohérence avec le tag) :
+   - `Version:` dans l'en-tête du plugin
+   - constante `JDE_PLUGIN_VERSION`
+3. Mettre à jour `CHANGELOG.md` (déplacer les entrées « Non publié » dans une section datée) et `readme.txt` (Stable tag + Changelog).
+4. Commit sur `main` : `git commit -m "Préparer la version X.Y.Z"`
+5. Tagger et pousser : `git tag vX.Y.Z && git push && git push --tags`
+6. Le workflow `.github/workflows/release.yml` se déclenche automatiquement : valide les versions, installe les dépendances sans `--dev`, build les assets, applique `.distignore`, construit un ZIP propre, publie la release GitHub avec le ZIP en pièce jointe.
+7. Les sites WordPress détectent la mise à jour dans ~12h ou immédiatement via *Vérifier les mises à jour*.
+8. Immédiatement après : retourner sur `beta`, bumper la version vers le prochain palier, pousser.
 
 ## Language
 
@@ -193,7 +227,7 @@ Conversations with Claude may happen in English, but **all produced content must
 
 ## Version Control
 
-Commit and push to `origin/main` regularly so work is never lost. Guidelines:
+Commit and push to `origin/beta` regularly so work is never lost. **Do not commit to `main` without explicit user approval.** Guidelines:
 
 - Commit after each logical unit of work (new feature, bug fix, config change) — do not batch unrelated changes into one commit.
 - Commit messages must be in French, in the imperative mood, and describe *why* when the reason is not obvious. Example: `Ajouter le type de contenu Équipe avec champs ACF`.
