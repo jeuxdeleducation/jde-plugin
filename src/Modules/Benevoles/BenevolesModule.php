@@ -15,6 +15,16 @@ use JDE\Modules\ActivatableModule;
 use JDE\Modules\Benevoles\Database\Migrator;
 use JDE\Modules\Benevoles\Database\Schema;
 use JDE\Modules\Benevoles\PostTypes\EvenementRhPostType;
+use JDE\Modules\Benevoles\Repositories\AssignationRepository;
+use JDE\Modules\Benevoles\Repositories\DisponibiliteRepository;
+use JDE\Modules\Benevoles\Repositories\EmailLogRepository;
+use JDE\Modules\Benevoles\Repositories\InscriptionReponseRepository;
+use JDE\Modules\Benevoles\Repositories\NotificationRepository;
+use JDE\Modules\Benevoles\Repositories\PersonneRepository;
+use JDE\Modules\Benevoles\Repositories\PlageDisponibiliteRepository;
+use JDE\Modules\Benevoles\Repositories\PosteRepository;
+use JDE\Modules\Benevoles\Repositories\QuartRepository;
+use JDE\Modules\Benevoles\Repositories\SignatureRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -114,5 +124,27 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 			EvenementRhPostType::class,
 			static fn (): EvenementRhPostType => new EvenementRhPostType()
 		);
+
+		$repos = array(
+			PersonneRepository::class,
+			InscriptionReponseRepository::class,
+			PosteRepository::class,
+			QuartRepository::class,
+			PlageDisponibiliteRepository::class,
+			DisponibiliteRepository::class,
+			AssignationRepository::class,
+			NotificationRepository::class,
+			SignatureRepository::class,
+			EmailLogRepository::class,
+		);
+		foreach ( $repos as $repoClass ) {
+			$container->set(
+				$repoClass,
+				static function () use ( $repoClass ) {
+					global $wpdb;
+					return new $repoClass( $wpdb );
+				}
+			);
+		}
 	}
 }
