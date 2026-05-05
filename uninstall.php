@@ -21,6 +21,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 // Module Kiosques : retirer la capacité custom de tous les rôles.
 \JDE\Modules\Kiosques\Capabilities::removeFromAllRoles();
 
-// Note : les tables BD du module ne sont volontairement pas supprimées ici
+// Module Bénévoles : retirer les capacités custom et supprimer les rôles WP.
+\JDE\Modules\Benevoles\Capabilities::removeFromAllRoles();
+\JDE\Modules\Benevoles\Capabilities::removeRoles();
+
+// Note : les tables BD des modules ne sont volontairement pas supprimées ici
 // pour éviter une perte de données accidentelle. Pour un nettoyage complet,
-// utiliser un outil comme WP-CLI : `wp db query "DROP TABLE wp_jde_kiosques, ..."`.
+// utiliser un outil comme WP-CLI : `wp db query "DROP TABLE wp_jde_kiosques, wp_jde_rh_*, ..."`.

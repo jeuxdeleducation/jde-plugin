@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace JDE;
 
 use JDE\Modules\ActivatableModule;
+use JDE\Modules\Benevoles\BenevolesModule;
 use JDE\Modules\Kiosques\KiosquesModule;
 use JDE\Modules\ModuleRegistry;
 use JDE\Support\Assets;
@@ -193,6 +194,7 @@ final class Plugin {
 	 */
 	private function registerModules(): void {
 		$this->modules->add( new KiosquesModule() );
+		$this->modules->add( new BenevolesModule() );
 	}
 
 	// Empêcher la copie et la sérialisation du singleton.
