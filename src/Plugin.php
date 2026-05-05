@@ -87,11 +87,10 @@ final class Plugin {
 	}
 
 	/**
-	 * Hook plugins_loaded : chargement du domaine de traduction puis enregistrement des modules.
+	 * Hook plugins_loaded : enregistre les modules (sans charger le textdomain
+	 * qui a été déplacé à `init` pour respecter WordPress 6.7+).
 	 */
 	public function onPluginsLoaded(): void {
-		load_plugin_textdomain( 'jde-plugin', false, dirname( JDE_PLUGIN_BASENAME ) . '/languages' );
-
 		$this->modules->registerAll();
 
 		// Initialiser le mécanisme de mise à jour depuis GitHub (sécuritaire en prod uniquement).
@@ -104,9 +103,12 @@ final class Plugin {
 	}
 
 	/**
-	 * Hook init : laisse les modules enregistrer CPT, taxonomies, shortcodes, etc.
+	 * Hook init : charge le textdomain (WP 6.7+ refuse de le charger plus tôt)
+	 * puis laisse les modules enregistrer CPT, taxonomies, shortcodes, etc.
 	 */
 	public function onInit(): void {
+		load_plugin_textdomain( 'jde-plugin', false, dirname( JDE_PLUGIN_BASENAME ) . '/languages' );
+
 		do_action( 'jde_plugin_init', $this );
 	}
 

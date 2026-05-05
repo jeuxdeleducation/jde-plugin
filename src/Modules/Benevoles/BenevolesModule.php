@@ -87,10 +87,11 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		$this->registerServices( $container );
 
-		// Filet de sécurité : à chaque chargement, s'assurer que le schéma est
-		// à jour, que les capacités sont attribuées et que les rôles existent.
-		// Idempotent — coût négligeable. Couvre le cas où le hook d'activation
-		// n'a pas tourné (installation manuelle, mise à jour du plugin, etc.).
+		// Filet de sécurité : à chaque chargement, s'assurer que le schéma
+		// est à jour, que la capacité admin est attribuée et que les rôles
+		// existent. Idempotent — coût négligeable. Couvre le cas où le hook
+		// d'activation n'a pas tourné (installation manuelle, mise à jour
+		// du plugin, etc.).
 		add_action(
 			'plugins_loaded',
 			static function () use ( $container ): void {

@@ -165,17 +165,23 @@ final class Capabilities {
 
 	/**
 	 * Libellé d'affichage d'un rôle WP créé par le module.
+	 *
+	 * Chaînes en dur (pas de `__()`) parce que cette méthode est appelée
+	 * depuis `onActivate()` et depuis le hook `plugins_loaded`, deux moments
+	 * où le textdomain n'est pas encore disponible — WordPress 6.7+ refuse
+	 * d'ailleurs de charger un textdomain avant `init`. Le projet étant
+	 * mono-locale (fr-CA), on perd rien à figer la chaîne.
 	 */
 	private static function roleDisplayName( string $typeRole ): string {
 		switch ( $typeRole ) {
 			case 'benevole':
-				return __( 'Bénévole JDE', 'jde-plugin' );
+				return 'Bénévole JDE';
 			case 'jury':
-				return __( 'Jury JDE', 'jde-plugin' );
+				return 'Jury JDE';
 			case 'arbitre':
-				return __( 'Arbitre JDE', 'jde-plugin' );
+				return 'Arbitre JDE';
 			default:
-				return __( 'Personnel JDE', 'jde-plugin' );
+				return 'Personnel JDE';
 		}
 	}
 }
