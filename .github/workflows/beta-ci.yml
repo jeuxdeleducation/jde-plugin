@@ -13,6 +13,13 @@ jobs:
     name: Tests + Release bêta
     runs-on: ubuntu-latest
 
+    # Silence le hint « Using 'master' as the name for the initial branch »
+    # déclenché par le `git init` que fait actions/checkout.
+    env:
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: 'init.defaultBranch'
+      GIT_CONFIG_VALUE_0: 'main'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6

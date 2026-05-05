@@ -9,6 +9,13 @@ on:
 permissions:
   contents: read
 
+# Silence le hint git « Using 'master' as the name for the initial branch »
+# déclenché par le `git init` que fait actions/checkout dans chaque job.
+env:
+  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_KEY_0: 'init.defaultBranch'
+  GIT_CONFIG_VALUE_0: 'main'
+
 jobs:
   lint-php:
     name: Lint PHP (PHPCS)
