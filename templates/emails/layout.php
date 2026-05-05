@@ -49,7 +49,7 @@ defined( 'ABSPATH' ) || exit;
 							if ( ! empty( $footer ) ) {
 								echo esc_html( $footer );
 							} else {
-								echo esc_html__( 'Ce courriel a été envoyé automatiquement par le système de gestion des kiosques de Jeux de l\'Éducation. Ne pas répondre à ce message.', 'jde-plugin' );
+								echo esc_html__( 'Ce courriel a été envoyé automatiquement par le système de gestion des kiosques des Jeux de l\'Éducation. Ne pas répondre à ce message.', 'jde-plugin' );
 							}
 							?>
 						</p>

@@ -3,11 +3,12 @@
  * Corps du courriel « Code d'accès ».
  *
  * Variables attendues :
- *   $nom_entreprise (string)
- *   $code_acces     (string)
- *   $evenement_titre (string)
- *   $url_reservation (string) — URL de la page publique de réservation.
- *   $contact_email  (string)
+ *   $nom_entreprise       (string)
+ *   $code_acces           (string)
+ *   $evenement_titre      (string)
+ *   $url_reservation      (string) — URL de la page publique de réservation.
+ *   $contact_email        (string)
+ *   $message_personnalise (string) — message de l'admin (vide = section masquée).
  *
  * @package JDE
  */
@@ -64,6 +65,14 @@ defined( 'ABSPATH' ) || exit;
 		</td>
 	</tr>
 </table>
+<?php endif; ?>
+
+<?php if ( ! empty( $message_personnalise ) ) : ?>
+<div style="background:#f0faf9;border-left:3px solid #00b0a8;padding:12px 16px;margin:20px 0;border-radius:3px;">
+	<p style="margin:0;font-size:14px;color:#333333;line-height:1.6;">
+		<?php echo nl2br( esc_html( $message_personnalise ) ); ?>
+	</p>
+</div>
 <?php endif; ?>
 
 <hr style="border:none;border-top:1px solid #eeeeee;margin:24px 0;">

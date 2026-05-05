@@ -110,10 +110,10 @@ export const T = {
 	public: {
 		title: 'Réservation de kiosques',
 		codeForm: {
-			heading: str( 'public_code_heading', 'Entre ton code d\'accès' ),
+			heading: str( 'public_code_heading', 'Entrez votre code d\'accès' ),
 			subheading: str(
 				'public_code_subheading',
-				'Tu dois avoir reçu un code d\'accès par courriel pour réserver tes kiosques.'
+				'Vous devez avoir reçu un code d\'accès par courriel pour réserver vos kiosques.'
 			),
 			label: 'Code d\'accès',
 			placeholder: 'XXXX-XXXX',
@@ -122,24 +122,24 @@ export const T = {
 			errorInvalid: str( 'public_code_error_invalid', 'Code invalide ou événement non actif.' ),
 			errorRateLimit: str(
 				'public_code_error_ratelimit',
-				'Trop de tentatives. Réessaie dans 15 minutes.'
+				'Trop de tentatives. Réessayez dans 15 minutes.'
 			),
-			errorNetwork: 'Impossible de joindre le serveur. Vérifie ta connexion.',
+			errorNetwork: 'Impossible de joindre le serveur. Vérifiez votre connexion.',
 		},
 		header: {
 			remaining: ( n: number ): string =>
 				n === 1
 					? '1 kiosque restant'
 					: `${ n } kiosques restants`,
-			noneRemaining: 'Tous tes kiosques sont réservés',
+			noneRemaining: 'Tous vos kiosques sont réservés',
 			logout: 'Quitter',
 		},
 		bubble: {
 			selectButton: 'Sélectionner',
 			deselectButton: 'Retirer de ma sélection',
-			alreadyMineHeading: 'Tu as réservé ce kiosque',
+			alreadyMineHeading: 'Vous avez réservé ce kiosque',
 			alreadyMineMessage: ( email: string ): string =>
-				`Pour modifier, contacte notre équipe à ${ email }.`,
+				`Pour modifier, contactez notre équipe à ${ email }.`,
 			takenHeading: 'Réservé',
 			takenByGeneric: 'Ce kiosque est déjà pris.',
 			unavailable: 'Indisponible',
@@ -151,8 +151,8 @@ export const T = {
 			confirm: 'Confirmer ma sélection',
 		},
 		confirmDialog: {
-			title: 'Confirmer ta sélection',
-			body: 'Une fois confirmé, tu ne pourras plus modifier ta réservation. Pour tout changement, il faudra contacter notre équipe.',
+			title: 'Confirmer votre sélection',
+			body: 'Une fois confirmé, vous ne pourrez plus modifier votre réservation. Pour tout changement, il faudra contacter notre équipe.',
 			cancel: 'Annuler',
 			confirm: 'Confirmer définitivement',
 			submitting: 'Enregistrement…',
@@ -166,35 +166,35 @@ export const T = {
 		},
 		success: {
 			title: 'Réservation enregistrée',
-			body: 'Merci ! Tes kiosques sont maintenant officiellement réservés.',
+			body: 'Merci ! Vos kiosques sont maintenant officiellement réservés.',
 		},
 		quotaReached: {
-			title: str( 'public_quota_title', 'Tous tes kiosques sont réservés' ),
+			title: str( 'public_quota_title', 'Tous vos kiosques sont réservés' ),
 			intro: ( n: number ): string => {
 				if ( n === 1 ) {
-					return str( 'public_quota_intro_single', 'Ton kiosque est officiellement réservé.' );
+					return str( 'public_quota_intro_single', 'Votre kiosque est officiellement réservé.' );
 				}
 				const tpl = str( 'public_quota_intro_plural', '' );
 				return tpl !== ''
 					? tpl.replace( '{n}', String( n ) )
-					: `Tes ${ n } kiosques sont officiellement réservés.`;
+					: `Vos ${ n } kiosques sont officiellement réservés.`;
 			},
-			yourBooths: 'Tes kiosques :',
-			contactBefore: 'Pour modifier ta réservation, contacte-nous à ',
+			yourBooths: 'Vos kiosques :',
+			contactBefore: 'Pour modifier votre réservation, contactez-nous à ',
 			contactAfter: '.',
 			viewPlan: 'Voir le plan',
 			closePlan: 'Fermer le plan',
 			logout: 'Quitter',
 		},
 		submitError:
-			'Impossible d\'enregistrer la réservation. Réessaie ou contacte-nous.',
+			'Impossible d\'enregistrer la réservation. Réessayez ou contactez-nous.',
 		errors: {
 			noActiveEvent:
-				'Aucun événement n\'est actuellement en cours. Reviens plus tard.',
+				'Aucun événement n\'est actuellement en cours. Revenez plus tard.',
 			quotaExceeded:
-				'Tu as atteint le nombre maximum de kiosques que tu peux réserver.',
-			eventInactive: 'L\'événement n\'est plus actif. Contacte notre équipe.',
-			generic: 'Une erreur s\'est produite. Réessaie ou contacte-nous.',
+				'Vous avez atteint le nombre maximum de kiosques que vous pouvez réserver.',
+			eventInactive: 'L\'événement n\'est plus actif. Contactez notre équipe.',
+			generic: 'Une erreur s\'est produite. Réessayez ou contactez-nous.',
 		},
 	},
 };

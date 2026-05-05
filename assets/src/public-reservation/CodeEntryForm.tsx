@@ -59,9 +59,6 @@ export function CodeEntryForm( { onAuthenticated }: CodeEntryFormProps ): JSX.El
 
 			<form onSubmit={ ( e ) => void handleSubmit( e ) } noValidate>
 				<label className="jde-field">
-					<span className="jde-field__label">
-						{ T.public.codeForm.label }
-					</span>
 					<input
 						type="text"
 						value={ code }

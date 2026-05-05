@@ -29,9 +29,10 @@ final class EmailService {
 	/**
 	 * Envoyer le courriel « Code d'accès » à un exposant.
 	 *
-	 * @param string $urlReservation URL de la page publique de réservation.
+	 * @param string $urlReservation      URL de la page publique de réservation.
+	 * @param string $messagePersonnalise Message personnalisé de l'admin (vide = section masquée).
 	 */
-	public function sendAccessCode( Exposant $exposant, string $evenementTitre, string $urlReservation = '' ): bool {
+	public function sendAccessCode( Exposant $exposant, string $evenementTitre, string $urlReservation = '', string $messagePersonnalise = '' ): bool {
 		if ( null === $exposant->courriel ) {
 			return false;
 		}
@@ -40,7 +41,7 @@ final class EmailService {
 		if ( '' === $subject ) {
 			$subject = sprintf(
 				/* translators: %s: titre de l'événement */
-				__( 'Ton code d\'accès — %s', 'jde-plugin' ),
+				__( 'Votre code d\'accès — %s', 'jde-plugin' ),
 				$evenementTitre
 			);
 		}
@@ -53,11 +54,12 @@ final class EmailService {
 			$body = $this->renderTemplate(
 				JDE_PLUGIN_DIR . 'templates/emails/access-code.php',
 				array(
-					'nom_entreprise'  => $exposant->nomEntreprise,
-					'code_acces'      => $exposant->codeAcces,
-					'evenement_titre' => $evenementTitre,
-					'url_reservation' => $urlReservation,
-					'contact_email'   => $contact,
+					'nom_entreprise'       => $exposant->nomEntreprise,
+					'code_acces'           => $exposant->codeAcces,
+					'evenement_titre'      => $evenementTitre,
+					'url_reservation'      => $urlReservation,
+					'contact_email'        => $contact,
+					'message_personnalise' => $messagePersonnalise,
 				)
 			);
 		}
@@ -79,7 +81,7 @@ final class EmailService {
 		if ( '' === $subject ) {
 			$subject = sprintf(
 				/* translators: %s: titre de l'événement */
-				__( 'Confirmation de ta réservation — %s', 'jde-plugin' ),
+				__( 'Confirmation de votre réservation — %s', 'jde-plugin' ),
 				$evenementTitre
 			);
 		}

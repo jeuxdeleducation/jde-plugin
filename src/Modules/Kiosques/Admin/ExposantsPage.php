@@ -209,7 +209,7 @@ final class ExposantsPage {
 	}
 
 	private function renderRow( Exposant $exp, int $reserved, int $evenementId ): void {
-		$deleteUrl    = wp_nonce_url(
+		$deleteUrl = wp_nonce_url(
 			add_query_arg(
 				array(
 					'action'      => self::ACTION_DELETE,
@@ -220,20 +220,7 @@ final class ExposantsPage {
 			self::ACTION_DELETE . '_' . (int) $exp->id,
 			self::NONCE_NAME
 		);
-		$editUrl      = self::url( $evenementId, array( 'edit' => (int) $exp->id ) );
-		$sendEmailUrl = null !== $exp->courriel
-			? wp_nonce_url(
-				add_query_arg(
-					array(
-						'action'      => self::ACTION_SEND_EMAIL,
-						'exposant_id' => $exp->id,
-					),
-					admin_url( 'admin-post.php' )
-				),
-				self::ACTION_SEND_EMAIL . '_' . (int) $exp->id,
-				self::NONCE_NAME
-			)
-			: null;
+		$editUrl   = self::url( $evenementId, array( 'edit' => (int) $exp->id ) );
 
 		$overQuota = $reserved > $exp->nbKiosquesMax;
 		?>
@@ -266,17 +253,21 @@ final class ExposantsPage {
 			<td style="font-size:12px;">
 				<?php if ( null !== $exp->courriel ) : ?>
 					<span title="<?php echo esc_attr( $exp->courriel ); ?>"><?php echo esc_html( $exp->courriel ); ?></span>
-					<?php if ( null !== $sendEmailUrl ) : ?>
-						<br>
-						<a href="<?php echo esc_url( $sendEmailUrl ); ?>"
-							onclick="return confirm('<?php echo esc_js( __( 'Envoyer le code d\'accès par courriel à cet exposant ?', 'jde-plugin' ) ); ?>');"
-							class="button button-small" style="margin-top:4px;">
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:6px;">
+						<?php wp_nonce_field( self::ACTION_SEND_EMAIL . '_' . (int) $exp->id, self::NONCE_NAME ); ?>
+						<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION_SEND_EMAIL ); ?>">
+						<input type="hidden" name="exposant_id" value="<?php echo (int) $exp->id; ?>">
+						<textarea
+							name="message_personnalise"
+							rows="2"
+							placeholder="<?php esc_attr_e( 'Message personnalisé (optionnel)…', 'jde-plugin' ); ?>"
+							style="display:block;width:100%;font-size:12px;margin:4px 0;box-sizing:border-box;resize:vertical;"></textarea>
+						<button type="submit" class="button button-small">
 							<?php esc_html_e( 'Envoyer le code', 'jde-plugin' ); ?>
-						</a>
-					<?php endif; ?>
+						</button>
+					</form>
 					<?php if ( null !== $exp->emailEnvoyeLe ) : ?>
-						<br>
-						<em style="color:#666;">
+						<em style="color:#666;font-size:11px;">
 							<?php
 							printf(
 								/* translators: %s: date d'envoi */
@@ -643,14 +634,21 @@ final class ExposantsPage {
 			wp_die( esc_html__( 'Permission refusée.', 'jde-plugin' ), 403 );
 		}
 
-		$exposantId = isset( $_GET['exposant_id'] ) ? (int) $_GET['exposant_id'] : 0;
-		$nonce      = isset( $_GET[ self::NONCE_NAME ] )
-			? sanitize_text_field( wp_unslash( (string) $_GET[ self::NONCE_NAME ] ) )
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- nonce vérifié manuellement ci-dessous
+		$exposantId = isset( $_POST['exposant_id'] ) ? (int) $_POST['exposant_id'] : 0;
+		$nonce      = isset( $_POST[ self::NONCE_NAME ] )
+			? sanitize_text_field( wp_unslash( (string) $_POST[ self::NONCE_NAME ] ) )
 			: '';
+		// phpcs:enable
 
 		if ( ! wp_verify_nonce( $nonce, self::ACTION_SEND_EMAIL . '_' . $exposantId ) ) {
 			wp_die( esc_html__( 'Jeton de sécurité invalide.', 'jde-plugin' ), 403 );
 		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce already verified above
+		$messagePersonnalise = isset( $_POST['message_personnalise'] )
+			? sanitize_textarea_field( wp_unslash( (string) $_POST['message_personnalise'] ) )
+			: '';
 
 		$exposant = $this->exposants->findById( $exposantId );
 		if ( null === $exposant || null === $exposant->courriel ) {
@@ -660,9 +658,9 @@ final class ExposantsPage {
 		}
 
 		$titre = (string) get_the_title( $exposant->evenementId );
-		$url   = home_url( '/' );
+		$url   = home_url( '/reservation-kiosques/' );
 
-		$sent = $this->emailService->sendAccessCode( $exposant, $titre, $url );
+		$sent = $this->emailService->sendAccessCode( $exposant, $titre, $url, $messagePersonnalise );
 
 		if ( $sent ) {
 			$now = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
