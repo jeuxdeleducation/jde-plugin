@@ -9,7 +9,6 @@
 
 // Strings éventuellement surchargées depuis la page Paramètres (injectées via window.jdeKiosques.strings).
 const s: Record< string, string | null > =
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	(
 		window as unknown as {
 			jdeKiosques?: { strings?: Record< string, string | null > };

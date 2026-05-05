@@ -63,7 +63,6 @@ export function ProfilApp(): JSX.Element {
 			{ intro && (
 				<div
 					className="jde-profil__intro"
-					// eslint-disable-next-line react/no-danger
 					dangerouslySetInnerHTML={ { __html: intro } }
 				/>
 			) }

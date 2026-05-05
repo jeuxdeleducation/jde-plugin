@@ -19,7 +19,7 @@
     "devDependencies": {
         "@types/react": "^18.2.0",
         "@types/react-dom": "^18.2.0",
-        "@wordpress/scripts": "^27.0.0",
+        "@wordpress/scripts": "^32.1.0",
         "typescript": "^5.4.0"
     }
 }

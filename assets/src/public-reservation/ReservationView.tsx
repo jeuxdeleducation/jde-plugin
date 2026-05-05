@@ -121,7 +121,6 @@ export function ReservationView( props: ReservationViewProps ): JSX.Element {
 			{ state.evenement.description_html && (
 				<div
 					className="jde-public__event-description"
-					/* eslint-disable-next-line react/no-danger -- contenu rédigé par un admin du site */
 					dangerouslySetInnerHTML={ {
 						__html: state.evenement.description_html,
 					} }

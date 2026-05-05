@@ -82,7 +82,7 @@ if ( config && config.isOpen ) {
 				if ( submitBtn ) {
 					submitBtn.disabled = false;
 				}
-			} catch ( err ) {
+			} catch {
 				feedback.className =
 					'jde-inscription__feedback jde-inscription__feedback--error';
 				feedback.textContent =
