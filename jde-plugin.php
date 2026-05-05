@@ -3,7 +3,7 @@
  * Plugin Name:       JDE Plugin
  * Plugin URI:        https://github.com/jeuxdeleducation/jde-plugin
  * Description:       Plugin interne des Jeux de l'Éducation : regroupe les personnalisations et fonctionnalités sur mesure du site WordPress.
- * Version:           0.5.1
+ * Version:           0.5.2
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Jeux de l'Éducation
@@ -22,7 +22,7 @@ declare(strict_types=1);
 defined( 'ABSPATH' ) || exit;
 
 // Constantes du plugin.
-define( 'JDE_PLUGIN_VERSION', '0.5.1' );
+define( 'JDE_PLUGIN_VERSION', '0.5.2' );
 define( 'JDE_PLUGIN_FILE', __FILE__ );
 define( 'JDE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'JDE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
