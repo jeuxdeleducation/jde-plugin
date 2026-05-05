@@ -4,6 +4,26 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.0] — 2026-05-04
+
+### Ajouté
+
+- **Plusieurs événements actifs simultanément** : la contrainte applicative « un seul événement actif à la fois » a été levée. Activer un événement n'en désactive plus aucun autre.
+- **Page Statistiques globale** (admin → Kiosques → Statistiques) : tableau récapitulatif par événement publié — kiosques réservés / total (barre de progression), répartition exposants (complétés / en cours / sans réservation), réservations par source (admin vs exposant), lien vers la page de réservations.
+- **Champ courriel sur les exposants** : saisie et modification de l'adresse courriel directement depuis la page Exposants. Stocké en BD (`wp_jde_exposants.courriel`).
+- **Bouton « Envoyer le code »** : envoie l'email de code d'accès à l'exposant en un clic. Affiche l'horodatage du dernier envoi (`email_envoye_le`) à côté du bouton.
+- **Courriel de confirmation automatique** : quand un exposant self-serve atteint son quota de kiosques, un courriel HTML de confirmation lui est envoyé automatiquement avec la liste de ses kiosques réservés.
+- **Templates HTML de courriels** aux couleurs JDE (en-tête sarcelle `#00b0a8`, code d'accès en lime `#cfdd27`) pour le code d'accès et la confirmation de réservation.
+- **Page Paramètres** (admin → Kiosques → Paramètres) : configuration de l'expéditeur des courriels, des objets et corps des deux types de courriels, et des messages publics de l'application de réservation (titre, sous-titres, erreurs) — tous éditables sans toucher au code.
+- **Messages publics configurables** : les messages de l'app JS (code d'accès, quota atteint, erreurs) sont désormais injectés depuis la page Paramètres via `window.jdeKiosques.strings`. Les valeurs par défaut restent en fallback.
+- **Voir le plan en lecture seule** sur l'écran « Tous tes kiosques sont réservés » : bouton « Voir le plan » qui affiche le plan annoté en mode non-interactif (mes kiosques en bleu, pris en gris, disponibles en vert). Bouton « Fermer le plan » pour replier.
+
+### Infrastructure
+
+- Migration BD v2 : ajout des colonnes `courriel` et `email_envoye_le` sur `wp_jde_exposants` via `dbDelta()` (aucune perte de données).
+- Nouveau service `EmailService` (wraps `wp_mail()`) avec templates PHP capturés via `ob_start()`.
+- Nouveau composant React `ReadOnlyPlanView` réutilisant `PlanCanvas` en mode `view`.
+
 ## [0.4.2] — 2026-05-04
 
 ### Corrigé

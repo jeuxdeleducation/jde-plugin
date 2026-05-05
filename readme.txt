@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.4.2
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.5.0 =
+* Multi-événements actifs : activer un événement n'en désactive plus aucun autre. Page Statistiques globale par événement (kiosques, exposants, sources). Champ courriel sur les exposants avec bouton « Envoyer le code » (horodatage du dernier envoi). Courriel de confirmation automatique quand le quota est atteint (self-serve). Templates HTML de courriels aux couleurs JDE. Page Paramètres pour configurer expéditeur, objets et corps des courriels, et messages publics de l'app JS. Vue plan en lecture seule sur l'écran quota-atteint. Migration BD v2 (colonnes courriel + email_envoye_le sur wp_jde_exposants).
 
 = 0.4.2 =
 * Correctif : la page de suivi des réservations n'affichait aucun kiosque sur le plan et empêchait la modification/suppression d'une réservation. Les requêtes admin/kiosques et admin/exposants avalaient silencieusement leurs erreurs ; elles sont maintenant remontées dans le bandeau d'avertissement. Le modal d'édition fonctionne aussi quand la liste des kiosques n'a pas pu être chargée (fallback sur le kiosque actuel pour permettre l'édition des notes). Affichage explicite quand le plan existe mais qu'aucun kiosque n'a été placé dessus.
