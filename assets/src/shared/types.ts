@@ -84,6 +84,7 @@ export interface JdeRuntimeConfig {
 	logoUrl?: string;
 	csvUrl?: string; // URL d'export CSV des réservations
 	backUrl?: string; // URL de retour (édition de l'événement)
+	strings?: Record< string, string | null >; // Messages configurables depuis la page Paramètres
 }
 
 /**

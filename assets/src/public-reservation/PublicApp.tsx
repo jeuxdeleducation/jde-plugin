@@ -12,6 +12,7 @@ import { T } from '../shared/i18n';
 import { CodeEntryForm } from './CodeEntryForm';
 import { ConfirmDialog } from './ConfirmDialog';
 import { ConflictModal } from './ConflictModal';
+import { ReadOnlyPlanView } from './ReadOnlyPlanView';
 import { ReservationView } from './ReservationView';
 
 interface PublicAppProps {
@@ -215,10 +216,13 @@ interface QuotaReachedViewProps {
 
 function QuotaReachedView( props: QuotaReachedViewProps ): JSX.Element {
 	const { state, contactEmail, onLogout } = props;
+	const [ showPlan, setShowPlan ] = useState< boolean >( false );
 
 	const myNumeros = state.mes_reservations
 		.map( ( r ) => state.kiosques.find( ( k ) => k.id === r.kiosque_id )?.numero ?? null )
 		.filter( ( n ): n is string => null !== n );
+
+	const hasPlan = null !== state.evenement.plan_url && state.kiosques.length > 0;
 
 	return (
 		<div className="jde-public__quota-reached">
@@ -249,6 +253,15 @@ function QuotaReachedView( props: QuotaReachedViewProps ): JSX.Element {
 			</p>
 
 			<div className="jde-public__quota-reached-actions">
+				{ hasPlan && ! showPlan && (
+					<button
+						type="button"
+						className="jde-button jde-button--secondary"
+						onClick={ () => setShowPlan( true ) }
+					>
+						{ T.public.quotaReached.viewPlan }
+					</button>
+				) }
 				<button
 					type="button"
 					className="jde-button jde-button--ghost"
@@ -257,6 +270,17 @@ function QuotaReachedView( props: QuotaReachedViewProps ): JSX.Element {
 					{ T.public.quotaReached.logout }
 				</button>
 			</div>
+
+			{ showPlan && null !== state.evenement.plan_url && (
+				<ReadOnlyPlanView
+					planUrl={ state.evenement.plan_url }
+					kiosques={ state.kiosques }
+					mesReservations={ state.mes_reservations }
+					allReservations={ state.reservations }
+					exposantId={ state.exposant.id }
+					onClose={ () => setShowPlan( false ) }
+				/>
+			) }
 		</div>
 	);
 }

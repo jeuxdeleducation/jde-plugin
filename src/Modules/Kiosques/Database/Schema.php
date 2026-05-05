@@ -73,6 +73,8 @@ class Schema {
 			nom_entreprise VARCHAR(255) NOT NULL,
 			nb_kiosques_max SMALLINT UNSIGNED NOT NULL,
 			code_acces VARCHAR(16) NOT NULL,
+			courriel VARCHAR(255) NULL,
+			email_envoye_le DATETIME NULL,
 			date_creation DATETIME NOT NULL,
 			cree_par BIGINT UNSIGNED NOT NULL,
 			PRIMARY KEY  (id),

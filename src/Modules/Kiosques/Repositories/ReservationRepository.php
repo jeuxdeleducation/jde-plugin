@@ -232,6 +232,72 @@ class ReservationRepository {
 		return (int) $count;
 	}
 
+	/**
+	 * Compter les réservations d'un événement par source (admin vs exposant).
+	 *
+	 * Une réservation est « admin » si `cree_par` est non nul, « exposant » sinon.
+	 *
+	 * @return array{admin: int, exposant: int}
+	 */
+	public function countBySourceForEvenement( int $evenementId ): array {
+		$kiosquesTable = $this->wpdb->prefix . 'jde_kiosques';
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT
+					SUM(CASE WHEN r.cree_par IS NOT NULL THEN 1 ELSE 0 END) AS admin,
+					SUM(CASE WHEN r.cree_par IS NULL     THEN 1 ELSE 0 END) AS exposant
+				FROM {$this->table} r
+				INNER JOIN {$kiosquesTable} k ON k.id = r.kiosque_id
+				WHERE k.evenement_id = %d",
+				$evenementId
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		if ( ! is_array( $rows ) || empty( $rows ) ) {
+			return array(
+				'admin'    => 0,
+				'exposant' => 0,
+			);
+		}
+
+		return array(
+			'admin'    => (int) $rows[0]['admin'],
+			'exposant' => (int) $rows[0]['exposant'],
+		);
+	}
+
+	/**
+	 * Retourner les numéros de kiosques réservés par un exposant.
+	 *
+	 * @return string[]
+	 */
+	public function findKiosqueNumerosByExposant( int $exposantId ): array {
+		$kiosquesTable = $this->wpdb->prefix . 'jde_kiosques';
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $this->wpdb->get_results(
+			$this->wpdb->prepare(
+				"SELECT k.numero FROM {$this->table} r
+				INNER JOIN {$kiosquesTable} k ON k.id = r.kiosque_id
+				WHERE r.exposant_id = %d
+				ORDER BY k.numero ASC",
+				$exposantId
+			),
+			ARRAY_A
+		);
+		// phpcs:enable
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		return array_column( $rows, 'numero' );
+	}
+
 	public function delete( int $id ): bool {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = $this->wpdb->delete( $this->table, array( 'id' => $id ), array( '%d' ) );

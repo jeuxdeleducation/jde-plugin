@@ -48,59 +48,13 @@ final class EvenementServiceTest extends TestCase {
 		$this->addToAssertionCount( 1 );
 	}
 
-	public function testActivateDeactivatesOthersThenSetsActive(): void {
-		// Le stub WP_Query (chargé par tests/bootstrap.php) lit la liste de
-		// posts depuis $GLOBALS['__wp_query_posts_stub'].
-		$GLOBALS['__wp_query_posts_stub']    = array( 1, 2, 3 );
-		$GLOBALS['__update_post_meta_calls'] = array();
-
-		Functions\when( 'update_post_meta' )->alias(
-			static function ( $id, $key, $value ) {
-				$GLOBALS['__update_post_meta_calls'][] = array( $id, $key, $value );
-				return true;
-			}
-		);
+	public function testActivateSetsMetaDirectly(): void {
+		Functions\expect( 'update_post_meta' )
+			->once()
+			->with( 7, EvenementPostType::META_ACTIF, true );
 
 		( new EvenementService() )->activate( 7 );
 
-		$calls = $GLOBALS['__update_post_meta_calls'];
-
-		$this->assertCount( 4, $calls );
-
-		// Les 3 premiers : désactivation des événements 1, 2, 3.
-		$deactivated = array_map( static fn ( $c ) => $c[0], array_slice( $calls, 0, 3 ) );
-		sort( $deactivated );
-		$this->assertSame( array( 1, 2, 3 ), $deactivated );
-
-		foreach ( array_slice( $calls, 0, 3 ) as $call ) {
-			$this->assertSame( EvenementPostType::META_ACTIF, $call[1] );
-			$this->assertFalse( $call[2] );
-		}
-
-		// Le dernier : activation de 7.
-		$this->assertSame( array( 7, EvenementPostType::META_ACTIF, true ), $calls[3] );
-	}
-
-	public function testActivateExcludesTargetFromDeactivation(): void {
-		// Si l'événement à activer (5) est déjà dans la liste des actifs,
-		// il NE doit PAS être désactivé puis réactivé (économie d'une écriture).
-		$GLOBALS['__wp_query_posts_stub']    = array( 5, 8 );
-		$GLOBALS['__update_post_meta_calls'] = array();
-
-		Functions\when( 'update_post_meta' )->alias(
-			static function ( $id, $key, $value ) {
-				$GLOBALS['__update_post_meta_calls'][] = array( $id, $key, $value );
-				return true;
-			}
-		);
-
-		( new EvenementService() )->activate( 5 );
-
-		$calls = $GLOBALS['__update_post_meta_calls'];
-
-		// Une seule désactivation (8) + une activation (5) = 2 appels.
-		$this->assertCount( 2, $calls );
-		$this->assertSame( array( 8, EvenementPostType::META_ACTIF, false ), $calls[0] );
-		$this->assertSame( array( 5, EvenementPostType::META_ACTIF, true ), $calls[1] );
+		$this->addToAssertionCount( 1 );
 	}
 }

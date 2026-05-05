@@ -19,6 +19,8 @@ use JDE\Modules\Kiosques\Admin\EvenementColumns;
 use JDE\Modules\Kiosques\Admin\EvenementEditScreen;
 use JDE\Modules\Kiosques\Admin\ExposantsPage;
 use JDE\Modules\Kiosques\Admin\ReservationsPage;
+use JDE\Modules\Kiosques\Admin\SettingsPage;
+use JDE\Modules\Kiosques\Admin\StatsPage;
 use JDE\Modules\Kiosques\Database\Migrator;
 use JDE\Modules\Kiosques\Database\Schema;
 use JDE\Modules\Kiosques\Frontend\ReservationShortcode;
@@ -35,6 +37,7 @@ use JDE\Modules\Kiosques\Services\AuthService;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
 use JDE\Modules\Kiosques\Services\CookieWriter;
 use JDE\Modules\Kiosques\Services\CsvExporter;
+use JDE\Modules\Kiosques\Services\EmailService;
 use JDE\Modules\Kiosques\Services\EvenementService;
 use JDE\Modules\Kiosques\Services\PhpCookieWriter;
 use JDE\Modules\Kiosques\Services\PublicStateBuilder;
@@ -108,6 +111,8 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 			$container->get( ExposantsPage::class )->register();
 			$container->get( ReservationsPage::class )->register();
 			$container->get( AuditPage::class )->register();
+			$container->get( StatsPage::class )->register();
+			$container->get( SettingsPage::class )->register();
 			$container->get( DiagnosticNotice::class )->register();
 		}
 	}
@@ -241,6 +246,13 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 		);
 
 		$container->set(
+			EmailService::class,
+			static fn (): EmailService => new EmailService(
+				(array) get_option( SettingsPage::OPTION_NAME, array() )
+			)
+		);
+
+		$container->set(
 			ReservationService::class,
 			static fn ( Container $c ): ReservationService => new ReservationService(
 				$c->get( ReservationRepository::class ),
@@ -248,6 +260,7 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( ExposantRepository::class ),
 				$c->get( EvenementService::class ),
 				$c->get( AuditRepository::class ),
+				$c->get( EmailService::class ),
 			)
 		);
 
@@ -316,7 +329,23 @@ final class KiosquesModule extends AbstractModule implements ActivatableModule {
 				$c->get( CodeGenerator::class ),
 				$c->get( AuditRepository::class ),
 				$c->get( ReservationRepository::class ),
+				$c->get( EmailService::class ),
 			)
+		);
+
+		$container->set(
+			StatsPage::class,
+			static fn ( Container $c ): StatsPage => new StatsPage(
+				$c->get( EvenementService::class ),
+				$c->get( KiosqueRepository::class ),
+				$c->get( ExposantRepository::class ),
+				$c->get( ReservationRepository::class ),
+			)
+		);
+
+		$container->set(
+			SettingsPage::class,
+			static fn (): SettingsPage => new SettingsPage()
 		);
 
 		$container->set(

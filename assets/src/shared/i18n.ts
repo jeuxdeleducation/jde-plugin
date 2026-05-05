@@ -7,6 +7,15 @@
  * par `@wordpress/i18n` (`__()` côté JS).
  */
 
+// Strings éventuellement surchargées depuis la page Paramètres (injectées via window.jdeKiosques.strings).
+const s: Record< string, string | null > =
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	( window as unknown as { jdeKiosques?: { strings?: Record< string, string | null > } } )
+		.jdeKiosques?.strings ?? {};
+
+const str = ( key: string, fallback: string ): string =>
+	typeof s[ key ] === 'string' && s[ key ] !== null ? ( s[ key ] as string ) : fallback;
+
 export const T = {
 	// Communs
 	cancel: 'Annuler',
@@ -101,16 +110,20 @@ export const T = {
 	public: {
 		title: 'Réservation de kiosques',
 		codeForm: {
-			heading: 'Entre ton code d\'accès',
-			subheading:
-				'Tu dois avoir reçu un code d\'accès par courriel pour réserver tes kiosques.',
+			heading: str( 'public_code_heading', 'Entre ton code d\'accès' ),
+			subheading: str(
+				'public_code_subheading',
+				'Tu dois avoir reçu un code d\'accès par courriel pour réserver tes kiosques.'
+			),
 			label: 'Code d\'accès',
 			placeholder: 'XXXX-XXXX',
 			submit: 'Continuer',
 			submitting: 'Vérification…',
-			errorInvalid: 'Code invalide ou événement non actif.',
-			errorRateLimit:
-				'Trop de tentatives. Réessaie dans 15 minutes.',
+			errorInvalid: str( 'public_code_error_invalid', 'Code invalide ou événement non actif.' ),
+			errorRateLimit: str(
+				'public_code_error_ratelimit',
+				'Trop de tentatives. Réessaie dans 15 minutes.'
+			),
 			errorNetwork: 'Impossible de joindre le serveur. Vérifie ta connexion.',
 		},
 		header: {
@@ -156,14 +169,21 @@ export const T = {
 			body: 'Merci ! Tes kiosques sont maintenant officiellement réservés.',
 		},
 		quotaReached: {
-			title: 'Tous tes kiosques sont réservés',
-			intro: ( n: number ): string =>
-				n === 1
-					? 'Ton kiosque est officiellement réservé.'
-					: `Tes ${ n } kiosques sont officiellement réservés.`,
+			title: str( 'public_quota_title', 'Tous tes kiosques sont réservés' ),
+			intro: ( n: number ): string => {
+				if ( n === 1 ) {
+					return str( 'public_quota_intro_single', 'Ton kiosque est officiellement réservé.' );
+				}
+				const tpl = str( 'public_quota_intro_plural', '' );
+				return tpl !== ''
+					? tpl.replace( '{n}', String( n ) )
+					: `Tes ${ n } kiosques sont officiellement réservés.`;
+			},
 			yourBooths: 'Tes kiosques :',
 			contactBefore: 'Pour modifier ta réservation, contacte-nous à ',
 			contactAfter: '.',
+			viewPlan: 'Voir le plan',
+			closePlan: 'Fermer le plan',
 			logout: 'Quitter',
 		},
 		submitError:

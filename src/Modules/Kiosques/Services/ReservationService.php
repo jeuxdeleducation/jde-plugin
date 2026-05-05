@@ -21,6 +21,7 @@ use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\KiosqueRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use RuntimeException;
+use Throwable;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -47,6 +48,7 @@ class ReservationService {
 		private readonly ExposantRepository $exposants,
 		private readonly EvenementService $evenements,
 		private readonly AuditRepository $audit,
+		private readonly ?EmailService $emailService = null,
 	) {}
 
 	/**
@@ -101,6 +103,21 @@ class ReservationService {
 		$totalForEvent = $this->reservations->countByEvenement( $exposant->evenementId );
 		if ( 1 === $totalForEvent ) {
 			update_post_meta( $exposant->evenementId, EvenementPostType::META_PLAN_VERROUILLE, true );
+		}
+
+		// Courriel de confirmation automatique quand le quota est atteint (self-serve uniquement).
+		if ( null === $creePar && null !== $this->emailService && null !== $exposant->courriel ) {
+			$nowCount = $this->reservations->countByExposant( $exposantId );
+			if ( $nowCount >= $exposant->nbKiosquesMax ) {
+				try {
+					$numeros = $this->reservations->findKiosqueNumerosByExposant( $exposantId );
+					$titre   = (string) get_the_title( $exposant->evenementId );
+					$this->emailService->sendReservationConfirmation( $exposant, $titre, $numeros );
+				} catch ( Throwable $emailError ) {
+					// Ne pas bloquer la réservation si l'envoi échoue.
+					unset( $emailError );
+				}
+			}
 		}
 
 		$this->audit->log(

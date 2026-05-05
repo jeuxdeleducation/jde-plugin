@@ -18,6 +18,7 @@ use JDE\Modules\Kiosques\Repositories\AuditRepository;
 use JDE\Modules\Kiosques\Repositories\ExposantRepository;
 use JDE\Modules\Kiosques\Repositories\ReservationRepository;
 use JDE\Modules\Kiosques\Services\CodeGenerator;
+use JDE\Modules\Kiosques\Services\EmailService;
 use Throwable;
 
 defined( 'ABSPATH' ) || exit;
@@ -37,16 +38,18 @@ final class ExposantsPage {
 
 	public const PAGE_SLUG = 'jde-exposants';
 
-	private const ACTION_CREATE = 'jde_create_exposant';
-	private const ACTION_UPDATE = 'jde_update_exposant';
-	private const ACTION_DELETE = 'jde_delete_exposant';
-	private const NONCE_NAME    = 'jde_exposants_nonce';
+	private const ACTION_CREATE     = 'jde_create_exposant';
+	private const ACTION_UPDATE     = 'jde_update_exposant';
+	private const ACTION_DELETE     = 'jde_delete_exposant';
+	private const ACTION_SEND_EMAIL = 'jde_send_exposant_email';
+	private const NONCE_NAME        = 'jde_exposants_nonce';
 
 	public function __construct(
 		private readonly ExposantRepository $exposants,
 		private readonly CodeGenerator $codeGenerator,
 		private readonly AuditRepository $audit,
 		private readonly ReservationRepository $reservations,
+		private readonly EmailService $emailService,
 	) {}
 
 	public function register(): void {
@@ -54,6 +57,7 @@ final class ExposantsPage {
 		add_action( 'admin_post_' . self::ACTION_CREATE, array( $this, 'handleCreate' ) );
 		add_action( 'admin_post_' . self::ACTION_UPDATE, array( $this, 'handleUpdate' ) );
 		add_action( 'admin_post_' . self::ACTION_DELETE, array( $this, 'handleDelete' ) );
+		add_action( 'admin_post_' . self::ACTION_SEND_EMAIL, array( $this, 'handleSendEmail' ) );
 	}
 
 	/**
@@ -150,6 +154,13 @@ final class ExposantsPage {
 						<th scope="row"><label for="nb_kiosques_max"><?php esc_html_e( 'Nombre de kiosques alloués', 'jde-plugin' ); ?></label></th>
 						<td><input name="nb_kiosques_max" id="nb_kiosques_max" type="number" min="1" max="50" value="1" required class="small-text"></td>
 					</tr>
+					<tr>
+						<th scope="row"><label for="courriel"><?php esc_html_e( 'Adresse courriel (optionnelle)', 'jde-plugin' ); ?></label></th>
+						<td>
+							<input name="courriel" id="courriel" type="email" class="regular-text">
+							<p class="description"><?php esc_html_e( 'Utilisée pour envoyer le code d\'accès et la confirmation de réservation.', 'jde-plugin' ); ?></p>
+						</td>
+					</tr>
 				</table>
 
 				<p>
@@ -169,6 +180,7 @@ final class ExposantsPage {
 							<th><?php esc_html_e( 'Entreprise', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Code d\'accès', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Réservés / alloués', 'jde-plugin' ); ?></th>
+							<th><?php esc_html_e( 'Courriel', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Date de création', 'jde-plugin' ); ?></th>
 							<th><?php esc_html_e( 'Actions', 'jde-plugin' ); ?></th>
 						</tr>
@@ -197,7 +209,7 @@ final class ExposantsPage {
 	}
 
 	private function renderRow( Exposant $exp, int $reserved, int $evenementId ): void {
-		$deleteUrl = wp_nonce_url(
+		$deleteUrl    = wp_nonce_url(
 			add_query_arg(
 				array(
 					'action'      => self::ACTION_DELETE,
@@ -208,7 +220,20 @@ final class ExposantsPage {
 			self::ACTION_DELETE . '_' . (int) $exp->id,
 			self::NONCE_NAME
 		);
-		$editUrl   = self::url( $evenementId, array( 'edit' => (int) $exp->id ) );
+		$editUrl      = self::url( $evenementId, array( 'edit' => (int) $exp->id ) );
+		$sendEmailUrl = null !== $exp->courriel
+			? wp_nonce_url(
+				add_query_arg(
+					array(
+						'action'      => self::ACTION_SEND_EMAIL,
+						'exposant_id' => $exp->id,
+					),
+					admin_url( 'admin-post.php' )
+				),
+				self::ACTION_SEND_EMAIL . '_' . (int) $exp->id,
+				self::NONCE_NAME
+			)
+			: null;
 
 		$overQuota = $reserved > $exp->nbKiosquesMax;
 		?>
@@ -237,6 +262,33 @@ final class ExposantsPage {
 					echo ' ⚠';
 				}
 				?>
+			</td>
+			<td style="font-size:12px;">
+				<?php if ( null !== $exp->courriel ) : ?>
+					<span title="<?php echo esc_attr( $exp->courriel ); ?>"><?php echo esc_html( $exp->courriel ); ?></span>
+					<?php if ( null !== $sendEmailUrl ) : ?>
+						<br>
+						<a href="<?php echo esc_url( $sendEmailUrl ); ?>"
+							onclick="return confirm('<?php echo esc_js( __( 'Envoyer le code d\'accès par courriel à cet exposant ?', 'jde-plugin' ) ); ?>');"
+							class="button button-small" style="margin-top:4px;">
+							<?php esc_html_e( 'Envoyer le code', 'jde-plugin' ); ?>
+						</a>
+					<?php endif; ?>
+					<?php if ( null !== $exp->emailEnvoyeLe ) : ?>
+						<br>
+						<em style="color:#666;">
+							<?php
+							printf(
+								/* translators: %s: date d'envoi */
+								esc_html__( 'Envoyé le %s', 'jde-plugin' ),
+								esc_html( $this->formatDate( $exp->emailEnvoyeLe ) )
+							);
+							?>
+						</em>
+					<?php endif; ?>
+				<?php else : ?>
+					<em style="color:#aaa;"><?php esc_html_e( '—', 'jde-plugin' ); ?></em>
+				<?php endif; ?>
 			</td>
 			<td><?php echo esc_html( $this->formatDate( $exp->dateCreation ) ); ?></td>
 			<td>
@@ -275,6 +327,11 @@ final class ExposantsPage {
 					<label>
 						<span style="display:block;font-size:11px;color:#666;"><?php esc_html_e( 'Kiosques alloués', 'jde-plugin' ); ?></span>
 						<input type="number" name="nb_kiosques_max" value="<?php echo (int) $exp->nbKiosquesMax; ?>" min="1" max="50" class="small-text" required>
+					</label>
+
+					<label style="flex:1 1 220px;">
+						<span style="display:block;font-size:11px;color:#666;"><?php esc_html_e( 'Courriel (optionnel)', 'jde-plugin' ); ?></span>
+						<input type="email" name="courriel" value="<?php echo esc_attr( $exp->courriel ?? '' ); ?>" class="regular-text" style="width:100%;">
 					</label>
 
 					<div style="font-size:12px;color:#555;align-self:center;padding-top:18px;">
@@ -358,6 +415,10 @@ final class ExposantsPage {
 			? trim( sanitize_text_field( wp_unslash( (string) $_POST['nom_entreprise'] ) ) )
 			: '';
 		$nbMax         = isset( $_POST['nb_kiosques_max'] ) ? (int) $_POST['nb_kiosques_max'] : 0;
+		$courriel      = isset( $_POST['courriel'] )
+			? sanitize_email( wp_unslash( (string) $_POST['courriel'] ) )
+			: '';
+		$courriel      = '' !== $courriel ? $courriel : null;
 
 		if ( $evenementId <= 0 || '' === $nomEntreprise || $nbMax < 1 ) {
 			$this->setFlash( 'error', __( 'Données invalides.', 'jde-plugin' ) );
@@ -385,6 +446,8 @@ final class ExposantsPage {
 				nomEntreprise: $nomEntreprise,
 				nbKiosquesMax: min( $nbMax, 50 ),
 				codeAcces: $code,
+				courriel: $courriel,
+				emailEnvoyeLe: null,
 				dateCreation: $now,
 				creePar: get_current_user_id(),
 			);
@@ -447,6 +510,10 @@ final class ExposantsPage {
 			? trim( sanitize_text_field( wp_unslash( (string) $_POST['nom_entreprise'] ) ) )
 			: '';
 		$nbMax         = isset( $_POST['nb_kiosques_max'] ) ? (int) $_POST['nb_kiosques_max'] : 0;
+		$courriel      = isset( $_POST['courriel'] )
+			? sanitize_email( wp_unslash( (string) $_POST['courriel'] ) )
+			: '';
+		$courriel      = '' !== $courriel ? $courriel : null;
 
 		$existing = $this->exposants->findById( $exposantId );
 
@@ -478,6 +545,8 @@ final class ExposantsPage {
 			nomEntreprise: $nomEntreprise,
 			nbKiosquesMax: min( $nbMax, 50 ),
 			codeAcces: $existing->codeAcces,
+			courriel: $courriel,
+			emailEnvoyeLe: $existing->emailEnvoyeLe,
 			dateCreation: $existing->dateCreation,
 			creePar: $existing->creePar,
 		);
@@ -562,6 +631,64 @@ final class ExposantsPage {
 				$exposant->nomEntreprise
 			)
 		);
+
+		$this->redirectBack( $exposant->evenementId );
+	}
+
+	/**
+	 * Handler d'envoi du code d'accès par courriel.
+	 */
+	public function handleSendEmail(): void {
+		if ( ! current_user_can( Capabilities::MANAGE ) ) {
+			wp_die( esc_html__( 'Permission refusée.', 'jde-plugin' ), 403 );
+		}
+
+		$exposantId = isset( $_GET['exposant_id'] ) ? (int) $_GET['exposant_id'] : 0;
+		$nonce      = isset( $_GET[ self::NONCE_NAME ] )
+			? sanitize_text_field( wp_unslash( (string) $_GET[ self::NONCE_NAME ] ) )
+			: '';
+
+		if ( ! wp_verify_nonce( $nonce, self::ACTION_SEND_EMAIL . '_' . $exposantId ) ) {
+			wp_die( esc_html__( 'Jeton de sécurité invalide.', 'jde-plugin' ), 403 );
+		}
+
+		$exposant = $this->exposants->findById( $exposantId );
+		if ( null === $exposant || null === $exposant->courriel ) {
+			$this->setFlash( 'error', __( 'Exposant introuvable ou adresse courriel manquante.', 'jde-plugin' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) );
+			exit;
+		}
+
+		$titre = (string) get_the_title( $exposant->evenementId );
+		$url   = home_url( '/' );
+
+		$sent = $this->emailService->sendAccessCode( $exposant, $titre, $url );
+
+		if ( $sent ) {
+			$now = new DateTimeImmutable( 'now', new DateTimeZone( 'UTC' ) );
+			$this->exposants->markEmailSent( $exposantId, $now );
+
+			$this->audit->log(
+				get_current_user_id(),
+				'exposant.email_sent',
+				'exposant',
+				$exposantId,
+				array(
+					'courriel' => $exposant->courriel,
+				)
+			);
+
+			$this->setFlash(
+				'success',
+				sprintf(
+					/* translators: %s: adresse courriel */
+					__( 'Code d\'accès envoyé à %s.', 'jde-plugin' ),
+					$exposant->courriel
+				)
+			);
+		} else {
+			$this->setFlash( 'error', __( 'Échec de l\'envoi du courriel. Vérifiez la configuration SMTP.', 'jde-plugin' ) );
+		}
 
 		$this->redirectBack( $exposant->evenementId );
 	}

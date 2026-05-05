@@ -32,6 +32,8 @@ final readonly class Exposant {
 		public string $nomEntreprise,
 		public int $nbKiosquesMax,
 		public string $codeAcces,
+		public ?string $courriel,
+		public ?DateTimeImmutable $emailEnvoyeLe,
 		public DateTimeImmutable $dateCreation,
 		public int $creePar,
 	) {}
@@ -44,12 +46,18 @@ final readonly class Exposant {
 	public static function fromRow( array $row ): self {
 		$tz = new DateTimeZone( 'UTC' );
 
+		$emailEnvoyeLe = isset( $row['email_envoye_le'] ) && null !== $row['email_envoye_le']
+			? new DateTimeImmutable( (string) $row['email_envoye_le'], $tz )
+			: null;
+
 		return new self(
 			id: isset( $row['id'] ) ? (int) $row['id'] : null,
 			evenementId: (int) $row['evenement_id'],
 			nomEntreprise: (string) $row['nom_entreprise'],
 			nbKiosquesMax: (int) $row['nb_kiosques_max'],
 			codeAcces: (string) $row['code_acces'],
+			courriel: isset( $row['courriel'] ) && '' !== $row['courriel'] ? (string) $row['courriel'] : null,
+			emailEnvoyeLe: $emailEnvoyeLe,
 			dateCreation: new DateTimeImmutable( (string) $row['date_creation'], $tz ),
 			creePar: (int) $row['cree_par'],
 		);
@@ -67,6 +75,8 @@ final readonly class Exposant {
 			'evenement_id'    => $this->evenementId,
 			'nom_entreprise'  => $this->nomEntreprise,
 			'nb_kiosques_max' => $this->nbKiosquesMax,
+			'courriel'        => $this->courriel,
+			'email_envoye_le' => $this->emailEnvoyeLe?->format( 'c' ),
 			'date_creation'   => $this->dateCreation->format( 'c' ),
 			'cree_par'        => $this->creePar,
 		);

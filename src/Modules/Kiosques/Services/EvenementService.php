@@ -19,18 +19,17 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Logique métier autour des événements (CPT `jde_evenement`).
  *
- * Règle métier centrale : il ne peut y avoir **qu'un seul événement actif**
- * à la fois. Activer un événement désactive automatiquement les autres,
- * de sorte que la page publique puisse identifier l'événement courant
- * sans ambiguïté à partir d'un code d'exposant.
+ * Plusieurs événements peuvent être actifs simultanément — chaque exposant
+ * est lié à un événement précis via `evenement_id`, donc l'identification
+ * de l'événement courant se fait toujours par le code d'accès de l'exposant,
+ * sans ambiguïté.
  */
 final class EvenementService {
 
 	/**
-	 * Activer un événement (et désactiver tous les autres).
+	 * Activer un événement.
 	 */
 	public function activate( int $evenementId ): void {
-		$this->deactivateAll( exceptId: $evenementId );
 		update_post_meta( $evenementId, EvenementPostType::META_ACTIF, true );
 	}
 

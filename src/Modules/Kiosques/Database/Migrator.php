@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 final class Migrator {
 
 	public const OPTION_KEY      = 'jde_plugin_db_version';
-	public const CURRENT_VERSION = 1;
+	public const CURRENT_VERSION = 2;
 
 	public function __construct( private readonly Schema $schema ) {}
 
@@ -57,10 +57,15 @@ final class Migrator {
 	 */
 	private function applyMigrations( int $from ): void {
 		if ( $from < 1 ) {
+			// Installation initiale : le schéma courant inclut déjà toutes les colonnes.
 			$this->schema->createAllTables();
+			return;
 		}
 
-		// Pour ajouter un palier ultérieur, incrémenter CURRENT_VERSION et ajouter
-		// un bloc « if ( $from < N ) » qui appelle la méthode dédiée sur Schema.
+		if ( $from < 2 ) {
+			// Ajout des colonnes courriel et email_envoye_le sur wp_jde_exposants.
+			// dbDelta() gère les colonnes manquantes sans toucher aux données existantes.
+			$this->schema->createAllTables();
+		}
 	}
 }

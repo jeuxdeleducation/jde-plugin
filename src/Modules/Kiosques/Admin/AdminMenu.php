@@ -68,6 +68,26 @@ final class AdminMenu {
 			'post-new.php?post_type=' . EvenementPostType::SLUG
 		);
 
+		// Sous-menu « Statistiques ».
+		add_submenu_page(
+			self::SLUG,
+			__( 'Statistiques Kiosques', 'jde-plugin' ),
+			__( 'Statistiques', 'jde-plugin' ),
+			Capabilities::MANAGE,
+			StatsPage::PAGE_SLUG,
+			array( $this, 'noop' )
+		);
+
+		// Sous-menu « Paramètres ».
+		add_submenu_page(
+			self::SLUG,
+			__( 'Paramètres Kiosques', 'jde-plugin' ),
+			__( 'Paramètres', 'jde-plugin' ),
+			Capabilities::MANAGE,
+			SettingsPage::PAGE_SLUG,
+			array( $this, 'noop' )
+		);
+
 		// Retirer le sous-menu auto-généré qui réplique le slug du parent.
 		remove_submenu_page( self::SLUG, self::SLUG );
 	}
@@ -84,6 +104,12 @@ final class AdminMenu {
 		);
 		exit;
 	}
+
+	/**
+	 * Callback vide utilisé pour les sous-menus dont le rendu est géré
+	 * par leur propre classe (StatsPage, SettingsPage).
+	 */
+	public function noop(): void {}
 
 	/**
 	 * Garder le menu « Kiosques » surligné sur les écrans liés au CPT.
