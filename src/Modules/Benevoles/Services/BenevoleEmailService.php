@@ -206,7 +206,7 @@ final class BenevoleEmailService {
 	}
 
 	private function wrapInLayout( string $subject, string $bodyHtml ): string {
-		$layoutPath = JDE_PLUGIN_DIR . 'templates/emails/layout.php';
+		$layoutPath = JDE_PLUGIN_DIR . 'templates/emails/benevoles-layout.php';
 		if ( file_exists( $layoutPath ) ) {
 			ob_start();
 			include $layoutPath;
