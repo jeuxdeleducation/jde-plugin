@@ -12,6 +12,12 @@ namespace JDE\Modules\Benevoles;
 use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
+use JDE\Support\Assets;
+use JDE\Support\Template;
+use JDE\Modules\Benevoles\Frontend\InscriptionShortcode;
+use JDE\Modules\Benevoles\Frontend\ProfilShortcode;
+use JDE\Modules\Benevoles\REST\PublicInscriptionController;
+use JDE\Modules\Benevoles\REST\PublicProfileController;
 use JDE\Modules\Benevoles\Admin\AdminMenu;
 use JDE\Modules\Benevoles\Admin\AssignationsPage;
 use JDE\Modules\Benevoles\Admin\DiagnosticNotice;
@@ -100,6 +106,19 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		// Brancher le handler de la tâche cron de rétention.
 		$container->get( RetentionCron::class )->register();
+
+		// Routes REST.
+		add_action(
+			'rest_api_init',
+			static function () use ( $container ): void {
+				$container->get( PublicInscriptionController::class )->registerRoutes();
+				$container->get( PublicProfileController::class )->registerRoutes();
+			}
+		);
+
+		// Shortcodes publics.
+		$container->get( InscriptionShortcode::class )->register();
+		$container->get( ProfilShortcode::class )->register();
 
 		// Écrans d'administration.
 		if ( is_admin() ) {
@@ -393,6 +412,47 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 			static fn ( Container $c ): NotificationsWidget => new NotificationsWidget(
 				$c->get( NotificationRepository::class ),
 				$c->get( EvenementRhService::class ),
+			)
+		);
+
+		// REST.
+		$container->set(
+			PublicInscriptionController::class,
+			static fn ( Container $c ): PublicInscriptionController => new PublicInscriptionController(
+				$c->get( InscriptionService::class ),
+			)
+		);
+
+		$container->set(
+			PublicProfileController::class,
+			static fn ( Container $c ): PublicProfileController => new PublicProfileController(
+				$c->get( PersonneRepository::class ),
+				$c->get( AssignationRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PosteRepository::class ),
+				$c->get( SignatureRepository::class ),
+				$c->get( AssignmentService::class ),
+				$c->get( NotificationService::class ),
+			)
+		);
+
+		// Shortcodes publics.
+		$container->set(
+			InscriptionShortcode::class,
+			static fn ( Container $c ): InscriptionShortcode => new InscriptionShortcode(
+				$c->get( Assets::class ),
+				$c->get( Template::class ),
+				$c->get( EvenementRhService::class ),
+				$c->get( FormSchemaService::class ),
+				$c->get( PlageDisponibiliteRepository::class ),
+			)
+		);
+
+		$container->set(
+			ProfilShortcode::class,
+			static fn ( Container $c ): ProfilShortcode => new ProfilShortcode(
+				$c->get( Assets::class ),
+				$c->get( Template::class ),
 			)
 		);
 	}
