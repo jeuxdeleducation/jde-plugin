@@ -4,6 +4,16 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.4] — 2026-05-05
+
+### Corrigé
+
+- **Couleurs de kiosques écrasées par le thème** : les styles de `<button>` du thème JDE remplaçaient toutes les couleurs de kiosques par le lime. Les règles CSS sont maintenant imbriquées dans `.jde-canvas` (spécificité (0,3,0) contre (0,1,1) pour un thème typique) — le thème ne peut plus écraser les couleurs sémantiques.
+
+### Amélioré
+
+- **Éditeur de plan admin** : les kiosques affichent maintenant leurs couleurs sémantiques (vert = libre, rouge = réservé par un exposant). Les réservations existantes sont chargées au démarrage de l'éditeur.
+
 ## [0.5.3] — 2026-05-05
 
 ### Corrigé

@@ -9,13 +9,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api, ApiClientError } from '../shared/api';
 import { PlanCanvas } from '../shared/PlanCanvas';
-import type { Kiosque } from '../shared/types';
+import type { Kiosque, ReservationDetail } from '../shared/types';
 import { T } from '../shared/i18n';
 import { KiosqueEditModal, type KiosqueDraft } from './KiosqueEditModal';
 import { Toolbar } from './Toolbar';
 
 interface ListResponse {
 	kiosques: Kiosque[];
+}
+
+interface ReservationsResponse {
+	reservations: ReservationDetail[];
 }
 
 interface EditorAppProps {
@@ -51,6 +55,7 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 	const { evenementId, planUrl, planVerrouille } = props;
 
 	const [ kiosques, setKiosques ] = useState< KiosqueDraft[] >( [] );
+	const [ reservedIds, setReservedIds ] = useState< ReadonlySet< number > >( new Set() );
 	const [ loading, setLoading ] = useState< boolean >( true );
 	const [ saving, setSaving ] = useState< boolean >( false );
 	const [ dirty, setDirty ] = useState< boolean >( false );
@@ -60,10 +65,12 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 	useEffect( () => {
 		void ( async () => {
 			try {
-				const response = await api.get< ListResponse >(
-					`admin/evenements/${ evenementId }/kiosques`
-				);
-				setKiosques( response.kiosques.map( withClientKey ) );
+				const [ kiosquesResp, reservationsResp ] = await Promise.all( [
+					api.get< ListResponse >( `admin/evenements/${ evenementId }/kiosques` ),
+					api.get< ReservationsResponse >( `admin/evenements/${ evenementId }/reservations` ).catch( () => ( { reservations: [] } ) ),
+				] );
+				setKiosques( kiosquesResp.kiosques.map( withClientKey ) );
+				setReservedIds( new Set( reservationsResp.reservations.map( ( r ) => r.kiosque_id ) ) );
 				setLoading( false );
 			} catch ( e ) {
 				setError(
@@ -240,6 +247,7 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 				editingId={
 					editingDraft && editingDraft.id !== null ? editingDraft.id : null
 				}
+				takenIds={ reservedIds }
 				onKiosqueClick={ handleClick }
 				onKiosqueDrag={ planVerrouille ? undefined : handleKiosqueDrag }
 				onKiosqueDragEnd={ planVerrouille ? undefined : handleKiosqueDragEnd }

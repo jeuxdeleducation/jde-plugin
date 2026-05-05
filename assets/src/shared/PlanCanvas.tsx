@@ -163,7 +163,12 @@ function buildVariantResolver(
 			if ( ctx.editingId !== undefined && ctx.editingId === kiosque.id ) {
 				return 'edit-selected';
 			}
-			return 'default';
+			// Si des données de réservation sont disponibles, colorier par statut.
+			const id = kiosque.id;
+			if ( id !== null && ctx.takenIds?.has( id ) ) {
+				return 'taken';
+			}
+			return 'available';
 		}
 
 		if ( mode === 'select' || mode === 'view' ) {

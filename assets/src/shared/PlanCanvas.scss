@@ -3,6 +3,9 @@
  *
  * Toutes les couleurs et polices référencent les variables de
  * `assets/src/shared/brand.scss`. Importer brand.scss en amont.
+ *
+ * Les règles .jde-kiosque sont imbriquées dans .jde-canvas pour obtenir
+ * une spécificité (0,2,0) qui prime sur les styles de bouton du thème.
  */
 
 .jde-canvas {
@@ -37,94 +40,97 @@
 		height: auto;
 		pointer-events: none;
 	}
-}
 
-.jde-kiosque {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0;
-	padding: 0;
-	font-family: var( --jde-font-body );
-	font-size: var( --jde-font-size-sm );
-	font-weight: 600;
-	color: #fff;
-	background: var( --jde-kiosque-available );
-	border: 2px solid rgba( 0, 0, 0, 0.15 );
-	border-radius: var( --jde-radius-sm );
-	cursor: pointer;
-	transition: transform var( --jde-transition ),
-		box-shadow var( --jde-transition ),
-		background var( --jde-transition );
-
-	&:not(:disabled):hover {
-		transform: scale( 1.03 );
-		box-shadow: var( --jde-shadow );
-	}
-
-	&:disabled {
-		cursor: default;
-	}
-
-	// Mode édition : indique visuellement qu'un kiosque peut être déplacé.
-	.jde-canvas--edit & {
-		cursor: grab;
-	}
-
-	&--dragging {
-		cursor: grabbing !important;
-		transition: none;
-		box-shadow: var( --jde-shadow-lg );
-		opacity: 0.92;
-	}
-
-	&__label {
-		padding: 2px 6px;
-		text-shadow: 0 1px 2px rgba( 0, 0, 0, 0.4 );
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	// Variantes
-	&--available {
+	// === Kiosques ===
+	// Imbriqués dans .jde-canvas pour une spécificité (0,2,0),
+	// qui prime sur les styles de <button> du thème actif.
+	.jde-kiosque {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
+		padding: 0;
+		font-family: var( --jde-font-body );
+		font-size: var( --jde-font-size-sm );
+		font-weight: 600;
+		color: #fff;
 		background: var( --jde-kiosque-available );
-	}
+		border: 2px solid rgba( 0, 0, 0, 0.15 );
+		border-radius: var( --jde-radius-sm );
+		cursor: pointer;
+		transition: transform var( --jde-transition ),
+			box-shadow var( --jde-transition ),
+			background var( --jde-transition );
 
-	&--mine {
-		background: var( --jde-kiosque-mine );
-	}
+		&:not(:disabled):hover {
+			transform: scale( 1.03 );
+			box-shadow: var( --jde-shadow );
+		}
 
-	&--selected {
-		background: var( --jde-kiosque-selected );
-		box-shadow: 0 0 0 3px rgba( 37, 99, 235, 0.3 );
-	}
+		&:disabled {
+			cursor: default;
+		}
 
-	&--taken {
-		background: var( --jde-kiosque-taken );
-		opacity: 0.85;
-	}
+		// Mode édition : indique visuellement qu'un kiosque peut être déplacé.
+		.jde-canvas--edit & {
+			cursor: grab;
+		}
 
-	&--unavailable {
-		background: repeating-linear-gradient(
-			45deg,
-			var( --jde-kiosque-unavailable ),
-			var( --jde-kiosque-unavailable ) 6px,
-			rgba( 0, 0, 0, 0.25 ) 6px,
-			rgba( 0, 0, 0, 0.25 ) 12px
-		);
-		opacity: 0.9;
-	}
+		&.jde-kiosque--dragging {
+			cursor: grabbing !important;
+			transition: none;
+			box-shadow: var( --jde-shadow-lg );
+			opacity: 0.92;
+		}
 
-	&--default {
-		background: var( --jde-color-secondary );
-		border-color: rgba( 0, 0, 0, 0.25 );
-	}
+		&__label {
+			padding: 2px 6px;
+			text-shadow: 0 1px 2px rgba( 0, 0, 0, 0.4 );
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 
-	&--edit-selected {
-		background: var( --jde-color-secondary );
-		border: 2px solid var( --jde-color-primary );
-		box-shadow: 0 0 0 3px rgba( 29, 78, 216, 0.3 );
+		// Variantes
+		&.jde-kiosque--available {
+			background: var( --jde-kiosque-available );
+		}
+
+		&.jde-kiosque--mine {
+			background: var( --jde-kiosque-mine );
+		}
+
+		&.jde-kiosque--selected {
+			background: var( --jde-kiosque-selected );
+			box-shadow: 0 0 0 3px rgba( 37, 99, 235, 0.3 );
+		}
+
+		&.jde-kiosque--taken {
+			background: var( --jde-kiosque-taken );
+			opacity: 0.85;
+		}
+
+		&.jde-kiosque--unavailable {
+			background: repeating-linear-gradient(
+				45deg,
+				var( --jde-kiosque-unavailable ),
+				var( --jde-kiosque-unavailable ) 6px,
+				rgba( 0, 0, 0, 0.25 ) 6px,
+				rgba( 0, 0, 0, 0.25 ) 12px
+			);
+			opacity: 0.9;
+		}
+
+		&.jde-kiosque--default {
+			background: var( --jde-color-secondary );
+			border-color: rgba( 0, 0, 0, 0.25 );
+		}
+
+		&.jde-kiosque--edit-selected {
+			background: var( --jde-color-secondary );
+			border: 2px solid var( --jde-color-primary );
+			box-shadow: 0 0 0 3px rgba( 29, 78, 216, 0.3 );
+		}
 	}
 }
