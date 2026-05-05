@@ -4,6 +4,12 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.2] — 2026-05-05
+
+### Modifié
+
+- **Couleurs des statuts de kiosques** : palette remplacée par des couleurs à fort contraste pour distinguer clairement chaque état d'un coup d'œil — vert vif (#22c55e) pour les kiosques disponibles, ambre (#f59e0b) pour ceux sélectionnés dans le panier, bleu vif (#3b82f6) pour les kiosques déjà réservés par l'exposant connecté, rouge vif (#ef4444) pour ceux pris par autrui, gris neutre (#6b7280) pour les kiosques indisponibles.
+
 ## [0.5.1] — 2026-05-04
 
 ### Modifié

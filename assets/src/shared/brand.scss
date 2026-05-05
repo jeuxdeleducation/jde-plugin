@@ -62,15 +62,14 @@
 	--jde-color-border: #e1e1e1;
 
 	// ===== États des kiosques =====
-	// Palette sémantique délibérément distincte de la charte JDE pour
-	// que les statuts soient lisibles d'un coup d'œil. Tons doux pour
-	// éviter le « néon » sur de grandes surfaces.
-	--jde-kiosque-available: #6ab04c; // vert sage (disponible)
-	--jde-kiosque-available-hover: #5a9c40;
-	--jde-kiosque-selected: #e8a05c; // orange terracotta doux (sélectionné par moi)
-	--jde-kiosque-mine: #6b8ebf; // bleu poudre (déjà réservé par moi)
-	--jde-kiosque-taken: #9aa0a6; // gris moyen (pris par autrui)
-	--jde-kiosque-unavailable: #c8625b; // rouge brique (indisponible)
+	// Palette sémantique à fort contraste : chaque état doit être
+	// identifiable d'un coup d'œil, même sur un fond de plan coloré.
+	--jde-kiosque-available: #22c55e; // vert vif (disponible)
+	--jde-kiosque-available-hover: #16a34a;
+	--jde-kiosque-selected: #f59e0b; // ambre (sélectionné dans le panier)
+	--jde-kiosque-mine: #3b82f6; // bleu vif (déjà réservé par moi)
+	--jde-kiosque-taken: #ef4444; // rouge vif (pris par autrui)
+	--jde-kiosque-unavailable: #6b7280; // gris neutre (indisponible)
 
 	// ===== Typographie =====
 	--jde-font-heading: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system,
