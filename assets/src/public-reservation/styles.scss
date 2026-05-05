@@ -2,8 +2,8 @@
  * Styles de l'application publique de réservation.
  */
 
-@import "../shared/brand";
-@import "../shared/PlanCanvas";
+@use "../shared/brand";
+@use "../shared/PlanCanvas";
 
 .jde-reservation-app {
 	font-family: var(--jde-font-body);

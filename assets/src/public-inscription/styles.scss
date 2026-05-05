@@ -5,7 +5,7 @@
  * est référencé via la dépendance @wordpress/scripts.
  */
 
-@import "../shared/brand";
+@use "../shared/brand";
 
 .jde-inscription {
 	max-width: 720px;

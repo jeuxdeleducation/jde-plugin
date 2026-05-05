@@ -2,8 +2,8 @@
  * Styles de la page Réservations admin.
  */
 
-@import "../shared/brand";
-@import "../shared/PlanCanvas";
+@use "../shared/brand";
+@use "../shared/PlanCanvas";
 
 .jde-resa {
 	font-family: var(--jde-font-body);

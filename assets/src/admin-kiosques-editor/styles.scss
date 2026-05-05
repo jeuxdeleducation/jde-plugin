@@ -5,8 +5,8 @@
  * fois pour le bundle entier via index.tsx).
  */
 
-@import "../shared/brand";
-@import "../shared/PlanCanvas";
+@use "../shared/brand";
+@use "../shared/PlanCanvas";
 
 .jde-editor {
 	font-family: var(--jde-font-body);

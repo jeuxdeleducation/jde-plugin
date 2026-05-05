@@ -4,7 +4,7 @@
  * Mobile-first. Bandeau d'en-tête coloré différemment selon le rôle.
  */
 
-@import "../shared/brand";
+@use "../shared/brand";
 
 .jde-profil {
 	max-width: 960px;
