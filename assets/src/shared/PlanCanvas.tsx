@@ -166,7 +166,7 @@ function buildVariantResolver(
 			return 'default';
 		}
 
-		if ( mode === 'select' ) {
+		if ( mode === 'select' || mode === 'view' ) {
 			const id = kiosque.id;
 			if ( id !== null ) {
 				if ( ctx.myReservationIds?.has( id ) ) {

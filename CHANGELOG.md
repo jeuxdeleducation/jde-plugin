@@ -4,6 +4,13 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.3] — 2026-05-05
+
+### Corrigé
+
+- **Couleurs des statuts en mode lecture seule** : le plan « Voir le plan » (écran quota atteint) affichait tous les kiosques en lime au lieu d'utiliser les couleurs sémantiques — `view` mode utilise maintenant la même logique de couleurs que `select` mode.
+- **Stripe des kiosques indisponibles** : la couleur secondaire de la hachure était codée en dur avec l'ancien rouge brique (`rgba(200, 98, 91, .55)`) — remplacée par `rgba(0, 0, 0, 0.25)` pour s'adapter automatiquement à la couleur du fond.
+
 ## [0.5.2] — 2026-05-05
 
 ### Modifié
