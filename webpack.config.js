@@ -28,6 +28,14 @@ module.exports = {
 			__dirname,
 			'assets/src/public-reservation/index.tsx'
 		),
+		'public-profil': path.resolve(
+			__dirname,
+			'assets/src/public-profil/index.tsx'
+		),
+		'public-inscription': path.resolve(
+			__dirname,
+			'assets/src/public-inscription/index.ts'
+		),
 	},
 	output: {
 		...defaultConfig.output,
