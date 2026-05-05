@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.5.1
+Stable tag: 0.5.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.5.2 =
+* Couleurs des statuts de kiosques remplacées par une palette à fort contraste : vert vif (disponible), ambre (sélectionné), bleu vif (réservé par moi), rouge vif (pris par autrui), gris neutre (indisponible).
 
 = 0.5.1 =
 * Vouvoiement complet dans l'app publique de réservation. Label « Code d'accès » retiré au-dessus du champ de saisie. Bouton courriel « Accéder à la page de réservation » pointe vers /reservation-kiosques/. Commentaire personnalisé admin dans l'envoi de code (textarea optionnel — apparaît dans le courriel si renseigné). Sujets et pied de page des courriels mis à jour (vouvoiement + « des Jeux de l'Éducation »).
