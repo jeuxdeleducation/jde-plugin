@@ -64,7 +64,7 @@ export interface ApiError {
 	message: string;
 	data?: {
 		status?: number;
-		[key: string]: unknown;
+		[ key: string ]: unknown;
 	};
 }
 

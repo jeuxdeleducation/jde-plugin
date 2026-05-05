@@ -5,34 +5,34 @@
  * est référencé via la dépendance @wordpress/scripts.
  */
 
-@import '../shared/brand.scss';
+@import "../shared/brand";
 
 .jde-inscription {
 	max-width: 720px;
 	margin: 0 auto;
-	padding: var( --jde-spacing-lg );
-	font-family: var( --jde-font-body );
-	color: var( --jde-color-text );
-	background: var( --jde-color-bg );
+	padding: var(--jde-spacing-lg);
+	font-family: var(--jde-font-body);
+	color: var(--jde-color-text);
+	background: var(--jde-color-bg);
 
 	&__title {
-		font-family: var( --jde-font-heading );
-		font-size: var( --jde-font-size-xl );
-		margin: 0 0 var( --jde-spacing-md );
-		color: var( --jde-color-bg-dark );
+		font-family: var(--jde-font-heading);
+		font-size: var(--jde-font-size-xl);
+		margin: 0 0 var(--jde-spacing-md);
+		color: var(--jde-color-bg-dark);
 	}
 
 	&__closed {
-		padding: var( --jde-spacing-lg );
-		background: var( --jde-color-warning-bg );
-		border-radius: var( --jde-radius );
+		padding: var(--jde-spacing-lg);
+		background: var(--jde-color-warning-bg);
+		border-radius: var(--jde-radius);
 		text-align: center;
 	}
 
 	&__feedback {
-		margin-top: var( --jde-spacing-md );
-		padding: var( --jde-spacing-md );
-		border-radius: var( --jde-radius );
+		margin-top: var(--jde-spacing-md);
+		padding: var(--jde-spacing-md);
+		border-radius: var(--jde-radius);
 		display: none;
 
 		&--success,
@@ -41,15 +41,15 @@
 		}
 
 		&--success {
-			background: var( --jde-color-success-bg );
-			color: var( --jde-color-success );
-			border-left: 4px solid var( --jde-color-success );
+			background: var(--jde-color-success-bg);
+			color: var(--jde-color-success);
+			border-left: 4px solid var(--jde-color-success);
 		}
 
 		&--error {
-			background: var( --jde-color-danger-bg );
-			color: var( --jde-color-danger );
-			border-left: 4px solid var( --jde-color-danger );
+			background: var(--jde-color-danger-bg);
+			color: var(--jde-color-danger);
+			border-left: 4px solid var(--jde-color-danger);
 		}
 	}
 }
@@ -57,35 +57,35 @@
 .jde-field {
 	display: flex;
 	flex-direction: column;
-	margin-bottom: var( --jde-spacing-md );
+	margin-bottom: var(--jde-spacing-md);
 	border: 0;
 	padding: 0;
 
 	label,
 	legend {
 		font-weight: 600;
-		margin-bottom: var( --jde-spacing-xs );
+		margin-bottom: var(--jde-spacing-xs);
 	}
 
-	input[ type='text' ],
-	input[ type='email' ],
-	input[ type='tel' ],
-	input[ type='date' ],
+	input[type="text"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="date"],
 	textarea,
 	select {
 		width: 100%;
 		padding: 12px;
-		font-size: var( --jde-font-size-base );
+		font-size: var(--jde-font-size-base);
 		font-family: inherit;
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius-sm );
-		background: var( --jde-color-bg );
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius-sm);
+		background: var(--jde-color-bg);
 		min-height: 44px;
 
 		&:focus {
 			outline: none;
-			border-color: var( --jde-color-primary );
-			box-shadow: 0 0 0 3px rgba( 0, 176, 168, 0.2 );
+			border-color: var(--jde-color-primary);
+			box-shadow: 0 0 0 3px rgba(0, 176, 168, 0.2);
 		}
 	}
 
@@ -98,10 +98,10 @@
 .jde-radio {
 	display: flex;
 	align-items: flex-start;
-	gap: var( --jde-spacing-sm );
-	padding: var( --jde-spacing-sm ) 0;
+	gap: var(--jde-spacing-sm);
+	padding: var(--jde-spacing-sm) 0;
 	cursor: pointer;
-	font-weight: normal;
+	font-weight: 400;
 
 	input {
 		margin-top: 4px;
@@ -114,20 +114,20 @@
 	display: inline-block;
 	padding: 12px 24px;
 	font-family: inherit;
-	font-size: var( --jde-font-size-base );
+	font-size: var(--jde-font-size-base);
 	font-weight: 600;
-	border-radius: var( --jde-radius );
+	border-radius: var(--jde-radius);
 	border: 0;
 	cursor: pointer;
 	min-height: 44px;
-	transition: var( --jde-transition );
+	transition: var(--jde-transition);
 
 	&--primary {
-		background: var( --jde-color-primary );
+		background: var(--jde-color-primary);
 		color: #fff;
 
-		&:hover:not( :disabled ) {
-			background: var( --jde-color-primary-hover );
+		&:hover:not(:disabled) {
+			background: var(--jde-color-primary-hover);
 		}
 
 		&:disabled {
@@ -138,7 +138,8 @@
 }
 
 @media ( min-width: 640px ) {
+
 	.jde-inscription {
-		padding: var( --jde-spacing-xl );
+		padding: var(--jde-spacing-xl);
 	}
 }

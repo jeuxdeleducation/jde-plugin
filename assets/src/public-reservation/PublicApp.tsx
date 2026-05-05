@@ -26,7 +26,9 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 	const [ submitting, setSubmitting ] = useState< boolean >( false );
 	const [ submitError, setSubmitError ] = useState< string | null >( null );
 	const [ success, setSuccess ] = useState< boolean >( false );
-	const [ conflictNumero, setConflictNumero ] = useState< string | null >( null );
+	const [ conflictNumero, setConflictNumero ] = useState< string | null >(
+		null
+	);
 
 	useEffect( () => {
 		void ( async () => {
@@ -78,19 +80,24 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 		try {
 			for ( const kiosqueId of pendingIds ) {
 				try {
-					latestState = await api.post< PublicState >( 'reservations', {
-						kiosque_id: kiosqueId,
-					} );
+					latestState = await api.post< PublicState >(
+						'reservations',
+						{
+							kiosque_id: kiosqueId,
+						}
+					);
 				} catch ( e ) {
 					if ( e instanceof ApiClientError && e.status === 409 ) {
-						const fresh = ( e.data as { fresh_state?: PublicState } | undefined )
-							?.fresh_state;
+						const fresh = (
+							e.data as { fresh_state?: PublicState } | undefined
+						 )?.fresh_state;
 						if ( fresh ) {
 							latestState = fresh;
 						}
-						const numero = latestState.kiosques.find(
-							( k ) => k.id === kiosqueId
-						)?.numero ?? null;
+						const numero =
+							latestState.kiosques.find(
+								( k ) => k.id === kiosqueId
+							)?.numero ?? null;
 						setConflictNumero( numero );
 						setState( latestState );
 						setPendingIds( null );
@@ -130,8 +137,8 @@ export function PublicApp( { contactEmail }: PublicAppProps ): JSX.Element {
 	}
 
 	const quotaReached =
-		state.mes_reservations.length >= state.exposant.nb_kiosques_max
-		&& state.exposant.nb_kiosques_max > 0;
+		state.mes_reservations.length >= state.exposant.nb_kiosques_max &&
+		state.exposant.nb_kiosques_max > 0;
 
 	if ( success && quotaReached ) {
 		// Une fois la dernière réservation confirmée, on bascule directement
@@ -219,10 +226,15 @@ function QuotaReachedView( props: QuotaReachedViewProps ): JSX.Element {
 	const [ showPlan, setShowPlan ] = useState< boolean >( false );
 
 	const myNumeros = state.mes_reservations
-		.map( ( r ) => state.kiosques.find( ( k ) => k.id === r.kiosque_id )?.numero ?? null )
+		.map(
+			( r ) =>
+				state.kiosques.find( ( k ) => k.id === r.kiosque_id )?.numero ??
+				null
+		)
 		.filter( ( n ): n is string => null !== n );
 
-	const hasPlan = null !== state.evenement.plan_url && state.kiosques.length > 0;
+	const hasPlan =
+		null !== state.evenement.plan_url && state.kiosques.length > 0;
 
 	return (
 		<div className="jde-public__quota-reached">

@@ -13,7 +13,11 @@ interface DeleteDialogProps {
 	onDeleted: () => void | Promise< void >;
 }
 
-export function DeleteDialog( { reservation, onClose, onDeleted }: DeleteDialogProps ): JSX.Element {
+export function DeleteDialog( {
+	reservation,
+	onClose,
+	onDeleted,
+}: DeleteDialogProps ): JSX.Element {
 	const [ reason, setReason ] = useState< string >( '' );
 	const [ submitting, setSubmitting ] = useState< boolean >( false );
 	const [ error, setError ] = useState< string | null >( null );
@@ -26,18 +30,28 @@ export function DeleteDialog( { reservation, onClose, onDeleted }: DeleteDialogP
 		setSubmitting( true );
 		setError( null );
 		try {
-			await api.delete( `admin/reservations/${ reservation.id }?reason=${ encodeURIComponent( reason ) }` );
+			await api.delete(
+				`admin/reservations/${
+					reservation.id
+				}?reason=${ encodeURIComponent( reason ) }`
+			);
 			await onDeleted();
 		} catch ( e ) {
 			setError(
-				e instanceof ApiClientError ? e.message : T.public.errors.generic
+				e instanceof ApiClientError
+					? e.message
+					: T.public.errors.generic
 			);
 			setSubmitting( false );
 		}
 	};
 
 	return (
-		<div className="jde-modal-overlay" onClick={ submitting ? undefined : onClose } role="presentation">
+		<div
+			className="jde-modal-overlay"
+			onClick={ submitting ? undefined : onClose }
+			role="presentation"
+		>
 			<div
 				className="jde-modal jde-modal--danger"
 				role="alertdialog"
@@ -48,7 +62,10 @@ export function DeleteDialog( { reservation, onClose, onDeleted }: DeleteDialogP
 					<h2>{ T.reservations.deleteDialog.title }</h2>
 				</header>
 
-				<form onSubmit={ ( e ) => void handleSubmit( e ) } className="jde-modal__body">
+				<form
+					onSubmit={ ( e ) => void handleSubmit( e ) }
+					className="jde-modal__body"
+				>
 					<p>
 						{ T.reservations.deleteDialog.body(
 							reservation.nom_entreprise,
@@ -87,7 +104,9 @@ export function DeleteDialog( { reservation, onClose, onDeleted }: DeleteDialogP
 						<button
 							type="submit"
 							className="button button-primary"
-							disabled={ submitting || reason.trim().length === 0 }
+							disabled={
+								submitting || reason.trim().length === 0
+							}
 						>
 							{ submitting
 								? T.reservations.deleteDialog.submitting

@@ -39,7 +39,11 @@ export function KiosqueBubble( props: KiosqueBubbleProps ): JSX.Element {
 	} = props;
 
 	return (
-		<div className="jde-bubble-overlay" onClick={ onClose } role="presentation">
+		<div
+			className="jde-bubble-overlay"
+			onClick={ onClose }
+			role="presentation"
+		>
 			<div
 				className="jde-bubble"
 				role="dialog"
@@ -95,7 +99,9 @@ export function KiosqueBubble( props: KiosqueBubbleProps ): JSX.Element {
 					<div className="jde-bubble__message">
 						<strong>{ T.public.bubble.alreadyMineHeading }</strong>
 						<p>
-							{ T.public.bubble.alreadyMineMessage( contactEmail ) }
+							{ T.public.bubble.alreadyMineMessage(
+								contactEmail
+							) }
 						</p>
 					</div>
 				) }

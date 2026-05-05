@@ -24,7 +24,7 @@ export function Toolbar( props: ToolbarProps ): JSX.Element {
 					onClick={ onAddKiosque }
 					disabled={ locked || saving }
 				>
-					+ { ' ' }Ajouter un kiosque
+					+ Ajouter un kiosque
 				</button>
 				<span className="jde-editor__toolbar-help">
 					{ T.admin.toolbarHelp }

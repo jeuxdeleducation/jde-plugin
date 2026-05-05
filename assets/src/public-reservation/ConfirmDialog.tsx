@@ -19,7 +19,11 @@ export function ConfirmDialog( props: ConfirmDialogProps ): JSX.Element {
 	const { count, submitting, errorMessage, onCancel, onConfirm } = props;
 
 	return (
-		<div className="jde-modal-overlay" onClick={ submitting ? undefined : onCancel } role="presentation">
+		<div
+			className="jde-modal-overlay"
+			onClick={ submitting ? undefined : onCancel }
+			role="presentation"
+		>
 			<div
 				className="jde-modal jde-modal--warning"
 				role="dialog"
@@ -28,7 +32,9 @@ export function ConfirmDialog( props: ConfirmDialogProps ): JSX.Element {
 				onClick={ ( e ) => e.stopPropagation() }
 			>
 				<header className="jde-modal__header">
-					<h2 id="jde-confirm-title">{ T.public.confirmDialog.title }</h2>
+					<h2 id="jde-confirm-title">
+						{ T.public.confirmDialog.title }
+					</h2>
 				</header>
 				<div className="jde-modal__body">
 					<p>{ T.public.confirmDialog.body }</p>

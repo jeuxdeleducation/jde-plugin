@@ -11,7 +11,9 @@ interface ReservationsTableProps {
 	onDelete: ( r: ReservationDetail ) => void;
 }
 
-export function ReservationsTable( props: ReservationsTableProps ): JSX.Element {
+export function ReservationsTable(
+	props: ReservationsTableProps
+): JSX.Element {
 	const { reservations, onEdit, onDelete } = props;
 
 	if ( reservations.length === 0 ) {
@@ -23,11 +25,19 @@ export function ReservationsTable( props: ReservationsTableProps ): JSX.Element 
 			<thead>
 				<tr>
 					<th>{ T.reservations.columns.entreprise }</th>
-					<th style={ { width: '90px' } }>{ T.reservations.columns.kiosque }</th>
-					<th style={ { width: '140px' } }>{ T.reservations.columns.date }</th>
-					<th style={ { width: '140px' } }>{ T.reservations.columns.source }</th>
+					<th style={ { width: '90px' } }>
+						{ T.reservations.columns.kiosque }
+					</th>
+					<th style={ { width: '140px' } }>
+						{ T.reservations.columns.date }
+					</th>
+					<th style={ { width: '140px' } }>
+						{ T.reservations.columns.source }
+					</th>
 					<th>{ T.reservations.columns.notes }</th>
-					<th style={ { width: '180px' } }>{ T.reservations.columns.actions }</th>
+					<th style={ { width: '180px' } }>
+						{ T.reservations.columns.actions }
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -36,7 +46,9 @@ export function ReservationsTable( props: ReservationsTableProps ): JSX.Element 
 						<td>
 							<strong>{ r.nom_entreprise }</strong>
 							<br />
-							<code style={ { fontSize: '11px', color: '#6b7280' } }>
+							<code
+								style={ { fontSize: '11px', color: '#6b7280' } }
+							>
 								{ r.code_acces }
 							</code>
 						</td>
@@ -59,8 +71,7 @@ export function ReservationsTable( props: ReservationsTableProps ): JSX.Element 
 								onClick={ () => onEdit( r ) }
 							>
 								{ T.reservations.actionEdit }
-							</button>
-							{ ' ' }
+							</button>{ ' ' }
 							<button
 								type="button"
 								className="button button-small button-link-delete"

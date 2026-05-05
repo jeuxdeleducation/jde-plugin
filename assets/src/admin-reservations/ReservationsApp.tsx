@@ -40,17 +40,25 @@ interface ExposantsResponse {
 export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 	const { evenementId, evenementTitre, planUrl, csvUrl, backUrl } = props;
 
-	const [ reservations, setReservations ] = useState< ReservationDetail[] >( [] );
+	const [ reservations, setReservations ] = useState< ReservationDetail[] >(
+		[]
+	);
 	const [ kiosques, setKiosques ] = useState< Kiosque[] >( [] );
 	const [ exposants, setExposants ] = useState< Exposant[] >( [] );
 	const [ loading, setLoading ] = useState< boolean >( true );
 	const [ error, setError ] = useState< string | null >( null );
-	const [ lastRefreshAt, setLastRefreshAt ] = useState< number >( Date.now() );
+	const [ lastRefreshAt, setLastRefreshAt ] = useState< number >(
+		Date.now()
+	);
 	const [ secondsAgo, setSecondsAgo ] = useState< number >( 0 );
 
 	const [ creating, setCreating ] = useState< boolean >( false );
-	const [ editing, setEditing ] = useState< ReservationDetail | null >( null );
-	const [ deleting, setDeleting ] = useState< ReservationDetail | null >( null );
+	const [ editing, setEditing ] = useState< ReservationDetail | null >(
+		null
+	);
+	const [ deleting, setDeleting ] = useState< ReservationDetail | null >(
+		null
+	);
 
 	const refreshTimer = useRef< number | null >( null );
 
@@ -64,7 +72,9 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 			setError( null );
 		} catch ( e ) {
 			setError(
-				e instanceof ApiClientError ? e.message : T.public.errors.generic
+				e instanceof ApiClientError
+					? e.message
+					: T.public.errors.generic
 			);
 		}
 	}, [ evenementId ] );
@@ -105,7 +115,11 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 	// Chargement initial.
 	useEffect( () => {
 		void ( async () => {
-			await Promise.all( [ fetchReservations(), fetchKiosques(), fetchExposants() ] );
+			await Promise.all( [
+				fetchReservations(),
+				fetchKiosques(),
+				fetchExposants(),
+			] );
 			setLoading( false );
 		} )();
 	}, [ fetchReservations, fetchKiosques, fetchExposants ] );
@@ -125,7 +139,9 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 	// Compteur visuel "mis à jour il y a Xs".
 	useEffect( () => {
 		const tick = window.setInterval( () => {
-			setSecondsAgo( Math.floor( ( Date.now() - lastRefreshAt ) / 1000 ) );
+			setSecondsAgo(
+				Math.floor( ( Date.now() - lastRefreshAt ) / 1000 )
+			);
 		}, 1000 );
 		return () => window.clearInterval( tick );
 	}, [ lastRefreshAt ] );
@@ -151,9 +167,13 @@ export function ReservationsApp( props: ReservationsAppProps ): JSX.Element {
 						{ T.reservations.titleFor( evenementTitre ) }
 					</h1>
 					<p className="jde-resa__stats">
-						{ T.reservations.stats( reservations.length, kiosques.length ) }
+						{ T.reservations.stats(
+							reservations.length,
+							kiosques.length
+						) }
 						<span className="jde-resa__refresh">
-							{ ' · ' + T.reservations.updatedSecondsAgo( secondsAgo ) }
+							{ ' · ' +
+								T.reservations.updatedSecondsAgo( secondsAgo ) }
 						</span>
 					</p>
 				</div>

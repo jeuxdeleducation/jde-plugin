@@ -5,34 +5,34 @@
  * fois pour le bundle entier via index.tsx).
  */
 
-@import '../shared/brand';
-@import '../shared/PlanCanvas';
+@import "../shared/brand";
+@import "../shared/PlanCanvas";
 
 .jde-editor {
-	font-family: var( --jde-font-body );
-	color: var( --jde-color-text );
+	font-family: var(--jde-font-body);
+	color: var(--jde-color-text);
 
 	&__loading,
 	&__empty {
-		padding: var( --jde-spacing-xl );
+		padding: var(--jde-spacing-xl);
 		text-align: center;
-		color: var( --jde-color-text-muted );
-		background: var( --jde-color-bg-alt );
-		border: 1px dashed var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		color: var(--jde-color-text-muted);
+		background: var(--jde-color-bg-alt);
+		border: 1px dashed var(--jde-color-border);
+		border-radius: var(--jde-radius);
 	}
 
 	&__error {
-		margin: var( --jde-spacing-md ) 0;
+		margin: var(--jde-spacing-md) 0;
 	}
 
 	&__locked-banner {
-		padding: var( --jde-spacing-md );
-		margin-bottom: var( --jde-spacing-md );
-		background: var( --jde-color-warning-bg );
-		border-left: 4px solid var( --jde-color-warning );
-		border-radius: var( --jde-radius-sm );
-		color: var( --jde-color-text );
+		padding: var(--jde-spacing-md);
+		margin-bottom: var(--jde-spacing-md);
+		background: var(--jde-color-warning-bg);
+		border-left: 4px solid var(--jde-color-warning);
+		border-radius: var(--jde-radius-sm);
+		color: var(--jde-color-text);
 	}
 
 	&__toolbar {
@@ -40,29 +40,29 @@
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		gap: var( --jde-spacing-md );
-		padding: var( --jde-spacing-sm ) var( --jde-spacing-md );
-		margin-bottom: var( --jde-spacing-md );
-		background: var( --jde-color-bg );
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		gap: var(--jde-spacing-md);
+		padding: var(--jde-spacing-sm) var(--jde-spacing-md);
+		margin-bottom: var(--jde-spacing-md);
+		background: var(--jde-color-bg);
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius);
 	}
 
 	&__toolbar-start,
 	&__toolbar-end {
 		display: flex;
 		align-items: center;
-		gap: var( --jde-spacing-md );
+		gap: var(--jde-spacing-md);
 	}
 
 	&__toolbar-help {
-		font-size: var( --jde-font-size-sm );
-		color: var( --jde-color-text-muted );
+		font-size: var(--jde-font-size-sm);
+		color: var(--jde-color-text-muted);
 	}
 
 	&__dirty {
-		font-size: var( --jde-font-size-sm );
-		color: var( --jde-color-warning );
+		font-size: var(--jde-font-size-sm);
+		color: var(--jde-color-warning);
 		font-weight: 600;
 	}
 }
@@ -71,35 +71,35 @@
 .jde-modal-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba( 0, 0, 0, 0.5 );
+	background: rgba(0, 0, 0, 0.5);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 100000; // au-dessus de l'admin WP
-	padding: var( --jde-spacing-md );
+	padding: var(--jde-spacing-md);
 }
 
 .jde-modal {
-	background: var( --jde-color-bg );
-	border-radius: var( --jde-radius-lg );
-	box-shadow: var( --jde-shadow-lg );
+	background: var(--jde-color-bg);
+	border-radius: var(--jde-radius-lg);
+	box-shadow: var(--jde-shadow-lg);
 	max-width: 540px;
 	width: 100%;
 	max-height: 90vh;
 	display: flex;
 	flex-direction: column;
-	font-family: var( --jde-font-body );
+	font-family: var(--jde-font-body);
 
 	&__header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		border-bottom: 1px solid var( --jde-color-border );
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		border-bottom: 1px solid var(--jde-color-border);
 
 		h2 {
 			margin: 0;
-			font-size: var( --jde-font-size-lg );
+			font-size: var(--jde-font-size-lg);
 		}
 	}
 
@@ -108,37 +108,37 @@
 		border: none;
 		font-size: 24px;
 		line-height: 1;
-		color: var( --jde-color-text-muted );
+		color: var(--jde-color-text-muted);
 		cursor: pointer;
 		padding: 4px 8px;
-		border-radius: var( --jde-radius-sm );
+		border-radius: var(--jde-radius-sm);
 
 		&:hover {
-			background: var( --jde-color-bg-alt );
-			color: var( --jde-color-text );
+			background: var(--jde-color-bg-alt);
+			color: var(--jde-color-text);
 		}
 	}
 
 	&__body {
-		padding: var( --jde-spacing-lg );
+		padding: var(--jde-spacing-lg);
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
-		gap: var( --jde-spacing-md );
+		gap: var(--jde-spacing-md);
 	}
 
 	&__footer {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: var( --jde-spacing-sm );
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		border-top: 1px solid var( --jde-color-border );
+		gap: var(--jde-spacing-sm);
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		border-top: 1px solid var(--jde-color-border);
 	}
 
 	&__footer-end {
 		display: flex;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 		margin-left: auto;
 	}
 }
@@ -149,8 +149,8 @@
 	gap: 4px;
 
 	&__label {
-		font-size: var( --jde-font-size-sm );
-		color: var( --jde-color-text-muted );
+		font-size: var(--jde-font-size-sm);
+		color: var(--jde-color-text-muted);
 		font-weight: 500;
 	}
 
@@ -158,15 +158,15 @@
 	textarea,
 	select {
 		padding: 8px 12px;
-		font-size: var( --jde-font-size-base );
+		font-size: var(--jde-font-size-base);
 		font-family: inherit;
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius-sm );
-		background: var( --jde-color-bg );
-		color: var( --jde-color-text );
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius-sm);
+		background: var(--jde-color-bg);
+		color: var(--jde-color-text);
 
 		&:focus {
-			outline: 2px solid var( --jde-color-primary );
+			outline: 2px solid var(--jde-color-primary);
 			outline-offset: -1px;
 		}
 	}
@@ -179,5 +179,5 @@
 .jde-field-row {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: var( --jde-spacing-md );
+	gap: var(--jde-spacing-md);
 }

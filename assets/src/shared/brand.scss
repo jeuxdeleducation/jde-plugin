@@ -11,27 +11,30 @@
  */
 
 @font-face {
-	font-family: 'Space Grotesk';
-	src: url('../../fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype-variations'),
-		url('../../fonts/SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+	font-family: "Space Grotesk";
+	src:
+		url("../../fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype-variations"),
+		url("../../fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
 	font-weight: 300 700;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Inter';
-	src: url('../../fonts/Inter-VariableFont_opsz_wght.ttf') format('truetype-variations'),
-		url('../../fonts/Inter-VariableFont_opsz_wght.ttf') format('truetype');
+	font-family: Inter;
+	src:
+		url("../../fonts/Inter-VariableFont_opsz_wght.ttf") format("truetype-variations"),
+		url("../../fonts/Inter-VariableFont_opsz_wght.ttf") format("truetype");
 	font-weight: 100 900;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Inter';
-	src: url('../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf') format('truetype-variations'),
-		url('../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf') format('truetype');
+	font-family: Inter;
+	src:
+		url("../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf") format("truetype-variations"),
+		url("../../fonts/Inter-Italic-VariableFont_opsz_wght.ttf") format("truetype");
 	font-weight: 100 900;
 	font-style: italic;
 	font-display: swap;
@@ -56,7 +59,7 @@
 	--jde-color-text: #1c1c1c;
 	--jde-color-text-muted: #5a5a5a;
 	--jde-color-text-subtle: #8a8a8a;
-	--jde-color-bg: #ffffff;
+	--jde-color-bg: #fff;
 	--jde-color-bg-alt: #f5faee; // fond crème vert préféré
 	--jde-color-bg-grey: #f4f4f4;
 	--jde-color-border: #e1e1e1;
@@ -72,9 +75,19 @@
 	--jde-kiosque-unavailable: #6b7280; // gris neutre (indisponible)
 
 	// ===== Typographie =====
-	--jde-font-heading: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system,
-		'Segoe UI', sans-serif;
-	--jde-font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+	--jde-font-heading:
+		"Space Grotesk",
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		"Segoe UI",
+		sans-serif;
+	--jde-font-body:
+		"Inter",
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		"Segoe UI",
 		sans-serif;
 	--jde-font-size-base: 16px;
 	--jde-font-size-sm: 14px;
@@ -95,13 +108,16 @@
 	--jde-radius: 8px;
 	--jde-radius-lg: 16px;
 	--jde-radius-pill: 999px;
-	--jde-shadow-sm: 0 1px 2px rgba( 28, 28, 28, 0.04 ),
-		0 1px 3px rgba( 28, 28, 28, 0.06 );
-	--jde-shadow: 0 4px 12px rgba( 28, 28, 28, 0.06 ),
-		0 2px 4px rgba( 28, 28, 28, 0.04 );
-	--jde-shadow-lg: 0 16px 32px rgba( 28, 28, 28, 0.10 ),
-		0 4px 8px rgba( 28, 28, 28, 0.06 );
+	--jde-shadow-sm:
+		0 1px 2px rgba(28, 28, 28, 0.04),
+		0 1px 3px rgba(28, 28, 28, 0.06);
+	--jde-shadow:
+		0 4px 12px rgba(28, 28, 28, 0.06),
+		0 2px 4px rgba(28, 28, 28, 0.04);
+	--jde-shadow-lg:
+		0 16px 32px rgba(28, 28, 28, 0.1),
+		0 4px 8px rgba(28, 28, 28, 0.06);
 
 	// ===== Animations =====
-	--jde-transition: 200ms cubic-bezier( 0.2, 0.8, 0.2, 1 );
+	--jde-transition: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }

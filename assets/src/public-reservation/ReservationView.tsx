@@ -19,8 +19,12 @@ interface ReservationViewProps {
 export function ReservationView( props: ReservationViewProps ): JSX.Element {
 	const { state, contactEmail, onLogout, onConfirm } = props;
 
-	const [ selectedIds, setSelectedIds ] = useState< Set< number > >( new Set() );
-	const [ activeBubble, setActiveBubble ] = useState< Kiosque | null >( null );
+	const [ selectedIds, setSelectedIds ] = useState< Set< number > >(
+		new Set()
+	);
+	const [ activeBubble, setActiveBubble ] = useState< Kiosque | null >(
+		null
+	);
 
 	// Indexer les sets pour des lookups O(1).
 	const myReservationIds = useMemo< Set< number > >(
@@ -38,7 +42,9 @@ export function ReservationView( props: ReservationViewProps ): JSX.Element {
 		return taken;
 	}, [ state.reservations, state.exposant.id ] );
 
-	const reservationByKiosque = useMemo< Map< number, ReservationLite > >( () => {
+	const reservationByKiosque = useMemo<
+		Map< number, ReservationLite >
+	>( () => {
 		const map = new Map< number, ReservationLite >();
 		for ( const r of state.reservations ) {
 			map.set( r.kiosque_id, r );
@@ -141,7 +147,9 @@ export function ReservationView( props: ReservationViewProps ): JSX.Element {
 					{ selectedIds.size > 0 && (
 						<div className="jde-public__selection-bar">
 							<span>
-								{ T.public.selectionBar.label( selectedIds.size ) }
+								{ T.public.selectionBar.label(
+									selectedIds.size
+								) }
 							</span>
 							<button
 								type="button"
@@ -160,15 +168,19 @@ export function ReservationView( props: ReservationViewProps ): JSX.Element {
 					kiosque={ activeBubble }
 					state={ computeKiosqueState( activeBubble ) }
 					isSelected={
-						activeBubble.id !== null && selectedIds.has( activeBubble.id )
+						activeBubble.id !== null &&
+						selectedIds.has( activeBubble.id )
 					}
 					reservation={
 						activeBubble.id !== null
-							? reservationByKiosque.get( activeBubble.id ) ?? null
+							? reservationByKiosque.get( activeBubble.id ) ??
+							  null
 							: null
 					}
 					contactEmail={ contactEmail }
-					showCompanyNames={ state.evenement.afficher_noms_entreprises }
+					showCompanyNames={
+						state.evenement.afficher_noms_entreprises
+					}
 					onSelect={ handleSelect }
 					onDeselect={ handleDeselect }
 					onClose={ handleBubbleClose }

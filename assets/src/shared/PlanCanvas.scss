@@ -11,9 +11,9 @@
 .jde-canvas {
 	position: relative;
 	width: 100%;
-	background: var( --jde-color-bg-alt );
-	border: 1px solid var( --jde-color-border );
-	border-radius: var( --jde-radius );
+	background: var(--jde-color-bg-alt);
+	border: 1px solid var(--jde-color-border);
+	border-radius: var(--jde-radius);
 	overflow: hidden;
 	user-select: none;
 	-webkit-user-select: none;
@@ -51,21 +51,22 @@
 		justify-content: center;
 		margin: 0;
 		padding: 0;
-		font-family: var( --jde-font-body );
-		font-size: var( --jde-font-size-sm );
+		font-family: var(--jde-font-body);
+		font-size: var(--jde-font-size-sm);
 		font-weight: 600;
 		color: #fff;
-		background: var( --jde-kiosque-available );
-		border: 2px solid rgba( 0, 0, 0, 0.15 );
-		border-radius: var( --jde-radius-sm );
+		background: var(--jde-kiosque-available);
+		border: 2px solid rgba(0, 0, 0, 0.15);
+		border-radius: var(--jde-radius-sm);
 		cursor: pointer;
-		transition: transform var( --jde-transition ),
-			box-shadow var( --jde-transition ),
-			background var( --jde-transition );
+		transition:
+			transform var(--jde-transition),
+			box-shadow var(--jde-transition),
+			background var(--jde-transition);
 
 		&:not(:disabled):hover {
-			transform: scale( 1.03 );
-			box-shadow: var( --jde-shadow );
+			transform: scale(1.03);
+			box-shadow: var(--jde-shadow);
 		}
 
 		&:disabled {
@@ -80,13 +81,13 @@
 		&.jde-kiosque--dragging {
 			cursor: grabbing !important;
 			transition: none;
-			box-shadow: var( --jde-shadow-lg );
+			box-shadow: var(--jde-shadow-lg);
 			opacity: 0.92;
 		}
 
 		&__label {
 			padding: 2px 6px;
-			text-shadow: 0 1px 2px rgba( 0, 0, 0, 0.4 );
+			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -94,43 +95,38 @@
 
 		// Variantes
 		&.jde-kiosque--available {
-			background: var( --jde-kiosque-available );
+			background: var(--jde-kiosque-available);
 		}
 
 		&.jde-kiosque--mine {
-			background: var( --jde-kiosque-mine );
+			background: var(--jde-kiosque-mine);
 		}
 
 		&.jde-kiosque--selected {
-			background: var( --jde-kiosque-selected );
-			box-shadow: 0 0 0 3px rgba( 37, 99, 235, 0.3 );
+			background: var(--jde-kiosque-selected);
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
 		}
 
 		&.jde-kiosque--taken {
-			background: var( --jde-kiosque-taken );
+			background: var(--jde-kiosque-taken);
 			opacity: 0.85;
 		}
 
 		&.jde-kiosque--unavailable {
-			background: repeating-linear-gradient(
-				45deg,
-				var( --jde-kiosque-unavailable ),
-				var( --jde-kiosque-unavailable ) 6px,
-				rgba( 0, 0, 0, 0.25 ) 6px,
-				rgba( 0, 0, 0, 0.25 ) 12px
-			);
+			background:
+ repeating-linear-gradient(45deg, var(--jde-kiosque-unavailable), var(--jde-kiosque-unavailable) 6px, rgba(0, 0, 0, 0.25) 6px, rgba(0, 0, 0, 0.25) 12px);
 			opacity: 0.9;
 		}
 
 		&.jde-kiosque--default {
-			background: var( --jde-color-secondary );
-			border-color: rgba( 0, 0, 0, 0.25 );
+			background: var(--jde-color-secondary);
+			border-color: rgba(0, 0, 0, 0.25);
 		}
 
 		&.jde-kiosque--edit-selected {
-			background: var( --jde-color-secondary );
-			border: 2px solid var( --jde-color-primary );
-			box-shadow: 0 0 0 3px rgba( 29, 78, 216, 0.3 );
+			background: var(--jde-color-secondary);
+			border: 2px solid var(--jde-color-primary);
+			box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.3);
 		}
 	}
 }

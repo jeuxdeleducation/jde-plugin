@@ -20,10 +20,19 @@ interface ReadOnlyPlanViewProps {
 }
 
 export function ReadOnlyPlanView( props: ReadOnlyPlanViewProps ): JSX.Element {
-	const { planUrl, kiosques, mesReservations, allReservations, exposantId, onClose } = props;
+	const {
+		planUrl,
+		kiosques,
+		mesReservations,
+		allReservations,
+		exposantId,
+		onClose,
+	} = props;
 
 	const myIds = new Set< number >(
-		mesReservations.map( ( r ) => r.kiosque_id ).filter( ( id ): id is number => id !== null )
+		mesReservations
+			.map( ( r ) => r.kiosque_id )
+			.filter( ( id ): id is number => id !== null )
 	);
 	const takenIds = new Set< number >(
 		allReservations

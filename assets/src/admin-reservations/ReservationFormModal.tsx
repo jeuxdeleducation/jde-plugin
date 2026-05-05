@@ -19,7 +19,9 @@ interface ReservationFormModalProps {
 	onSaved: () => void | Promise< void >;
 }
 
-export function ReservationFormModal( props: ReservationFormModalProps ): JSX.Element {
+export function ReservationFormModal(
+	props: ReservationFormModalProps
+): JSX.Element {
 	const {
 		mode,
 		reservation,
@@ -111,14 +113,20 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 			await onSaved();
 		} catch ( e ) {
 			setError(
-				e instanceof ApiClientError ? e.message : T.public.errors.generic
+				e instanceof ApiClientError
+					? e.message
+					: T.public.errors.generic
 			);
 			setSubmitting( false );
 		}
 	};
 
 	return (
-		<div className="jde-modal-overlay" onClick={ submitting ? undefined : onClose } role="presentation">
+		<div
+			className="jde-modal-overlay"
+			onClick={ submitting ? undefined : onClose }
+			role="presentation"
+		>
 			<div
 				className="jde-modal"
 				role="dialog"
@@ -141,7 +149,10 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 					</button>
 				</header>
 
-				<form onSubmit={ ( e ) => void handleSubmit( e ) } className="jde-modal__body">
+				<form
+					onSubmit={ ( e ) => void handleSubmit( e ) }
+					className="jde-modal__body"
+				>
 					<label className="jde-field">
 						<span className="jde-field__label">
 							{ T.reservations.form.fieldKiosque }
@@ -149,11 +160,17 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 						<select
 							value={ kiosqueId ?? '' }
 							onChange={ ( e ) =>
-								setKiosqueId( e.target.value ? parseInt( e.target.value, 10 ) : null )
+								setKiosqueId(
+									e.target.value
+										? parseInt( e.target.value, 10 )
+										: null
+								)
 							}
 							required
 						>
-							<option value="">{ T.reservations.form.selectKiosquePlaceholder }</option>
+							<option value="">
+								{ T.reservations.form.selectKiosquePlaceholder }
+							</option>
 							{ availableKiosques.map( ( k ) => (
 								<option key={ k.id } value={ k.id ?? '' }>
 									{ k.numero }
@@ -175,11 +192,20 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 							<select
 								value={ exposantId ?? '' }
 								onChange={ ( e ) =>
-									setExposantId( e.target.value ? parseInt( e.target.value, 10 ) : null )
+									setExposantId(
+										e.target.value
+											? parseInt( e.target.value, 10 )
+											: null
+									)
 								}
 								required
 							>
-								<option value="">{ T.reservations.form.selectExposantPlaceholder }</option>
+								<option value="">
+									{
+										T.reservations.form
+											.selectExposantPlaceholder
+									}
+								</option>
 								{ exposants.map( ( exp ) => (
 									<option key={ exp.id } value={ exp.id }>
 										{ exp.nom_entreprise }
@@ -201,11 +227,16 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 					</label>
 
 					{ ! isEdit && (
-						<label className="jde-field" style={ { flexDirection: 'row', gap: '8px' } }>
+						<label
+							className="jde-field"
+							style={ { flexDirection: 'row', gap: '8px' } }
+						>
 							<input
 								type="checkbox"
 								checked={ bypassQuota }
-								onChange={ ( e ) => setBypassQuota( e.target.checked ) }
+								onChange={ ( e ) =>
+									setBypassQuota( e.target.checked )
+								}
 							/>
 							<span style={ { fontSize: '13px' } }>
 								{ T.reservations.form.fieldBypassQuota }
@@ -240,8 +271,8 @@ export function ReservationFormModal( props: ReservationFormModalProps ): JSX.El
 							{ submitting
 								? T.reservations.form.submitting
 								: isEdit
-									? T.reservations.form.submitEdit
-									: T.reservations.form.submitAdd }
+								? T.reservations.form.submitEdit
+								: T.reservations.form.submitAdd }
 						</button>
 					</footer>
 				</form>

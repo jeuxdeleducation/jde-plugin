@@ -14,9 +14,16 @@ interface ConflictModalProps {
 	onClose: () => void;
 }
 
-export function ConflictModal( { kiosqueNumero, onClose }: ConflictModalProps ): JSX.Element {
+export function ConflictModal( {
+	kiosqueNumero,
+	onClose,
+}: ConflictModalProps ): JSX.Element {
 	return (
-		<div className="jde-modal-overlay" onClick={ onClose } role="presentation">
+		<div
+			className="jde-modal-overlay"
+			onClick={ onClose }
+			role="presentation"
+		>
 			<div
 				className="jde-modal jde-modal--danger"
 				role="alertdialog"
@@ -25,7 +32,9 @@ export function ConflictModal( { kiosqueNumero, onClose }: ConflictModalProps ):
 				onClick={ ( e ) => e.stopPropagation() }
 			>
 				<header className="jde-modal__header">
-					<h2 id="jde-conflict-title">{ T.public.conflictModal.title }</h2>
+					<h2 id="jde-conflict-title">
+						{ T.public.conflictModal.title }
+					</h2>
 				</header>
 				<div className="jde-modal__body">
 					<p>

@@ -24,9 +24,13 @@ export function Header( props: HeaderProps ): JSX.Element {
 		<header className="jde-public__header">
 			<div className="jde-public__header-info">
 				{ evenementTitre && (
-					<div className="jde-public__event-title">{ evenementTitre }</div>
+					<div className="jde-public__event-title">
+						{ evenementTitre }
+					</div>
 				) }
-				<div className="jde-public__company-name">{ nomEntreprise }</div>
+				<div className="jde-public__company-name">
+					{ nomEntreprise }
+				</div>
 				<div className="jde-public__quota">{ remainingLabel }</div>
 			</div>
 			<button

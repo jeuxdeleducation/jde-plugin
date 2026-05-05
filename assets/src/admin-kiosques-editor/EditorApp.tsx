@@ -55,7 +55,9 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 	const { evenementId, planUrl, planVerrouille } = props;
 
 	const [ kiosques, setKiosques ] = useState< KiosqueDraft[] >( [] );
-	const [ reservedIds, setReservedIds ] = useState< ReadonlySet< number > >( new Set() );
+	const [ reservedIds, setReservedIds ] = useState< ReadonlySet< number > >(
+		new Set()
+	);
 	const [ loading, setLoading ] = useState< boolean >( true );
 	const [ saving, setSaving ] = useState< boolean >( false );
 	const [ dirty, setDirty ] = useState< boolean >( false );
@@ -66,15 +68,29 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 		void ( async () => {
 			try {
 				const [ kiosquesResp, reservationsResp ] = await Promise.all( [
-					api.get< ListResponse >( `admin/evenements/${ evenementId }/kiosques` ),
-					api.get< ReservationsResponse >( `admin/evenements/${ evenementId }/reservations` ).catch( () => ( { reservations: [] } ) ),
+					api.get< ListResponse >(
+						`admin/evenements/${ evenementId }/kiosques`
+					),
+					api
+						.get< ReservationsResponse >(
+							`admin/evenements/${ evenementId }/reservations`
+						)
+						.catch( () => ( { reservations: [] } ) ),
 				] );
 				setKiosques( kiosquesResp.kiosques.map( withClientKey ) );
-				setReservedIds( new Set( reservationsResp.reservations.map( ( r ) => r.kiosque_id ) ) );
+				setReservedIds(
+					new Set(
+						reservationsResp.reservations.map(
+							( r ) => r.kiosque_id
+						)
+					)
+				);
 				setLoading( false );
 			} catch ( e ) {
 				setError(
-					e instanceof ApiClientError ? e.message : T.public.errors.generic
+					e instanceof ApiClientError
+						? e.message
+						: T.public.errors.generic
 				);
 				setLoading( false );
 			}
@@ -96,14 +112,19 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 		setDirty( true );
 	}, [ evenementId ] );
 
-	const handleClick = useCallback( ( kiosque: Kiosque ): void => {
-		const local = kiosques.find(
-			( k ) => k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
-		);
-		if ( local ) {
-			setEditingKey( local.clientKey );
-		}
-	}, [ kiosques ] );
+	const handleClick = useCallback(
+		( kiosque: Kiosque ): void => {
+			const local = kiosques.find(
+				( k ) =>
+					k.id === kiosque.id &&
+					( null !== k.id || k.numero === kiosque.numero )
+			);
+			if ( local ) {
+				setEditingKey( local.clientKey );
+			}
+		},
+		[ kiosques ]
+	);
 
 	/**
 	 * Aperçu temps réel pendant le drag : on met à jour pos_x/pos_y du
@@ -114,7 +135,8 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 		( kiosque: Kiosque, posX: number, posY: number ): void => {
 			setKiosques( ( current ) =>
 				current.map( ( k ) =>
-					k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
+					k.id === kiosque.id &&
+					( null !== k.id || k.numero === kiosque.numero )
 						? { ...k, pos_x: posX, pos_y: posY }
 						: k
 				)
@@ -127,7 +149,8 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 		( kiosque: Kiosque, posX: number, posY: number ): void => {
 			setKiosques( ( current ) =>
 				current.map( ( k ) =>
-					k.id === kiosque.id && ( null !== k.id || k.numero === kiosque.numero )
+					k.id === kiosque.id &&
+					( null !== k.id || k.numero === kiosque.numero )
 						? { ...k, pos_x: posX, pos_y: posY }
 						: k
 				)
@@ -197,7 +220,9 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 			setDirty( false );
 		} catch ( e ) {
 			setError(
-				e instanceof ApiClientError ? e.message : T.public.errors.generic
+				e instanceof ApiClientError
+					? e.message
+					: T.public.errors.generic
 			);
 		} finally {
 			setSaving( false );
@@ -209,11 +234,7 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 	}
 
 	if ( ! planUrl ) {
-		return (
-			<div className="jde-editor__empty">
-				{ T.admin.emptyState }
-			</div>
-		);
+		return <div className="jde-editor__empty">{ T.admin.emptyState }</div>;
 	}
 
 	return (
@@ -245,12 +266,16 @@ export function EditorApp( props: EditorAppProps ): JSX.Element {
 				planUrl={ planUrl }
 				kiosques={ kiosques }
 				editingId={
-					editingDraft && editingDraft.id !== null ? editingDraft.id : null
+					editingDraft && editingDraft.id !== null
+						? editingDraft.id
+						: null
 				}
 				takenIds={ reservedIds }
 				onKiosqueClick={ handleClick }
 				onKiosqueDrag={ planVerrouille ? undefined : handleKiosqueDrag }
-				onKiosqueDragEnd={ planVerrouille ? undefined : handleKiosqueDragEnd }
+				onKiosqueDragEnd={
+					planVerrouille ? undefined : handleKiosqueDragEnd
+				}
 			/>
 
 			{ editingDraft && (

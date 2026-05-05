@@ -2,34 +2,34 @@
  * Styles de la page Réservations admin.
  */
 
-@import '../shared/brand';
-@import '../shared/PlanCanvas';
+@import "../shared/brand";
+@import "../shared/PlanCanvas";
 
 .jde-resa {
-	font-family: var( --jde-font-body );
-	color: var( --jde-color-text );
+	font-family: var(--jde-font-body);
+	color: var(--jde-color-text);
 
 	&__header {
 		display: flex;
 		align-items: flex-start;
 		justify-content: space-between;
-		gap: var( --jde-spacing-md );
+		gap: var(--jde-spacing-md);
 		flex-wrap: wrap;
-		padding-bottom: var( --jde-spacing-md );
-		border-bottom: 1px solid var( --jde-color-border );
-		margin-bottom: var( --jde-spacing-lg );
+		padding-bottom: var(--jde-spacing-md);
+		border-bottom: 1px solid var(--jde-color-border);
+		margin-bottom: var(--jde-spacing-lg);
 	}
 
 	&__title {
 		margin: 0 0 4px;
-		font-family: var( --jde-font-heading );
-		font-size: var( --jde-font-size-xl );
+		font-family: var(--jde-font-heading);
+		font-size: var(--jde-font-size-xl);
 	}
 
 	&__stats {
 		margin: 0;
-		font-size: var( --jde-font-size-sm );
-		color: var( --jde-color-text-muted );
+		font-size: var(--jde-font-size-sm);
+		color: var(--jde-color-text-muted);
 	}
 
 	&__refresh {
@@ -38,14 +38,14 @@
 
 	&__header-actions {
 		display: flex;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 		flex-wrap: wrap;
 	}
 
 	&__layout {
 		display: flex;
 		flex-direction: column;
-		gap: var( --jde-spacing-lg );
+		gap: var(--jde-spacing-lg);
 	}
 
 	&__col-plan {
@@ -64,27 +64,27 @@
 	}
 
 	&__empty {
-		padding: var( --jde-spacing-xl );
+		padding: var(--jde-spacing-xl);
 		text-align: center;
-		color: var( --jde-color-text-muted );
-		background: var( --jde-color-bg-alt );
-		border: 1px dashed var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		color: var(--jde-color-text-muted);
+		background: var(--jde-color-bg-alt);
+		border: 1px dashed var(--jde-color-border);
+		border-radius: var(--jde-radius);
 	}
 
 	&__plan-empty {
-		padding: var( --jde-spacing-md );
-		background: var( --jde-color-bg-alt );
-		border: 1px dashed var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		padding: var(--jde-spacing-md);
+		background: var(--jde-color-bg-alt);
+		border: 1px dashed var(--jde-color-border);
+		border-radius: var(--jde-radius);
 		text-align: center;
-		color: var( --jde-color-text-muted );
+		color: var(--jde-color-text-muted);
 	}
 
 	&__plan-wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: var( --jde-spacing-md );
+		gap: var(--jde-spacing-md);
 	}
 
 	&__plan-fallback {
@@ -92,12 +92,12 @@
 		width: 100%;
 		max-height: 60vh;
 		object-fit: contain;
-		background: var( --jde-color-bg-alt );
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		background: var(--jde-color-bg-alt);
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius);
 	}
 
 	&__table {
-		font-size: var( --jde-font-size-sm );
+		font-size: var(--jde-font-size-sm);
 	}
 }

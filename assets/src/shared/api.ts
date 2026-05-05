@@ -17,7 +17,7 @@ import type { ApiError, JdeRuntimeConfig } from './types';
 export class ApiClientError extends Error {
 	public readonly status: number;
 	public readonly code: string;
-	public readonly data: ApiError['data'];
+	public readonly data: ApiError[ 'data' ];
 
 	constructor( error: ApiError, status: number ) {
 		super( error.message );
@@ -31,7 +31,7 @@ export class ApiClientError extends Error {
 function getConfig(): JdeRuntimeConfig {
 	if ( ! window.jdeKiosques ) {
 		throw new Error(
-			'Configuration JDE absente. La page n\'a pas chargé les variables runtime.'
+			"Configuration JDE absente. La page n'a pas chargé les variables runtime."
 		);
 	}
 	return window.jdeKiosques;
@@ -40,9 +40,9 @@ function getConfig(): JdeRuntimeConfig {
 /**
  * GET / DELETE / POST / PUT typé.
  *
- * @param method     Méthode HTTP.
- * @param path       Chemin relatif au namespace `jde/v1` (ex. "auth/code").
- * @param body       Corps JSON optionnel.
+ * @param method Méthode HTTP.
+ * @param path   Chemin relatif au namespace `jde/v1` (ex. "auth/code").
+ * @param body   Corps JSON optionnel.
  */
 async function request< T >(
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
@@ -50,7 +50,8 @@ async function request< T >(
 	body?: unknown
 ): Promise< T > {
 	const config = getConfig();
-	const url = config.restUrl.replace( /\/$/, '' ) + '/' + path.replace( /^\//, '' );
+	const url =
+		config.restUrl.replace( /\/$/, '' ) + '/' + path.replace( /^\//, '' );
 
 	const init: RequestInit = {
 		method,
@@ -63,7 +64,8 @@ async function request< T >(
 
 	if ( body !== undefined ) {
 		init.body = JSON.stringify( body );
-		( init.headers as Record< string, string > )[ 'Content-Type' ] = 'application/json';
+		( init.headers as Record< string, string > )[ 'Content-Type' ] =
+			'application/json';
 	}
 
 	const response = await fetch( url, init );
@@ -106,5 +108,6 @@ export const api = {
 		request< T >( 'POST', path, body ),
 	put: < T >( path: string, body?: unknown ): Promise< T > =>
 		request< T >( 'PUT', path, body ),
-	delete: < T >( path: string ): Promise< T > => request< T >( 'DELETE', path ),
+	delete: < T >( path: string ): Promise< T > =>
+		request< T >( 'DELETE', path ),
 };

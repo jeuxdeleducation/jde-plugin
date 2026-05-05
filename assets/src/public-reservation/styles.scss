@@ -2,43 +2,44 @@
  * Styles de l'application publique de réservation.
  */
 
-@import '../shared/brand';
-@import '../shared/PlanCanvas';
+@import "../shared/brand";
+@import "../shared/PlanCanvas";
 
 .jde-reservation-app {
-	font-family: var( --jde-font-body );
-	color: var( --jde-color-text );
+	font-family: var(--jde-font-body);
+	color: var(--jde-color-text);
 	max-width: 1200px;
 	margin: 0 auto;
-	padding: var( --jde-spacing-md );
+	padding: var(--jde-spacing-md);
 
 	&__noscript {
-		padding: var( --jde-spacing-lg );
-		background: var( --jde-color-warning-bg );
-		border-radius: var( --jde-radius );
+		padding: var(--jde-spacing-lg);
+		background: var(--jde-color-warning-bg);
+		border-radius: var(--jde-radius);
 		text-align: center;
 	}
 }
 
 .jde-public {
+
 	&__loading,
 	&__empty {
-		padding: var( --jde-spacing-xl );
+		padding: var(--jde-spacing-xl);
 		text-align: center;
-		color: var( --jde-color-text-muted );
+		color: var(--jde-color-text-muted);
 	}
 
 	&__card {
 		max-width: 480px;
-		margin: var( --jde-spacing-xl ) auto;
-		padding: var( --jde-spacing-xl );
-		background: var( --jde-color-bg );
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius-lg );
-		box-shadow: var( --jde-shadow );
+		margin: var(--jde-spacing-xl) auto;
+		padding: var(--jde-spacing-xl);
+		background: var(--jde-color-bg);
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius-lg);
+		box-shadow: var(--jde-shadow);
 
 		&--success {
-			border-color: var( --jde-color-success );
+			border-color: var(--jde-color-success);
 			text-align: center;
 		}
 
@@ -47,85 +48,90 @@
 		form {
 			display: flex;
 			flex-direction: column;
-			gap: var( --jde-spacing-lg );
+			gap: var(--jde-spacing-lg);
 		}
 	}
 
 	&__heading {
-		margin: 0 0 var( --jde-spacing-sm );
-		font-family: var( --jde-font-heading );
-		font-size: var( --jde-font-size-xl );
+		margin: 0 0 var(--jde-spacing-sm);
+		font-family: var(--jde-font-heading);
+		font-size: var(--jde-font-size-xl);
 	}
 
 	&__subheading {
-		margin: 0 0 var( --jde-spacing-lg );
-		color: var( --jde-color-text-muted );
+		margin: 0 0 var(--jde-spacing-lg);
+		color: var(--jde-color-text-muted);
 	}
 
 	&__error {
-		margin: var( --jde-spacing-md ) 0;
-		padding: var( --jde-spacing-md );
-		background: var( --jde-color-danger-bg );
-		color: var( --jde-color-danger );
-		border-radius: var( --jde-radius-sm );
-		font-size: var( --jde-font-size-sm );
+		margin: var(--jde-spacing-md) 0;
+		padding: var(--jde-spacing-md);
+		background: var(--jde-color-danger-bg);
+		color: var(--jde-color-danger);
+		border-radius: var(--jde-radius-sm);
+		font-size: var(--jde-font-size-sm);
 	}
 
 	&__event-title {
-		margin: 0 0 var( --jde-spacing-xs );
-		font-family: var( --jde-font-heading );
-		font-size: var( --jde-font-size-xl );
-		color: var( --jde-color-primary );
+		margin: 0 0 var(--jde-spacing-xs);
+		font-family: var(--jde-font-heading);
+		font-size: var(--jde-font-size-xl);
+		color: var(--jde-color-primary);
 	}
 
 	&__event-description {
-		margin: 0 0 var( --jde-spacing-md );
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		background: var( --jde-color-bg-alt );
-		border-left: 4px solid var( --jde-color-primary );
-		border-radius: var( --jde-radius-sm );
-		font-size: var( --jde-font-size-base );
+		margin: 0 0 var(--jde-spacing-md);
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		background: var(--jde-color-bg-alt);
+		border-left: 4px solid var(--jde-color-primary);
+		border-radius: var(--jde-radius-sm);
+		font-size: var(--jde-font-size-base);
 		line-height: 1.5;
 
-		p:first-child { margin-top: 0; }
-		p:last-child { margin-bottom: 0; }
+		p:first-child {
+			margin-top: 0;
+		}
+
+		p:last-child {
+			margin-bottom: 0;
+		}
 	}
 
 	&__header {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: var( --jde-spacing-md );
-		padding: var( --jde-spacing-md );
-		margin-bottom: var( --jde-spacing-md );
-		background: var( --jde-color-bg );
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius );
+		gap: var(--jde-spacing-md);
+		padding: var(--jde-spacing-md);
+		margin-bottom: var(--jde-spacing-md);
+		background: var(--jde-color-bg);
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius);
 	}
 
 	&__company-name {
-		font-size: var( --jde-font-size-lg );
+		font-size: var(--jde-font-size-lg);
 		font-weight: 600;
 	}
 
 	&__quota {
-		color: var( --jde-color-text-muted );
-		font-size: var( --jde-font-size-sm );
+		color: var(--jde-color-text-muted);
+		font-size: var(--jde-font-size-sm);
 	}
 
 	&__selection-bar {
 		position: sticky;
-		bottom: var( --jde-spacing-md );
+		bottom: var(--jde-spacing-md);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: var( --jde-spacing-md );
-		margin-top: var( --jde-spacing-md );
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		background: var( --jde-color-primary );
+		gap: var(--jde-spacing-md);
+		margin-top: var(--jde-spacing-md);
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		background: var(--jde-color-primary);
 		color: #fff;
-		border-radius: var( --jde-radius );
-		box-shadow: var( --jde-shadow-lg );
+		border-radius: var(--jde-radius);
+		box-shadow: var(--jde-shadow-lg);
 		font-weight: 600;
 		z-index: 100;
 	}
@@ -139,12 +145,12 @@
 	min-height: 44px; // cible tactile (mobile-first)
 	padding: 8px 18px;
 	font-family: inherit;
-	font-size: var( --jde-font-size-base );
+	font-size: var(--jde-font-size-base);
 	font-weight: 600;
 	border: 2px solid transparent;
-	border-radius: var( --jde-radius );
+	border-radius: var(--jde-radius);
 	cursor: pointer;
-	transition: background var( --jde-transition ), color var( --jde-transition );
+	transition: background var(--jde-transition), color var(--jde-transition);
 
 	&:disabled {
 		opacity: 0.6;
@@ -156,21 +162,21 @@
 	}
 
 	&--primary {
-		background: var( --jde-color-primary );
+		background: var(--jde-color-primary);
 		color: #fff;
 
 		&:not(:disabled):hover {
-			background: var( --jde-color-primary-hover );
+			background: var(--jde-color-primary-hover);
 		}
 	}
 
 	&--ghost {
 		background: transparent;
-		color: var( --jde-color-text );
-		border-color: var( --jde-color-border );
+		color: var(--jde-color-text);
+		border-color: var(--jde-color-border);
 
 		&:not(:disabled):hover {
-			background: var( --jde-color-bg-alt );
+			background: var(--jde-color-bg-alt);
 		}
 	}
 }
@@ -181,24 +187,24 @@
 .jde-modal-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba( 0, 0, 0, 0.55 );
+	background: rgba(0, 0, 0, 0.55);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 100000; // au-dessus de la sticky selection-bar
-	padding: var( --jde-spacing-md );
+	padding: var(--jde-spacing-md);
 }
 
 .jde-modal {
-	background: var( --jde-color-bg );
-	border-radius: var( --jde-radius-lg );
-	box-shadow: var( --jde-shadow-lg );
+	background: var(--jde-color-bg);
+	border-radius: var(--jde-radius-lg);
+	box-shadow: var(--jde-shadow-lg);
 	max-width: 480px;
 	width: 100%;
 	max-height: 90vh;
 	display: flex;
 	flex-direction: column;
-	font-family: var( --jde-font-body );
+	font-family: var(--jde-font-body);
 	overflow: hidden;
 
 	&--warning,
@@ -208,34 +214,36 @@
 	}
 
 	&__header {
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		border-bottom: 1px solid var( --jde-color-border );
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		border-bottom: 1px solid var(--jde-color-border);
 
 		h2 {
 			margin: 0;
-			font-family: var( --jde-font-heading );
-			font-size: var( --jde-font-size-lg );
+			font-family: var(--jde-font-heading);
+			font-size: var(--jde-font-size-lg);
 		}
 	}
 
 	&__body {
-		padding: var( --jde-spacing-lg );
+		padding: var(--jde-spacing-lg);
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 
-		p { margin: 0; }
+		p {
+			margin: 0;
+		}
 	}
 
 	&__footer {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		gap: var( --jde-spacing-md );
-		padding: var( --jde-spacing-md ) var( --jde-spacing-lg );
-		border-top: 1px solid var( --jde-color-border );
-		background: var( --jde-color-bg-alt );
+		gap: var(--jde-spacing-md);
+		padding: var(--jde-spacing-md) var(--jde-spacing-lg);
+		border-top: 1px solid var(--jde-color-border);
+		background: var(--jde-color-bg-alt);
 	}
 
 	&__footer--end {
@@ -247,23 +255,23 @@
 .jde-bubble-overlay {
 	position: fixed;
 	inset: 0;
-	background: rgba( 0, 0, 0, 0.4 );
+	background: rgba(0, 0, 0, 0.4);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 99000;
-	padding: var( --jde-spacing-md );
+	padding: var(--jde-spacing-md);
 }
 
 .jde-bubble {
 	position: relative;
-	background: var( --jde-color-bg );
-	border-radius: var( --jde-radius-lg );
-	box-shadow: var( --jde-shadow-lg );
-	padding: var( --jde-spacing-lg );
+	background: var(--jde-color-bg);
+	border-radius: var(--jde-radius-lg);
+	box-shadow: var(--jde-shadow-lg);
+	padding: var(--jde-spacing-lg);
 	max-width: 360px;
 	width: 100%;
-	font-family: var( --jde-font-body );
+	font-family: var(--jde-font-body);
 
 	&__close {
 		position: absolute;
@@ -273,51 +281,51 @@
 		border: none;
 		font-size: 22px;
 		cursor: pointer;
-		color: var( --jde-color-text-muted );
+		color: var(--jde-color-text-muted);
 
 		&:hover {
-			color: var( --jde-color-text );
+			color: var(--jde-color-text);
 		}
 	}
 
 	&__numero {
-		font-size: var( --jde-font-size-lg );
-		margin-bottom: var( --jde-spacing-sm );
+		font-size: var(--jde-font-size-lg);
+		margin-bottom: var(--jde-spacing-sm);
 	}
 
 	&__dimensions {
-		color: var( --jde-color-text-muted );
-		font-size: var( --jde-font-size-sm );
-		margin-bottom: var( --jde-spacing-xs );
+		color: var(--jde-color-text-muted);
+		font-size: var(--jde-font-size-sm);
+		margin-bottom: var(--jde-spacing-xs);
 	}
 
 	&__notes {
-		font-size: var( --jde-font-size-sm );
-		margin-bottom: var( --jde-spacing-md );
+		font-size: var(--jde-font-size-sm);
+		margin-bottom: var(--jde-spacing-md);
 		line-height: 1.4;
 	}
 
 	&__actions {
-		margin-top: var( --jde-spacing-md );
+		margin-top: var(--jde-spacing-md);
 		display: flex;
 		justify-content: flex-end;
 	}
 
 	&__message {
-		margin-top: var( --jde-spacing-md );
-		padding: var( --jde-spacing-md );
-		background: var( --jde-color-bg-alt );
-		border-radius: var( --jde-radius-sm );
+		margin-top: var(--jde-spacing-md);
+		padding: var(--jde-spacing-md);
+		background: var(--jde-color-bg-alt);
+		border-radius: var(--jde-radius-sm);
 
 		strong {
 			display: block;
-			margin-bottom: var( --jde-spacing-xs );
+			margin-bottom: var(--jde-spacing-xs);
 		}
 
 		p {
 			margin: 0;
-			color: var( --jde-color-text-muted );
-			font-size: var( --jde-font-size-sm );
+			color: var(--jde-color-text-muted);
+			font-size: var(--jde-font-size-sm);
 		}
 	}
 }
@@ -326,70 +334,70 @@
 // (plus rien à faire — message de contact uniquement).
 .jde-public__quota-reached {
 	max-width: 560px;
-	margin: var( --jde-spacing-xl ) auto;
-	padding: var( --jde-spacing-xl );
-	background: var( --jde-color-bg );
-	border: 1px solid var( --jde-color-border );
-	border-radius: var( --jde-radius-lg );
-	box-shadow: var( --jde-shadow );
+	margin: var(--jde-spacing-xl) auto;
+	padding: var(--jde-spacing-xl);
+	background: var(--jde-color-bg);
+	border: 1px solid var(--jde-color-border);
+	border-radius: var(--jde-radius-lg);
+	box-shadow: var(--jde-shadow);
 	text-align: center;
 
 	&-title {
-		margin: 0 0 var( --jde-spacing-md );
-		font-family: var( --jde-font-heading );
-		font-size: var( --jde-font-size-xl );
-		color: var( --jde-color-success );
+		margin: 0 0 var(--jde-spacing-md);
+		font-family: var(--jde-font-heading);
+		font-size: var(--jde-font-size-xl);
+		color: var(--jde-color-success);
 	}
 
 	&-list {
 		display: inline-flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		gap: var( --jde-spacing-sm );
-		margin: var( --jde-spacing-md ) 0;
+		gap: var(--jde-spacing-sm);
+		margin: var(--jde-spacing-md) 0;
 		padding: 0;
 		list-style: none;
 
 		li {
 			padding: 4px 12px;
-			background: var( --jde-color-bg-alt );
-			border-radius: var( --jde-radius-pill );
+			background: var(--jde-color-bg-alt);
+			border-radius: var(--jde-radius-pill);
 			font-weight: 600;
 		}
 	}
 
 	&-actions {
 		display: flex;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 		justify-content: center;
 		flex-wrap: wrap;
-		margin-top: var( --jde-spacing-lg );
+		margin-top: var(--jde-spacing-lg);
 	}
 }
 
 .jde-readonly-plan-wrapper {
-	margin-top: var( --jde-spacing-xl );
-	border-top: 2px solid var( --jde-color-border );
-	padding-top: var( --jde-spacing-lg );
+	margin-top: var(--jde-spacing-xl);
+	border-top: 2px solid var(--jde-color-border);
+	padding-top: var(--jde-spacing-lg);
 
 	.jde-canvas {
-		border-radius: var( --jde-radius );
+		border-radius: var(--jde-radius);
 		overflow: hidden;
 	}
 
 	.jde-readonly-plan-footer {
 		display: flex;
 		justify-content: center;
-		margin-top: var( --jde-spacing-md );
+		margin-top: var(--jde-spacing-md);
 	}
 }
 
 .jde-button--secondary {
-	background: var( --jde-color-bg-alt );
-	color: var( --jde-color-text );
-	border: 1px solid var( --jde-color-border );
+	background: var(--jde-color-bg-alt);
+	color: var(--jde-color-text);
+	border: 1px solid var(--jde-color-border);
 
 	&:hover {
-		background: var( --jde-color-border );
+		background: var(--jde-color-border);
 	}
 }

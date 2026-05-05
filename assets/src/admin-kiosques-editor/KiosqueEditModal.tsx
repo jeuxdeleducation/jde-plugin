@@ -50,7 +50,11 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 	};
 
 	return (
-		<div className="jde-modal-overlay" onClick={ onClose } role="presentation">
+		<div
+			className="jde-modal-overlay"
+			onClick={ onClose }
+			role="presentation"
+		>
 			<div
 				className="jde-modal"
 				role="dialog"
@@ -80,7 +84,9 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 						<input
 							type="text"
 							value={ form.numero }
-							onChange={ ( e ) => update( 'numero', e.target.value ) }
+							onChange={ ( e ) =>
+								update( 'numero', e.target.value )
+							}
 							placeholder={ T.admin.modal.fieldNumeroPlaceholder }
 							maxLength={ 32 }
 							required
@@ -90,7 +96,9 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 
 					<div className="jde-field-row">
 						<label className="jde-field">
-							<span className="jde-field__label">Position X (%)</span>
+							<span className="jde-field__label">
+								Position X (%)
+							</span>
 							<input
 								type="number"
 								min={ 0 }
@@ -98,12 +106,17 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 								step={ 0.1 }
 								value={ form.pos_x }
 								onChange={ ( e ) =>
-									update( 'pos_x', parseFloat( e.target.value ) || 0 )
+									update(
+										'pos_x',
+										parseFloat( e.target.value ) || 0
+									)
 								}
 							/>
 						</label>
 						<label className="jde-field">
-							<span className="jde-field__label">Position Y (%)</span>
+							<span className="jde-field__label">
+								Position Y (%)
+							</span>
 							<input
 								type="number"
 								min={ 0 }
@@ -111,7 +124,10 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 								step={ 0.1 }
 								value={ form.pos_y }
 								onChange={ ( e ) =>
-									update( 'pos_y', parseFloat( e.target.value ) || 0 )
+									update(
+										'pos_y',
+										parseFloat( e.target.value ) || 0
+									)
 								}
 							/>
 						</label>
@@ -119,7 +135,9 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 
 					<div className="jde-field-row">
 						<label className="jde-field">
-							<span className="jde-field__label">Largeur (%)</span>
+							<span className="jde-field__label">
+								Largeur (%)
+							</span>
 							<input
 								type="number"
 								min={ 0.5 }
@@ -127,13 +145,18 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 								step={ 0.1 }
 								value={ form.largeur }
 								onChange={ ( e ) =>
-									update( 'largeur', parseFloat( e.target.value ) || 0 )
+									update(
+										'largeur',
+										parseFloat( e.target.value ) || 0
+									)
 								}
 								required
 							/>
 						</label>
 						<label className="jde-field">
-							<span className="jde-field__label">Hauteur (%)</span>
+							<span className="jde-field__label">
+								Hauteur (%)
+							</span>
 							<input
 								type="number"
 								min={ 0.5 }
@@ -141,7 +164,10 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 								step={ 0.1 }
 								value={ form.hauteur }
 								onChange={ ( e ) =>
-									update( 'hauteur', parseFloat( e.target.value ) || 0 )
+									update(
+										'hauteur',
+										parseFloat( e.target.value ) || 0
+									)
 								}
 								required
 							/>
@@ -158,22 +184,30 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 							onChange={ ( e ) =>
 								update(
 									'dimensions_texte',
-									e.target.value.length > 0 ? e.target.value : null
+									e.target.value.length > 0
+										? e.target.value
+										: null
 								)
 							}
-							placeholder={ T.admin.modal.fieldDimensionsPlaceholder }
+							placeholder={
+								T.admin.modal.fieldDimensionsPlaceholder
+							}
 							maxLength={ 64 }
 						/>
 					</label>
 
 					<label className="jde-field">
-						<span className="jde-field__label">{ T.admin.modal.fieldNotes }</span>
+						<span className="jde-field__label">
+							{ T.admin.modal.fieldNotes }
+						</span>
 						<textarea
 							value={ form.notes ?? '' }
 							onChange={ ( e ) =>
 								update(
 									'notes',
-									e.target.value.length > 0 ? e.target.value : null
+									e.target.value.length > 0
+										? e.target.value
+										: null
 								)
 							}
 							rows={ 3 }
@@ -181,11 +215,16 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 					</label>
 
 					<label className="jde-field">
-						<span className="jde-field__label">{ T.admin.modal.fieldStatut }</span>
+						<span className="jde-field__label">
+							{ T.admin.modal.fieldStatut }
+						</span>
 						<select
 							value={ form.statut }
 							onChange={ ( e ) =>
-								update( 'statut', e.target.value as KiosqueStatut )
+								update(
+									'statut',
+									e.target.value as KiosqueStatut
+								)
 							}
 						>
 							<option value="disponible">
@@ -208,10 +247,17 @@ export function KiosqueEditModal( props: KiosqueEditModalProps ): JSX.Element {
 							</button>
 						) }
 						<div className="jde-modal__footer-end">
-							<button type="button" className="button" onClick={ onClose }>
+							<button
+								type="button"
+								className="button"
+								onClick={ onClose }
+							>
 								{ T.cancel }
 							</button>
-							<button type="submit" className="button button-primary">
+							<button
+								type="submit"
+								className="button button-primary"
+							>
 								{ T.save }
 							</button>
 						</div>

@@ -12,7 +12,13 @@
  * fourni par PlanCanvas.
  */
 
-import { type CSSProperties, type MouseEvent, type PointerEvent, useRef, useState } from 'react';
+import {
+	type CSSProperties,
+	type MouseEvent,
+	type PointerEvent,
+	useRef,
+	useState,
+} from 'react';
 import type { Kiosque } from './types';
 
 export type KiosqueVariant =
@@ -41,8 +47,16 @@ interface KiosqueRectProps {
 	draggable?: boolean;
 	getBounds?: () => DOMRect | null;
 	onDragStart?: () => void;
-	onDrag?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
-	onDragEnd?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
+	onDrag?: (
+		kiosque: Kiosque,
+		posXPercent: number,
+		posYPercent: number
+	) => void;
+	onDragEnd?: (
+		kiosque: Kiosque,
+		posXPercent: number,
+		posYPercent: number
+	) => void;
 }
 
 const DRAG_THRESHOLD_PX = 4;
@@ -80,7 +94,9 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 		touchAction: draggable ? 'none' : undefined,
 	};
 
-	const handlePointerDown = ( event: PointerEvent< HTMLButtonElement > ): void => {
+	const handlePointerDown = (
+		event: PointerEvent< HTMLButtonElement >
+	): void => {
 		if ( ! draggable || ! getBounds ) {
 			return;
 		}
@@ -100,10 +116,14 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 
 		// Empêche react-zoom-pan-pinch de démarrer son propre pan.
 		event.stopPropagation();
-		( event.currentTarget as HTMLButtonElement ).setPointerCapture( event.pointerId );
+		( event.currentTarget as HTMLButtonElement ).setPointerCapture(
+			event.pointerId
+		);
 	};
 
-	const handlePointerMove = ( event: PointerEvent< HTMLButtonElement > ): void => {
+	const handlePointerMove = (
+		event: PointerEvent< HTMLButtonElement >
+	): void => {
 		const session = dragRef.current;
 		if ( ! session || session.pointerId !== event.pointerId ) {
 			return;
@@ -113,7 +133,10 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 		const deltaY = event.clientY - session.startClientY;
 
 		if ( ! session.moved ) {
-			if ( Math.abs( deltaX ) < DRAG_THRESHOLD_PX && Math.abs( deltaY ) < DRAG_THRESHOLD_PX ) {
+			if (
+				Math.abs( deltaX ) < DRAG_THRESHOLD_PX &&
+				Math.abs( deltaY ) < DRAG_THRESHOLD_PX
+			) {
 				return;
 			}
 			session.moved = true;
@@ -158,11 +181,17 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 			const bounds = getBounds?.() ?? null;
 			if ( bounds && bounds.width > 0 && bounds.height > 0 ) {
 				const finalX = clampPercent(
-					session.startPosX + ( ( event.clientX - session.startClientX ) / bounds.width ) * 100,
+					session.startPosX +
+						( ( event.clientX - session.startClientX ) /
+							bounds.width ) *
+							100,
 					kiosque.largeur
 				);
 				const finalY = clampPercent(
-					session.startPosY + ( ( event.clientY - session.startClientY ) / bounds.height ) * 100,
+					session.startPosY +
+						( ( event.clientY - session.startClientY ) /
+							bounds.height ) *
+							100,
 					kiosque.hauteur
 				);
 				onDragEnd?.( kiosque, finalX, finalY );
@@ -188,7 +217,9 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 	return (
 		<button
 			type="button"
-			className={ `jde-kiosque jde-kiosque--${ variant }${ isDragging ? ' jde-kiosque--dragging' : '' }` }
+			className={ `jde-kiosque jde-kiosque--${ variant }${
+				isDragging ? ' jde-kiosque--dragging' : ''
+			}` }
 			style={ style }
 			onClick={ buttonDisabled ? undefined : handleClick }
 			onPointerDown={ draggable ? handlePointerDown : undefined }
@@ -198,7 +229,9 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 			disabled={ buttonDisabled }
 			aria-label={ `Kiosque ${ kiosque.numero }` }
 		>
-			<span className="jde-kiosque__label">{ label ?? kiosque.numero }</span>
+			<span className="jde-kiosque__label">
+				{ label ?? kiosque.numero }
+			</span>
 		</button>
 	);
 }
@@ -206,6 +239,8 @@ export function KiosqueRect( props: KiosqueRectProps ): JSX.Element {
 /**
  * Clamper une position en % pour que le rectangle reste dans le plan
  * (la dimension est aussi en %, ce qui rend la borne haute simple).
+ * @param value
+ * @param dimensionPercent
  */
 function clampPercent( value: number, dimensionPercent: number ): number {
 	const max = Math.max( 0, 100 - dimensionPercent );

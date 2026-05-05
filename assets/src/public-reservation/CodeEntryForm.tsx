@@ -11,7 +11,9 @@ interface CodeEntryFormProps {
 	onAuthenticated: ( state: PublicState ) => void;
 }
 
-export function CodeEntryForm( { onAuthenticated }: CodeEntryFormProps ): JSX.Element {
+export function CodeEntryForm( {
+	onAuthenticated,
+}: CodeEntryFormProps ): JSX.Element {
 	const [ code, setCode ] = useState< string >( '' );
 	const [ submitting, setSubmitting ] = useState< boolean >( false );
 	const [ error, setError ] = useState< string | null >( null );
@@ -45,7 +47,10 @@ export function CodeEntryForm( { onAuthenticated }: CodeEntryFormProps ): JSX.El
 
 	const formatCode = ( raw: string ): string => {
 		// Auto-format en XXXX-XXXX (insère un tiret après 4 caractères).
-		const cleaned = raw.replace( /[^A-Za-z0-9]/g, '' ).toUpperCase().slice( 0, 8 );
+		const cleaned = raw
+			.replace( /[^A-Za-z0-9]/g, '' )
+			.toUpperCase()
+			.slice( 0, 8 );
 		if ( cleaned.length <= 4 ) {
 			return cleaned;
 		}
@@ -54,15 +59,21 @@ export function CodeEntryForm( { onAuthenticated }: CodeEntryFormProps ): JSX.El
 
 	return (
 		<div className="jde-public__card">
-			<h2 className="jde-public__heading">{ T.public.codeForm.heading }</h2>
-			<p className="jde-public__subheading">{ T.public.codeForm.subheading }</p>
+			<h2 className="jde-public__heading">
+				{ T.public.codeForm.heading }
+			</h2>
+			<p className="jde-public__subheading">
+				{ T.public.codeForm.subheading }
+			</p>
 
 			<form onSubmit={ ( e ) => void handleSubmit( e ) } noValidate>
 				<label className="jde-field">
 					<input
 						type="text"
 						value={ code }
-						onChange={ ( e ) => setCode( formatCode( e.target.value ) ) }
+						onChange={ ( e ) =>
+							setCode( formatCode( e.target.value ) )
+						}
 						placeholder={ T.public.codeForm.placeholder }
 						maxLength={ 9 }
 						autoComplete="off"

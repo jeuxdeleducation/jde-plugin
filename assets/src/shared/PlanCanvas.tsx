@@ -16,10 +16,7 @@
  */
 
 import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import {
-	TransformComponent,
-	TransformWrapper,
-} from 'react-zoom-pan-pinch';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import type { Kiosque } from './types';
 import { KiosqueRect, type KiosqueVariant } from './KiosqueRect';
 
@@ -47,8 +44,16 @@ interface PlanCanvasProps {
 	 * Mode `edit` uniquement : appelé pendant le drag (pour aperçu
 	 * temps réel) et à sa fin (pour persister la nouvelle position).
 	 */
-	onKiosqueDrag?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
-	onKiosqueDragEnd?: ( kiosque: Kiosque, posXPercent: number, posYPercent: number ) => void;
+	onKiosqueDrag?: (
+		kiosque: Kiosque,
+		posXPercent: number,
+		posYPercent: number
+	) => void;
+	onKiosqueDragEnd?: (
+		kiosque: Kiosque,
+		posXPercent: number,
+		posYPercent: number
+	) => void;
 
 	/** Surcouches additionnelles (ex. : rectangles fantômes pendant un dessin). */
 	overlay?: ReactNode;
@@ -73,12 +78,20 @@ export function PlanCanvas( props: PlanCanvasProps ): JSX.Element {
 	const [ panDisabled, setPanDisabled ] = useState< boolean >( false );
 
 	const computeVariant = useMemo(
-		() => buildVariantResolver( mode, { selectedIds, myReservationIds, takenIds, editingId } ),
+		() =>
+			buildVariantResolver( mode, {
+				selectedIds,
+				myReservationIds,
+				takenIds,
+				editingId,
+			} ),
 		[ mode, selectedIds, myReservationIds, takenIds, editingId ]
 	);
 
 	const getStageBounds = useCallback( (): DOMRect | null => {
-		return stageRef.current ? stageRef.current.getBoundingClientRect() : null;
+		return stageRef.current
+			? stageRef.current.getBoundingClientRect()
+			: null;
 	}, [] );
 
 	const handleDragStart = useCallback( (): void => {
@@ -124,10 +137,16 @@ export function PlanCanvas( props: PlanCanvasProps ): JSX.Element {
 								variant={ computeVariant( kiosque ) }
 								onClick={ onKiosqueClick }
 								draggable={ draggable }
-								getBounds={ draggable ? getStageBounds : undefined }
-								onDragStart={ draggable ? handleDragStart : undefined }
+								getBounds={
+									draggable ? getStageBounds : undefined
+								}
+								onDragStart={
+									draggable ? handleDragStart : undefined
+								}
 								onDrag={ draggable ? onKiosqueDrag : undefined }
-								onDragEnd={ draggable ? handleDragEnd : undefined }
+								onDragEnd={
+									draggable ? handleDragEnd : undefined
+								}
 							/>
 						) ) }
 
@@ -149,6 +168,8 @@ interface VariantContext {
 /**
  * Calcule la classe visuelle d'un kiosque en fonction du mode et de
  * l'état courant.
+ * @param mode
+ * @param ctx
  */
 function buildVariantResolver(
 	mode: CanvasMode,

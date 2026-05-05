@@ -29,7 +29,9 @@ function bootstrap(): void {
 
 	if ( ! config.evenementId ) {
 		// eslint-disable-next-line no-console
-		console.error( 'JDE — evenementId manquant dans la configuration runtime.' );
+		console.error(
+			'JDE — evenementId manquant dans la configuration runtime.'
+		);
 		return;
 	}
 

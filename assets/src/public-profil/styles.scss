@@ -4,129 +4,123 @@
  * Mobile-first. Bandeau d'en-tête coloré différemment selon le rôle.
  */
 
-@import '../shared/brand.scss';
+@import "../shared/brand";
 
 .jde-profil {
 	max-width: 960px;
 	margin: 0 auto;
-	padding: var( --jde-spacing-md );
-	font-family: var( --jde-font-body );
-	color: var( --jde-color-text );
+	padding: var(--jde-spacing-md);
+	font-family: var(--jde-font-body);
+	color: var(--jde-color-text);
 
 	&__loading,
 	&__error {
 		text-align: center;
-		padding: var( --jde-spacing-lg );
-		color: var( --jde-color-text-muted );
+		padding: var(--jde-spacing-lg);
+		color: var(--jde-color-text-muted);
 	}
 
 	&__error {
-		background: var( --jde-color-danger-bg );
-		color: var( --jde-color-danger );
-		border-radius: var( --jde-radius );
+		background: var(--jde-color-danger-bg);
+		color: var(--jde-color-danger);
+		border-radius: var(--jde-radius);
 	}
 
 	&__header {
-		padding: var( --jde-spacing-lg );
-		border-radius: var( --jde-radius-lg );
+		padding: var(--jde-spacing-lg);
+		border-radius: var(--jde-radius-lg);
 		color: #fff;
-		margin-bottom: var( --jde-spacing-lg );
+		margin-bottom: var(--jde-spacing-lg);
 
 		h1 {
 			margin: 0;
-			font-family: var( --jde-font-heading );
-			font-size: var( --jde-font-size-xl );
+			font-family: var(--jde-font-heading);
+			font-size: var(--jde-font-size-xl);
 		}
 
 		p {
-			margin: var( --jde-spacing-xs ) 0 0;
+			margin: var(--jde-spacing-xs) 0 0;
 		}
 	}
 
 	&__event {
 		opacity: 0.85;
-		font-size: var( --jde-font-size-sm );
+		font-size: var(--jde-font-size-sm);
 	}
 
 	&__name {
 		font-weight: 600;
-		font-size: var( --jde-font-size-lg );
+		font-size: var(--jde-font-size-lg);
 	}
 
 	&--benevole .jde-profil__header {
-		background: linear-gradient(
-			135deg,
-			var( --jde-color-primary ) 0%,
-			var( --jde-color-primary-hover ) 100%
-		);
+		background:
+ linear-gradient(135deg, var(--jde-color-primary) 0%, var(--jde-color-primary-hover) 100%);
 	}
+
 	&--jury .jde-profil__header {
-		background: linear-gradient(
-			135deg,
-			var( --jde-color-bg-dark ) 0%,
-			var( --jde-color-primary-hover ) 100%
-		);
+		background:
+ linear-gradient(135deg, var(--jde-color-bg-dark) 0%, var(--jde-color-primary-hover) 100%);
 	}
+
 	&--arbitre .jde-profil__header {
-		background: linear-gradient(
-			135deg,
-			#1c1c1c 0%,
-			var( --jde-color-bg-dark ) 100%
-		);
+		background:
+ linear-gradient(135deg, #1c1c1c 0%, var(--jde-color-bg-dark) 100%);
 	}
 
 	&__intro {
-		padding: var( --jde-spacing-md );
-		background: var( --jde-color-bg-alt );
-		border-radius: var( --jde-radius );
-		margin-bottom: var( --jde-spacing-lg );
+		padding: var(--jde-spacing-md);
+		background: var(--jde-color-bg-alt);
+		border-radius: var(--jde-radius);
+		margin-bottom: var(--jde-spacing-lg);
 	}
 
 	&__section {
-		background: var( --jde-color-bg );
-		border: 1px solid var( --jde-color-border );
-		border-radius: var( --jde-radius );
-		padding: var( --jde-spacing-md );
-		margin-bottom: var( --jde-spacing-md );
+		background: var(--jde-color-bg);
+		border: 1px solid var(--jde-color-border);
+		border-radius: var(--jde-radius);
+		padding: var(--jde-spacing-md);
+		margin-bottom: var(--jde-spacing-md);
 
 		h2 {
-			margin: 0 0 var( --jde-spacing-md );
-			font-family: var( --jde-font-heading );
-			font-size: var( --jde-font-size-lg );
+			margin: 0 0 var(--jde-spacing-md);
+			font-family: var(--jde-font-heading);
+			font-size: var(--jde-font-size-lg);
 		}
 	}
 
 	&__form {
 		display: grid;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 
 		dl {
 			display: grid;
 			grid-template-columns: 1fr;
-			gap: var( --jde-spacing-xs );
+			gap: var(--jde-spacing-xs);
 
 			dt {
 				font-weight: 600;
-				color: var( --jde-color-text-muted );
+				color: var(--jde-color-text-muted);
 			}
+
 			dd {
-				margin: 0 0 var( --jde-spacing-sm );
+				margin: 0 0 var(--jde-spacing-sm);
 			}
 		}
 
 		label {
 			display: flex;
 			flex-direction: column;
-			gap: var( --jde-spacing-xs );
+			gap: var(--jde-spacing-xs);
 			font-weight: 600;
 		}
 
 		input {
 			padding: 12px;
-			border: 1px solid var( --jde-color-border );
-			border-radius: var( --jde-radius-sm );
+			border: 1px solid var(--jde-color-border);
+			border-radius: var(--jde-radius-sm);
 			min-height: 44px;
-			font-size: var( --jde-font-size-base );
+			font-size: var(--jde-font-size-base);
 		}
 	}
 
@@ -135,20 +129,20 @@
 		padding: 0;
 		margin: 0;
 		display: grid;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 	}
 
 	&__sign-confirm {
-		padding: var( --jde-spacing-md );
-		background: var( --jde-color-warning-bg );
-		border-radius: var( --jde-radius );
+		padding: var(--jde-spacing-md);
+		background: var(--jde-color-warning-bg);
+		border-radius: var(--jde-radius);
 		display: grid;
-		gap: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
 	}
 
 	&__msg {
-		color: var( --jde-color-success );
-		font-size: var( --jde-font-size-sm );
+		color: var(--jde-color-success);
+		font-size: var(--jde-font-size-sm);
 		margin: 0;
 	}
 }
@@ -158,58 +152,65 @@
 	padding: 0;
 	margin: 0;
 	display: grid;
-	gap: var( --jde-spacing-md );
+	gap: var(--jde-spacing-md);
 }
 
 .jde-assignation {
-	padding: var( --jde-spacing-md );
-	border-radius: var( --jde-radius );
-	border-left: 4px solid var( --jde-color-text-subtle );
-	background: var( --jde-color-bg-grey );
+	padding: var(--jde-spacing-md);
+	border-radius: var(--jde-radius);
+	border-left: 4px solid var(--jde-color-text-subtle);
+	background: var(--jde-color-bg-grey);
 
 	&--proposee {
-		border-left-color: var( --jde-color-warning );
+		border-left-color: var(--jde-color-warning);
 	}
+
 	&--acceptee {
-		border-left-color: var( --jde-color-success );
-		background: var( --jde-color-success-bg );
+		border-left-color: var(--jde-color-success);
+		background: var(--jde-color-success-bg);
 	}
+
 	&--refusee {
-		border-left-color: var( --jde-color-danger );
-		background: var( --jde-color-danger-bg );
+		border-left-color: var(--jde-color-danger);
+		background: var(--jde-color-danger-bg);
 	}
 
 	&__head {
-		font-size: var( --jde-font-size-base );
+		font-size: var(--jde-font-size-base);
 	}
+
 	&__when {
-		color: var( --jde-color-text-muted );
-		font-size: var( --jde-font-size-sm );
+		color: var(--jde-color-text-muted);
+		font-size: var(--jde-font-size-sm);
 	}
+
 	&__statut {
-		font-size: var( --jde-font-size-sm );
-		margin-top: var( --jde-spacing-xs );
+		font-size: var(--jde-font-size-sm);
+		margin-top: var(--jde-spacing-xs);
 	}
+
 	&__motif {
 		font-style: italic;
-		font-size: var( --jde-font-size-sm );
+		font-size: var(--jde-font-size-sm);
 	}
+
 	&__actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var( --jde-spacing-sm );
-		margin-top: var( --jde-spacing-sm );
+		gap: var(--jde-spacing-sm);
+		margin-top: var(--jde-spacing-sm);
 	}
+
 	&__refuse {
 		display: grid;
-		gap: var( --jde-spacing-xs );
+		gap: var(--jde-spacing-xs);
 		flex-basis: 100%;
 
 		textarea {
 			width: 100%;
 			padding: 8px;
-			border: 1px solid var( --jde-color-border );
-			border-radius: var( --jde-radius-sm );
+			border: 1px solid var(--jde-color-border);
+			border-radius: var(--jde-radius-sm);
 			font-family: inherit;
 		}
 	}
@@ -218,13 +219,13 @@
 .jde-tag {
 	display: inline-block;
 	padding: 4px 10px;
-	border-radius: var( --jde-radius-pill );
-	font-size: var( --jde-font-size-sm );
+	border-radius: var(--jde-radius-pill);
+	font-size: var(--jde-font-size-sm);
 	font-weight: 600;
 
 	&--success {
-		background: var( --jde-color-success-bg );
-		color: var( --jde-color-success );
+		background: var(--jde-color-success-bg);
+		color: var(--jde-color-success);
 	}
 }
 
@@ -232,42 +233,45 @@
 	display: inline-block;
 	padding: 12px 20px;
 	border: 0;
-	border-radius: var( --jde-radius );
+	border-radius: var(--jde-radius);
 	font-family: inherit;
-	font-size: var( --jde-font-size-base );
+	font-size: var(--jde-font-size-base);
 	font-weight: 600;
 	cursor: pointer;
 	min-height: 44px;
-	transition: var( --jde-transition );
+	transition: var(--jde-transition);
 
 	&--primary {
-		background: var( --jde-color-primary );
+		background: var(--jde-color-primary);
 		color: #fff;
 
-		&:hover:not( :disabled ) {
-			background: var( --jde-color-primary-hover );
+		&:hover:not(:disabled) {
+			background: var(--jde-color-primary-hover);
 		}
 	}
+
 	&--secondary {
-		background: var( --jde-color-secondary );
-		color: var( --jde-color-bg-dark );
+		background: var(--jde-color-secondary);
+		color: var(--jde-color-bg-dark);
 		text-decoration: none;
 
-		&:hover:not( :disabled ) {
-			background: var( --jde-color-secondary-hover );
+		&:hover:not(:disabled) {
+			background: var(--jde-color-secondary-hover);
 		}
 	}
+
 	&--ghost {
 		background: transparent;
-		color: var( --jde-color-text-muted );
-		border: 1px solid var( --jde-color-border );
+		color: var(--jde-color-text-muted);
+		border: 1px solid var(--jde-color-border);
 
-		&:hover:not( :disabled ) {
-			background: var( --jde-color-bg-grey );
+		&:hover:not(:disabled) {
+			background: var(--jde-color-bg-grey);
 		}
 	}
+
 	&--danger {
-		background: var( --jde-color-danger );
+		background: var(--jde-color-danger);
 		color: #fff;
 	}
 
@@ -278,6 +282,7 @@
 }
 
 @media ( min-width: 720px ) {
+
 	.jde-profil__form dl {
 		grid-template-columns: 1fr 2fr;
 	}
