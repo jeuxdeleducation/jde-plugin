@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.5.0
+Stable tag: 0.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.5.1 =
+* Vouvoiement complet dans l'app publique de réservation. Label « Code d'accès » retiré au-dessus du champ de saisie. Bouton courriel « Accéder à la page de réservation » pointe vers /reservation-kiosques/. Commentaire personnalisé admin dans l'envoi de code (textarea optionnel — apparaît dans le courriel si renseigné). Sujets et pied de page des courriels mis à jour (vouvoiement + « des Jeux de l'Éducation »).
 
 = 0.5.0 =
 * Multi-événements actifs : activer un événement n'en désactive plus aucun autre. Page Statistiques globale par événement (kiosques, exposants, sources). Champ courriel sur les exposants avec bouton « Envoyer le code » (horodatage du dernier envoi). Courriel de confirmation automatique quand le quota est atteint (self-serve). Templates HTML de courriels aux couleurs JDE. Page Paramètres pour configurer expéditeur, objets et corps des courriels, et messages publics de l'app JS. Vue plan en lecture seule sur l'écran quota-atteint. Migration BD v2 (colonnes courriel + email_envoye_le sur wp_jde_exposants).

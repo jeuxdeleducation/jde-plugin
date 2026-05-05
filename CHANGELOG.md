@@ -4,6 +4,17 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.1] — 2026-05-04
+
+### Modifié
+
+- **Vouvoiement complet** dans l'application publique de réservation : toutes les chaînes qui tutoyaient l'exposant (« Entre ton code », « Tes kiosques sont réservés », « contacte-nous », etc.) ont été mises à jour en vouvoiement.
+- **Label « Code d'accès » retiré** : le texte affiché au-dessus du champ de saisie du code sur la première page était redondant avec le titre et le placeholder — supprimé.
+- **Bouton courriel « Accéder à la page de réservation »** pointe maintenant vers `/reservation-kiosques/` au lieu de la racine du site.
+- **Commentaire personnalisé dans l'envoi de code** : la colonne « Courriel » de la liste des exposants affiche maintenant un formulaire avec un textarea optionnel. Si un message est saisi avant de cliquer « Envoyer le code », il apparaît dans le courriel de l'exposant dans un encadré sarcelle. Si laissé vide, la section est absente du courriel.
+- **Sujets de courriels** mis à jour pour utiliser le vouvoiement (« Votre code d'accès », « Confirmation de votre réservation »).
+- **Pied de page des courriels** : « de Jeux de l'Éducation » → « des Jeux de l'Éducation » (pluriel correct).
+
 ## [0.5.0] — 2026-05-04
 
 ### Ajouté
