@@ -5,7 +5,7 @@
  * Description:       Plugin interne des Jeux de l'Éducation : regroupe les personnalisations et fonctionnalités sur mesure du site WordPress.
  * Version:           0.5.5
  * Requires at least: 6.4
- * Requires PHP:      8.1
+ * Requires PHP:      8.2
  * Author:            Jeux de l'Éducation
  * Author URI:        https://jeuxdeleducation.com
  * License:           GPL-2.0-or-later
@@ -27,7 +27,7 @@ define( 'JDE_PLUGIN_FILE', __FILE__ );
 define( 'JDE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'JDE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'JDE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-define( 'JDE_PLUGIN_MIN_PHP', '8.1' );
+define( 'JDE_PLUGIN_MIN_PHP', '8.2' );
 define( 'JDE_PLUGIN_MIN_WP', '6.4' );
 
 /**

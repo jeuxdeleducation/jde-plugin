@@ -8,7 +8,7 @@ WordPress plugin for internal use by **Jeux de l'Éducation (JDE)**, a non-profi
 
 ## Requirements
 
-- **PHP** 8.1+ (declared in `composer.json` and checked at runtime by `jde_plugin_check_requirements()`)
+- **PHP** 8.2+ (declared in `composer.json` and checked at runtime by `jde_plugin_check_requirements()`)
 - **WordPress** 6.4+
 - **Composer** for PHP dependencies (PSR-4 autoload under namespace `JDE\`)
 - **Node 20+** for the front-end build (`@wordpress/scripts`)
@@ -84,7 +84,7 @@ tests/
   Unit/                         # Pure unit tests (no WP, Brain Monkey for hooks)
   Integration/                  # Tests against the WP test suite (future)
 .github/workflows/
-  ci.yml                        # PHPCS + PHPUnit (matrix 8.1/8.2/8.3) + lint JS/CSS on PR
+  ci.yml                        # PHPCS + PHPUnit (matrix 8.2/8.3/8.4) + lint JS/CSS on PR
   release.yml                   # On tag vX.Y.Z: build, ZIP, attach to GitHub release
 ```
 
@@ -111,7 +111,7 @@ The Kiosques module is the canonical reference for modules that need their own S
 2. **Migrator** (`src/Modules/<Feature>/Database/Migrator.php`) — versioned via the option `jde_plugin_db_version`. `run()` is idempotent and gets called both at activation (via `ActivatableModule::onActivate()`) and on every `plugins_loaded` (as a safety net for code-only updates without re-activation).
 3. **ActivatableModule interface** — module's `onActivate()` method instantiates Schema + Migrator manually (the container isn't populated yet at activation time).
 4. **Repositories** (`src/Modules/<Feature>/Repositories/`) — non-final classes that wrap `wpdb`. All SELECTs use `$wpdb->prepare()` inlined into the call site (not stored in a variable; PHPCS can't follow flow). For multi-line prepared queries, wrap in `// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared` blocks.
-5. **Models** (`src/Modules/<Feature>/Models/`) — final readonly classes with `fromRow(array)` factory and `toArray()` serializer. PHP 8.1 named-argument constructors keep call sites readable.
+5. **Models** (`src/Modules/<Feature>/Models/`) — final readonly classes with `fromRow(array)` factory and `toArray()` serializer. PHP 8.2 `readonly class` + named-argument constructors keep call sites readable et empêchent toute mutation après instanciation.
 
 ### Modules with activation hooks
 
@@ -162,7 +162,7 @@ Pattern used by the Réservations page (`assets/src/admin-reservations/`): mount
 
 ## Coding Standards
 
-PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress-Extra` ruleset (configured in `phpcs.xml.dist`) plus PHPCompatibilityWP for PHP 8.1+ compatibility. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
+PHP follows [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/wordpress-coding-standards/php/) enforced by PHPCS with the `WordPress-Extra` ruleset (configured in `phpcs.xml.dist`) plus PHPCompatibilityWP for PHP 8.2+ compatibility. JavaScript follows the `@wordpress/eslint-plugin` ruleset.
 
 ## Branches et canaux de mise à jour
 
