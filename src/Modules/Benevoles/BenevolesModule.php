@@ -12,6 +12,18 @@ namespace JDE\Modules\Benevoles;
 use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
+use JDE\Modules\Benevoles\Admin\AdminMenu;
+use JDE\Modules\Benevoles\Admin\AssignationsPage;
+use JDE\Modules\Benevoles\Admin\DiagnosticNotice;
+use JDE\Modules\Benevoles\Admin\EmailComposerPage;
+use JDE\Modules\Benevoles\Admin\EmailTemplatesPage;
+use JDE\Modules\Benevoles\Admin\EvenementRhColumns;
+use JDE\Modules\Benevoles\Admin\EvenementRhEditScreen;
+use JDE\Modules\Benevoles\Admin\FormulairesPage;
+use JDE\Modules\Benevoles\Admin\NotificationsWidget;
+use JDE\Modules\Benevoles\Admin\PersonnesPage;
+use JDE\Modules\Benevoles\Admin\PostesPage;
+use JDE\Modules\Benevoles\Admin\SettingsPage;
 use JDE\Modules\Benevoles\Cron\RetentionCron;
 use JDE\Modules\Benevoles\Database\Migrator;
 use JDE\Modules\Benevoles\Database\Schema;
@@ -88,6 +100,22 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		// Brancher le handler de la tâche cron de rétention.
 		$container->get( RetentionCron::class )->register();
+
+		// Écrans d'administration.
+		if ( is_admin() ) {
+			$container->get( AdminMenu::class )->register();
+			$container->get( SettingsPage::class )->register();
+			$container->get( EvenementRhEditScreen::class )->register();
+			$container->get( EvenementRhColumns::class )->register();
+			$container->get( DiagnosticNotice::class )->register();
+			$container->get( PersonnesPage::class )->register();
+			$container->get( PostesPage::class )->register();
+			$container->get( AssignationsPage::class )->register();
+			$container->get( FormulairesPage::class )->register();
+			$container->get( EmailComposerPage::class )->register();
+			$container->get( EmailTemplatesPage::class )->register();
+			$container->get( NotificationsWidget::class )->register();
+		}
 	}
 
 	/**
@@ -278,6 +306,93 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 			RetentionCron::class,
 			static fn ( Container $c ): RetentionCron => new RetentionCron(
 				$c->get( RetentionService::class ),
+			)
+		);
+
+		// Écrans d'administration.
+		$container->set( AdminMenu::class, static fn (): AdminMenu => new AdminMenu() );
+		$container->set( SettingsPage::class, static fn (): SettingsPage => new SettingsPage() );
+		$container->set( EmailTemplatesPage::class, static fn (): EmailTemplatesPage => new EmailTemplatesPage() );
+
+		$container->set(
+			EvenementRhEditScreen::class,
+			static fn ( Container $c ): EvenementRhEditScreen => new EvenementRhEditScreen(
+				$c->get( EvenementRhService::class ),
+				$c->get( CloneService::class ),
+			)
+		);
+
+		$container->set(
+			EvenementRhColumns::class,
+			static fn ( Container $c ): EvenementRhColumns => new EvenementRhColumns(
+				$c->get( PosteRepository::class ),
+				$c->get( PersonneRepository::class ),
+			)
+		);
+
+		$container->set(
+			DiagnosticNotice::class,
+			static fn ( Container $c ): DiagnosticNotice => new DiagnosticNotice(
+				$c->get( EvenementRhService::class ),
+				$c->get( FormSchemaService::class ),
+			)
+		);
+
+		$container->set(
+			PersonnesPage::class,
+			static fn ( Container $c ): PersonnesPage => new PersonnesPage(
+				$c->get( PersonneRepository::class ),
+				$c->get( InscriptionReponseRepository::class ),
+				$c->get( EvenementRhService::class ),
+				$c->get( AcceptanceService::class ),
+			)
+		);
+
+		$container->set(
+			PostesPage::class,
+			static fn ( Container $c ): PostesPage => new PostesPage(
+				$c->get( PosteRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PlageDisponibiliteRepository::class ),
+				$c->get( EvenementRhService::class ),
+			)
+		);
+
+		$container->set(
+			AssignationsPage::class,
+			static fn ( Container $c ): AssignationsPage => new AssignationsPage(
+				$c->get( AssignmentSuggester::class ),
+				$c->get( AssignmentService::class ),
+				$c->get( EvenementRhService::class ),
+				$c->get( PosteRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PersonneRepository::class ),
+				$c->get( AssignationRepository::class ),
+			)
+		);
+
+		$container->set(
+			FormulairesPage::class,
+			static fn ( Container $c ): FormulairesPage => new FormulairesPage(
+				$c->get( FormSchemaService::class ),
+			)
+		);
+
+		$container->set(
+			EmailComposerPage::class,
+			static fn ( Container $c ): EmailComposerPage => new EmailComposerPage(
+				$c->get( EvenementRhService::class ),
+				$c->get( PersonneRepository::class ),
+				$c->get( BenevoleEmailService::class ),
+				$c->get( EmailLogRepository::class ),
+			)
+		);
+
+		$container->set(
+			NotificationsWidget::class,
+			static fn ( Container $c ): NotificationsWidget => new NotificationsWidget(
+				$c->get( NotificationRepository::class ),
+				$c->get( EvenementRhService::class ),
 			)
 		);
 	}
