@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Extraire la version du tag
         id: version
@@ -47,7 +47,7 @@ jobs:
           tools: composer:v2
 
       - name: Configurer Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: npm
@@ -90,7 +90,7 @@ jobs:
           ls -lh
 
       - name: Publier la release GitHub
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: Version ${{ steps.version.outputs.version }}
           generate_release_notes: true
