@@ -12,6 +12,7 @@ namespace JDE\Modules\Benevoles;
 use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
+use JDE\Modules\Benevoles\Cron\RetentionCron;
 use JDE\Modules\Benevoles\Database\Migrator;
 use JDE\Modules\Benevoles\Database\Schema;
 use JDE\Modules\Benevoles\PostTypes\EvenementRhPostType;
@@ -25,6 +26,18 @@ use JDE\Modules\Benevoles\Repositories\PlageDisponibiliteRepository;
 use JDE\Modules\Benevoles\Repositories\PosteRepository;
 use JDE\Modules\Benevoles\Repositories\QuartRepository;
 use JDE\Modules\Benevoles\Repositories\SignatureRepository;
+use JDE\Modules\Benevoles\Services\AcceptanceService;
+use JDE\Modules\Benevoles\Services\AssignmentService;
+use JDE\Modules\Benevoles\Services\AssignmentSuggester;
+use JDE\Modules\Benevoles\Services\BenevoleEmailService;
+use JDE\Modules\Benevoles\Services\CloneService;
+use JDE\Modules\Benevoles\Services\EmailRenderer;
+use JDE\Modules\Benevoles\Services\EvenementRhService;
+use JDE\Modules\Benevoles\Services\FormSchemaService;
+use JDE\Modules\Benevoles\Services\InscriptionService;
+use JDE\Modules\Benevoles\Services\NotificationService;
+use JDE\Modules\Benevoles\Services\RetentionService;
+use JDE\Modules\Kiosques\Repositories\AuditRepository;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -72,6 +85,9 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		// Enregistrer le CPT et ses champs meta dès « init ».
 		$container->get( EvenementRhPostType::class )->register();
+
+		// Brancher le handler de la tâche cron de rétention.
+		$container->get( RetentionCron::class )->register();
 	}
 
 	/**
@@ -91,16 +107,19 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		Capabilities::addToAdministrator();
 		Capabilities::createRoles();
+
+		RetentionCron::schedule();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * Désactivation : on conserve capacités et rôles (au cas où le plugin
-	 * serait réactivé). La suppression définitive est gérée par `uninstall.php`.
+	 * serait réactivé) mais on annule la tâche cron. La suppression
+	 * définitive est gérée par `uninstall.php`.
 	 */
 	public function onDeactivate(): void {
-		// Aucune action.
+		RetentionCron::unschedule();
 	}
 
 	/**
@@ -146,5 +165,120 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 				}
 			);
 		}
+
+		// Services métier sans dépendance.
+		$container->set(
+			EvenementRhService::class,
+			static fn (): EvenementRhService => new EvenementRhService()
+		);
+		$container->set(
+			EmailRenderer::class,
+			static fn (): EmailRenderer => new EmailRenderer()
+		);
+		$container->set(
+			FormSchemaService::class,
+			static fn (): FormSchemaService => new FormSchemaService()
+		);
+
+		// Service d'envoi des courriels.
+		$container->set(
+			BenevoleEmailService::class,
+			static fn ( Container $c ): BenevoleEmailService => new BenevoleEmailService(
+				$c->get( EmailRenderer::class ),
+				$c->get( EmailLogRepository::class ),
+			)
+		);
+
+		// Notifications gestionnaires.
+		$container->set(
+			NotificationService::class,
+			static fn ( Container $c ): NotificationService => new NotificationService(
+				$c->get( NotificationRepository::class ),
+			)
+		);
+
+		// Inscription publique.
+		$container->set(
+			InscriptionService::class,
+			static fn ( Container $c ): InscriptionService => new InscriptionService(
+				$c->get( EvenementRhService::class ),
+				$c->get( PersonneRepository::class ),
+				$c->get( InscriptionReponseRepository::class ),
+				$c->get( DisponibiliteRepository::class ),
+				$c->get( BenevoleEmailService::class ),
+				$c->get( NotificationService::class ),
+				$c->get( AuditRepository::class ),
+			)
+		);
+
+		// Acceptation / refus.
+		$container->set(
+			AcceptanceService::class,
+			static fn ( Container $c ): AcceptanceService => new AcceptanceService(
+				$c->get( PersonneRepository::class ),
+				$c->get( BenevoleEmailService::class ),
+				$c->get( AuditRepository::class ),
+			)
+		);
+
+		// Auto-assignation et CRUD assignations.
+		$container->set(
+			AssignmentSuggester::class,
+			static fn ( Container $c ): AssignmentSuggester => new AssignmentSuggester(
+				$c->get( PosteRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PersonneRepository::class ),
+				$c->get( AssignationRepository::class ),
+				$c->get( DisponibiliteRepository::class ),
+				$c->get( PlageDisponibiliteRepository::class ),
+			)
+		);
+
+		$container->set(
+			AssignmentService::class,
+			static fn ( Container $c ): AssignmentService => new AssignmentService(
+				$c->get( AssignationRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PosteRepository::class ),
+				$c->get( PersonneRepository::class ),
+				$c->get( BenevoleEmailService::class ),
+				$c->get( NotificationService::class ),
+				$c->get( AuditRepository::class ),
+			)
+		);
+
+		$container->set(
+			CloneService::class,
+			static fn ( Container $c ): CloneService => new CloneService(
+				$c->get( PosteRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PlageDisponibiliteRepository::class ),
+			)
+		);
+
+		// Rétention.
+		$container->set(
+			RetentionService::class,
+			static fn ( Container $c ): RetentionService => new RetentionService(
+				$c->get( PersonneRepository::class ),
+				$c->get( InscriptionReponseRepository::class ),
+				$c->get( PosteRepository::class ),
+				$c->get( QuartRepository::class ),
+				$c->get( PlageDisponibiliteRepository::class ),
+				$c->get( DisponibiliteRepository::class ),
+				$c->get( AssignationRepository::class ),
+				$c->get( NotificationRepository::class ),
+				$c->get( SignatureRepository::class ),
+				$c->get( EmailLogRepository::class ),
+				$c->get( AuditRepository::class ),
+			)
+		);
+
+		$container->set(
+			RetentionCron::class,
+			static fn ( Container $c ): RetentionCron => new RetentionCron(
+				$c->get( RetentionService::class ),
+			)
+		);
 	}
 }
