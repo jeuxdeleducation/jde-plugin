@@ -12,6 +12,8 @@ namespace JDE\Modules\Benevoles;
 use JDE\Container;
 use JDE\Modules\AbstractModule;
 use JDE\Modules\ActivatableModule;
+use JDE\Modules\Benevoles\Database\Migrator;
+use JDE\Modules\Benevoles\Database\Schema;
 use JDE\Modules\Benevoles\PostTypes\EvenementRhPostType;
 
 defined( 'ABSPATH' ) || exit;
@@ -44,12 +46,14 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 
 		$this->registerServices( $container );
 
-		// Filet de sécurité : à chaque chargement, s'assurer que les capacités
-		// et rôles sont en place. Idempotent — coût négligeable. Couvre le cas
-		// où le hook d'activation n'a pas tourné (installation manuelle, etc.).
+		// Filet de sécurité : à chaque chargement, s'assurer que le schéma est
+		// à jour, que les capacités sont attribuées et que les rôles existent.
+		// Idempotent — coût négligeable. Couvre le cas où le hook d'activation
+		// n'a pas tourné (installation manuelle, mise à jour du plugin, etc.).
 		add_action(
 			'plugins_loaded',
-			static function (): void {
+			static function () use ( $container ): void {
+				$container->get( Migrator::class )->run();
 				Capabilities::addToAdministrator();
 				Capabilities::createRoles();
 			},
@@ -63,10 +67,18 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * À l'activation : ajoute les capacités au rôle administrateur et crée
-	 * les trois rôles WP (bénévole, jury, arbitre).
+	 * À l'activation : crée les tables BD, ajoute les capacités au rôle
+	 * administrateur et crée les trois rôles WP (bénévole, jury, arbitre).
+	 * Le conteneur n'étant pas encore peuplé, on instancie Schema et
+	 * Migrator manuellement (pattern Kiosques).
 	 */
 	public function onActivate(): void {
+		global $wpdb;
+
+		$schema   = new Schema( $wpdb );
+		$migrator = new Migrator( $schema );
+		$migrator->run();
+
 		Capabilities::addToAdministrator();
 		Capabilities::createRoles();
 	}
@@ -85,6 +97,19 @@ final class BenevolesModule extends AbstractModule implements ActivatableModule 
 	 * Enregistrer les services Bénévoles dans le conteneur partagé.
 	 */
 	private function registerServices( Container $container ): void {
+		$container->set(
+			Schema::class,
+			static function (): Schema {
+				global $wpdb;
+				return new Schema( $wpdb );
+			}
+		);
+
+		$container->set(
+			Migrator::class,
+			static fn ( Container $c ): Migrator => new Migrator( $c->get( Schema::class ) )
+		);
+
 		$container->set(
 			EvenementRhPostType::class,
 			static fn (): EvenementRhPostType => new EvenementRhPostType()
