@@ -1,12 +1,10 @@
 /**
  * Configuration webpack pour @wordpress/scripts.
  *
- * Étend la config par défaut pour déclarer cinq points d'entrée :
+ * Étend la config par défaut pour déclarer trois points d'entrée :
  *  - admin-kiosques-editor : canvas TS pour placer les kiosques côté admin.
  *  - admin-reservations    : tableau React des réservations admin.
  *  - public-reservation    : application publique de réservation.
- *  - public-profil         : profil bénévole/jury/arbitre (React).
- *  - public-inscription    : formulaire d'inscription public (vanilla TS).
  *
  * Tous les bundles sont écrits dans assets/build/ accompagnés de leur
  * fichier .asset.php (lu par JDE\Support\Assets pour fournir les
@@ -35,14 +33,6 @@ module.exports = {
 		'public-reservation': path.resolve(
 			__dirname,
 			'assets/src/public-reservation/index.tsx'
-		),
-		'public-profil': path.resolve(
-			__dirname,
-			'assets/src/public-profil/index.tsx'
-		),
-		'public-inscription': path.resolve(
-			__dirname,
-			'assets/src/public-inscription/index.ts'
 		),
 	},
 	output: {

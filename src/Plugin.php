@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace JDE;
 
 use JDE\Modules\ActivatableModule;
-use JDE\Modules\Benevoles\BenevolesModule;
 use JDE\Modules\Kiosques\KiosquesModule;
 use JDE\Modules\ModuleRegistry;
 use JDE\Support\Assets;
+use JDE\Support\BenevolesPurge;
 use JDE\Support\Logger;
 use JDE\Support\Template;
 use JDE\Updates\GitHubUpdater;
@@ -91,6 +91,11 @@ final class Plugin {
 	 * qui a été déplacé à `init` pour respecter WordPress 6.7+).
 	 */
 	public function onPluginsLoaded(): void {
+		// Purge ponctuelle du module Bénévoles retiré. Idempotent : ne s'exécute
+		// qu'une seule fois grâce à un drapeau persistant. À retirer au cycle
+		// de release suivant (un seul site est concerné).
+		BenevolesPurge::maybeRun();
+
 		$this->modules->registerAll();
 
 		// Initialiser le mécanisme de mise à jour depuis GitHub (sécuritaire en prod uniquement).
@@ -196,7 +201,6 @@ final class Plugin {
 	 */
 	private function registerModules(): void {
 		$this->modules->add( new KiosquesModule() );
-		$this->modules->add( new BenevolesModule() );
 	}
 
 	// Empêcher la copie et la sérialisation du singleton.

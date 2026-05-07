@@ -4,21 +4,9 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
-### Ajouté
+### Retiré
 
-- **Module Bénévoles** : gestion complète du recrutement, qualification et assignation du personnel d'événement (bénévoles, jurys, arbitres). Inclut :
-  - CPT `jde_evenement_rh` avec contrainte d'unicité (une seule édition active à la fois) et purge automatique 2 ans après la date de fin.
-  - Trois rôles WordPress (`jde_benevole`, `jde_jury`, `jde_arbitre`) avec capacité partagée d'accès au profil.
-  - Schéma BD versionné (10 tables `wp_jde_rh_*`) avec migrator dédié (clef d'option `jde_plugin_benevoles_db_version`).
-  - Formulaire d'inscription public natif (sans dépendance externe), avec champs personnalisables par rôle, honeypot anti-spam et rate-limit IP.
-  - Acceptation/refus avec création automatique du compte WordPress et envoi de courriels transactionnels.
-  - Postes, quarts et plages de disponibilité, avec algorithme greedy déterministe de suggestion d'affectations.
-  - Détection non bloquante des conflits (chevauchement personne, sur-effectif poste) avec notifications gestionnaire.
-  - Profil personnel React avec affichage différencié par rôle, accepter/refuser ses assignations, signature électronique d'entente/lettre, lien vers documents OneDrive.
-  - 6 modèles de courriels transactionnels (confirmation, acceptation, refus, assignation, rappel, remerciement) + diffusion ad-hoc avec aperçu et filtres rôle/statut.
-  - Mini-moteur Mustache (`{{var}}`, `{{!raw}}`, `{{#section}}…{{/section}}`, `{{^section}}…{{/section}}`) testé via 11 cas unitaires.
-  - Widget dashboard pour les notifications, page d'historique des envois, audit transversal.
-  - Cron quotidien de rétention 2 ans (purge en cascade sans toucher aux comptes WP).
+- **Module Bénévoles** : retrait complet du module qui n'était plus utilisé. Toute l'empreinte côté base de données est nettoyée automatiquement à la mise à jour : suppression des 10 tables `wp_jde_rh_*`, des options (`jde_plugin_benevoles_db_version`, `jde_plugin_benevoles_settings`, `jde_plugin_benevoles_emails`), des capacités custom, des trois rôles WP (`jde_benevole`, `jde_jury`, `jde_arbitre`), du cron `jde_benevoles_retention_cleanup` et des posts du CPT `jde_evenement_rh`. Routine idempotente exécutée une seule fois (drapeau d'option `jde_plugin_benevoles_purged`) — sera retirée au cycle de release suivant.
 
 ## [0.5.4] — 2026-05-05
 
