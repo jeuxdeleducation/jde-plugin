@@ -4,7 +4,7 @@ Tags: jde, interne
 Requires at least: 6.4
 Tested up to: 6.4
 Requires PHP: 8.1
-Stable tag: 0.5.4
+Stable tag: 0.5.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,9 @@ Il est destiné à un usage strictement interne. Sa structure modulaire permet d
 3. Les futures mises à jour sont gérées automatiquement à partir des releases GitHub.
 
 == Changelog ==
+
+= 0.5.5 =
+* Retrait du module Bénévoles (jamais déployé en production officielle). Une routine de purge ponctuelle nettoie automatiquement toutes les données résiduelles à la mise à jour : 10 tables `wp_jde_rh_*`, options du module, capacités custom, rôles WP, cron de rétention et posts du CPT. Routine idempotente — sera retirée au cycle suivant.
 
 = 0.5.4 =
 * Correctif critique : les styles de bouton du thème JDE écrasaient toutes les couleurs de kiosques (affichage lime uniforme). Les règles CSS sont maintenant plus spécifiques que celles du thème — les couleurs sémantiques s'affichent correctement sur la page publique et dans l'admin. Éditeur de plan admin amélioré : les kiosques réservés apparaissent en rouge et les kiosques libres en vert.

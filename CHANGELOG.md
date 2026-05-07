@@ -4,6 +4,8 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pl
 
 ## [Non publié]
 
+## [0.5.5] — 2026-05-07
+
 ### Retiré
 
 - **Module Bénévoles** : retrait complet du module qui n'était plus utilisé. Toute l'empreinte côté base de données est nettoyée automatiquement à la mise à jour : suppression des 10 tables `wp_jde_rh_*`, des options (`jde_plugin_benevoles_db_version`, `jde_plugin_benevoles_settings`, `jde_plugin_benevoles_emails`), des capacités custom, des trois rôles WP (`jde_benevole`, `jde_jury`, `jde_arbitre`), du cron `jde_benevoles_retention_cleanup` et des posts du CPT `jde_evenement_rh`. Routine idempotente exécutée une seule fois (drapeau d'option `jde_plugin_benevoles_purged`) — sera retirée au cycle de release suivant.
